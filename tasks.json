@@ -5,5 +5,113 @@
     "goal": "Create a tool that parses Python class definitions using ast and converts them into PlantUML class diagram syntax",
     "status": "done",
     "finished": "2026-11-26T01:12"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "ashishps1-awesome-low-level-design",
+    "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
+    "status": "todo"
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "ashishps1-awesome-low-level-design",
+    "goal": "",
+    "status": "todo"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "yizhiyanhua-ai-fireworks-tech-graph",
+    "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
+    "status": "todo"
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "yizhiyanhua-ai-fireworks-tech-graph",
+    "goal": "",
+    "status": "todo"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "agents365-ai-drawio-skill",
+    "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
+    "status": "todo"
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "agents365-ai-drawio-skill",
+    "goal": "",
+    "status": "todo"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "plantuml-stdlib-c4-plantuml",
+    "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
+    "status": "todo"
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "plantuml-stdlib-c4-plantuml",
+    "goal": "",
+    "status": "todo"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "purocean-yn",
+    "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
+    "status": "todo"
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "purocean-yn",
+    "goal": "",
+    "status": "todo"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "ahmadhassan-bted-openheart",
+    "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
+    "status": "todo"
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "ahmadhassan-bted-openheart",
+    "goal": "",
+    "status": "todo"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "yuzutech-kroki",
+    "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
+    "status": "todo"
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "yuzutech-kroki",
+    "goal": "",
+    "status": "todo"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "k1low-tbls",
+    "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
+    "status": "todo"
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "k1low-tbls",
+    "goal": "",
+    "status": "todo"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "skanaar-nomnoml",
+    "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
+    "status": "todo"
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "skanaar-nomnoml",
+    "goal": "",
+    "status": "todo"
   }
 ]
