@@ -39,6 +39,8 @@ jobs:
           SWINGS_SKILLS_DIR: ${{ github.workspace }}
           SWINGS_REPO_CACHE: ${{ github.workspace }}/.skill_repos
           FORCE_REFRESH: ${{ inputs.force_refresh }}
+          SWINGS_GH_TOKEN: ${{ secrets.SWINGS_GH_TOKEN }}          # PAT that can create repos (GitHub plugin)
+          SWINGS_GITHUB_DRY_RUN: ${{ vars.SWINGS_GITHUB_DRY_RUN || 'true' }}   # repo variable; set to false to publish
       - name: Push the agent's work
         run: |
           git config user.name "Swings AI"
