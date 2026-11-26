@@ -1,12 +1,13 @@
 {
   "2026-11-26": {
-    "calls": 1,
-    "errors": 0,
-    "overloads": 0,
+    "calls": 5,
+    "errors": 1,
+    "overloads": 1,
     "cache_hits": 0,
-    "seconds": 4.7,
+    "seconds": 258.9,
     "by_purpose": {
-      "write_tool": 1
+      "write_tool": 1,
+      "self_review": 4
     }
   }
 }
