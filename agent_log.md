@@ -140,3 +140,4 @@
 - 2026-11-26 19:47 — need e747bf71: open -> searching (tool scripts/agent_prompt_router.py)
 - 2026-11-26 19:47 — need e747bf71: searching -> building (tool task queued on deepset-ai-haystack)
 - 2026-11-26 19:52 — yizhiyanhua-ai-fireworks-tech-graph: 'close need: Broken Tech Graph Mermaid Capability [need ef20a2aa]' FAILED after 3 attempts — nothing changed
+- 2026-11-26 19:52 — deepset-ai-haystack: 'close need: Missing AI Agent Prompt Router [need e747bf71]' PASSED on attempt 1 (scripts/agent_prompt_router.py, tests/test_agent_prompt_router.py)
