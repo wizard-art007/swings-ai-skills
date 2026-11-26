@@ -3793,7 +3793,7 @@ def work_needs(max_new=MAX_NEEDS_PER_RUN):
     needs = _jload(NEEDS_FILE, [])
     if not needs:
         return {}
-    started = verified = routed = 0
+    started = verified = routed = attempts = 0
     for n in needs:
         n.setdefault("id", uuid.uuid4().hex[:8]); n.setdefault("type", "external")
         if n.get("status") in ("building", "verifying"):
@@ -3810,8 +3810,9 @@ def work_needs(max_new=MAX_NEEDS_PER_RUN):
             if n["type"] == "knowledge":
                 _close_learned(n)
             continue
-        if started >= max_new or in_flight >= MAX_NEEDS_IN_FLIGHT or not llm_allowed("need_scout"):
-            continue
+        if started >= max_new or attempts >= 2 * MAX_NEEDS_PER_RUN or in_flight >= MAX_NEEDS_IN_FLIGHT \
+                or not llm_allowed("need_scout"):
+            continue                                      # parked-at-start needs don't use a slot, attempts do
         try:
             start_need(n)
         except Exception as e:
@@ -3819,7 +3820,8 @@ def work_needs(max_new=MAX_NEEDS_PER_RUN):
             if n.get("status") == "searching":
                 _move(n, "open", f"{type(e).__name__}: {str(e)[:100]}")
         _jsave(NEEDS_FILE, needs)                         # keep progress even if the next one crashes
-        started += 1
+        attempts += 1
+        started += n.get("status") == "building"
         in_flight += n.get("status") == "building"
     _jsave(NEEDS_FILE, needs)
     if started or verified or routed:
