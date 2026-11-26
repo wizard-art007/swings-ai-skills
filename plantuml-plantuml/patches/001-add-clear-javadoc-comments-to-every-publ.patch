@@ -1,0 +1,113 @@
+From 84c7cca30770ab38b31141c44bc1291ddfe2cece Mon Sep 17 00:00:00 2001
+From: Swings AI <swings-ai@local>
+Date: Thu, 26 Nov 2026 00:52:01 +0000
+Subject: [PATCH] Swings AI: add clear Javadoc comments to every public method
+ without changing behaviour
+
+---
+ src/main/java/com/plantuml/ubrex/Capture.java | 48 +++++++++++++++++++
+ 1 file changed, 48 insertions(+)
+
+diff --git a/src/main/java/com/plantuml/ubrex/Capture.java b/src/main/java/com/plantuml/ubrex/Capture.java
+index 04defdd..4e7c7fb 100644
+--- a/src/main/java/com/plantuml/ubrex/Capture.java
++++ b/src/main/java/com/plantuml/ubrex/Capture.java
+@@ -46,15 +46,33 @@ public class Capture implements CaptureLookup {
+ 		this.entries = list;
+ 	}
+ 
++	/**
++	 * Returns a string representation of the captured entries.
++	 *
++	 * @return a string representation of the entries
++	 */
+ 	@Override
+ 	public String toString() {
+ 		return entries.toString();
+ 	}
+ 
++	/**
++	 * Returns a new {@code Capture} containing all existing entries plus the specified key-value pair.
++	 *
++	 * @param key   the key of the entry to add
++	 * @param value the value of the entry to add
++	 * @return a new {@code Capture} instance containing the added entry
++	 */
+ 	public Capture withEntry(String key, String value) {
+ 		return new Capture(entries.add(new CaptureEntry(key, value)));
+ 	}
+ 
++	/**
++	 * Merges this {@code Capture} with another {@code Capture}.
++	 *
++	 * @param other the other {@code Capture} to merge with
++	 * @return a new {@code Capture} containing entries from both instances, or an existing instance if one is empty
++	 */
+ 	public Capture merge(Capture other) {
+ 		if (other == EMPTY)
+ 			return this;
+@@ -65,10 +83,22 @@ public class Capture implements CaptureLookup {
+ 		return new Capture(this.entries.addAll(other.entries));
+ 	}
+ 
++	/**
++	 * Returns a new {@code Capture} where each entry key is prepended with the specified prefix.
++	 *
++	 * @param prefix the prefix to prepend to each key
++	 * @return a new {@code Capture} instance with prefixed keys
++	 */
+ 	public Capture withPrefixedKeys(String prefix) {
+ 		return new Capture(this.entries.mapped(entry -> entry.withPrefixedKey(prefix)));
+ 	}
+ 
++	/**
++	 * Finds and returns all values associated with the specified key.
++	 *
++	 * @param key the key to search for
++	 * @return a list of all matching values, or an empty list if none match
++	 */
+ 	@Override
+ 	public List<String> findValuesByKey(String key) {
+ 		final List<String> result = new ArrayList<>();
+@@ -78,6 +108,12 @@ public class Capture implements CaptureLookup {
+ 		return result;
+ 	}
+ 
++	/**
++	 * Finds the first entry whose key starts with the given prefix, and returns all values associated with that entry's key.
++	 *
++	 * @param keyPrefix the prefix to search for
++	 * @return all values associated with the first matching key, or {@code null} if no key starts with the prefix
++	 */
+ 	public List<String> findFirstValuesByKeyPrefix(String keyPrefix) {
+ 		for (CaptureEntry entry : this.entries)
+ 			if (entry.getKey().startsWith(keyPrefix))
+@@ -85,6 +121,12 @@ public class Capture implements CaptureLookup {
+ 		return null;
+ 	}
+ 
++	/**
++	 * Extracts all entries whose keys start with the specified prefix, stripping the prefix from the keys.
++	 *
++	 * @param keyPrefix the prefix to match and strip from keys
++	 * @return a new {@code Capture} containing the matching entries with the prefix removed
++	 */
+ 	public Capture extractByPrefix(String keyPrefix) {
+ 		SafeList<CaptureEntry> result = EMPTY.entries;
+ 		for (CaptureEntry entry : this.entries) {
+@@ -95,6 +137,12 @@ public class Capture implements CaptureLookup {
+ 		return new Capture(result);
+ 	}
+ 
++	/**
++	 * Finds and returns the first value associated with the specified key.
++	 *
++	 * @param key the key to search for
++	 * @return the first matching value, or {@code null} if no entry matches the key
++	 */
+ 	@Override
+ 	public String findFirstValueByKey(String key) {
+ 		for (CaptureEntry entry : this.entries)
+-- 
+2.43.0
+

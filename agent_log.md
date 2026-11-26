@@ -1,2 +1,3 @@
 - 2026-11-26 00:27 — plantuml-plantuml: 'a function make_sequence(actors, messages) that returns PlantUML sequence-diagram text (@startuml ... @enduml)' PASSED on attempt 1 (scripts/sequence_generator.py, tests/test_sequence.py)
 - 2026-11-26 00:27 — plantuml-plantuml: SKILL.md improved
+- 2026-11-26 00:52 — plantuml-plantuml/repo: 'add clear Javadoc comments to every public method without changing behaviour' PASSED on attempt 1 (src/main/java/com/plantuml/ubrex/Capture.java)
