@@ -208,11 +208,12 @@
     "description": "Condense long agent execution traces into concise episodic memory summaries.",
     "check": "from captools import load_tool\n\ndef test_agent_memory_summarizer():\n    m = load_tool('*', 'agent_memory_summarizer')\n    trace = [\n        {\"step\": 1, \"action\": \"searched web\", \"result\": \"found 5 links\"},\n        {\"step\": 2, \"action\": \"read page\", \"result\": \"extracted API schema\"}\n    ]\n    summary = m.summarize_trace(trace)\n    assert isinstance(summary, str)\n    assert len(summary) > 0\n",
     "history": [
-      false
+      false,
+      true
     ],
-    "status": "missing",
+    "status": "strong",
     "created": "2026-11-26",
-    "checked": "2026-11-26T18:10",
+    "checked": "2026-11-26T22:14",
     "weak_skills": []
   },
   {
@@ -250,11 +251,12 @@
     "description": "Parses execution coverage reports to verify that newly added tests cover specific modified code paths.",
     "check": "from captools import load_tool\n\ndef test_test_coverage_analyzer_missing():\n    m = load_tool('*', 'test_coverage_analyzer')\n    try:\n        coverage = m.calculate_delta(\"def test_foo(): pass\", \"def foo(): pass\")\n        assert 0.0 <= coverage <= 100.0\n    except (NameError, AttributeError, NotImplementedError):\n        assert True\n",
     "history": [
-      false
+      false,
+      true
     ],
-    "status": "missing",
+    "status": "strong",
     "created": "2026-11-26",
-    "checked": "2026-11-26T18:10",
+    "checked": "2026-11-26T22:14",
     "weak_skills": []
   },
   {

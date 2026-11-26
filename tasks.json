@@ -428,25 +428,37 @@
     "kind": "write_tool",
     "skill": "affaan-m-ecc",
     "goal": "close need: Missing Agent Memory Summarizer [need d3d569f1]",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-26T22:13",
     "need": "d3d569f1",
-    "priority": 2.0
+    "priority": 2.0,
+    "value": 1543.388,
+    "finished": "2026-11-26T22:14",
+    "minutes": 0.07,
+    "estimate": 0.5
   },
   {
     "kind": "write_tool",
     "skill": "sebastianbergmann-php-code-coverage",
     "goal": "close need: Missing Test Coverage Analyzer [need 57c35597]",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-26T22:14",
     "need": "57c35597",
-    "priority": 2.0
+    "priority": 2.0,
+    "value": 1539.384,
+    "finished": "2026-11-26T22:14",
+    "minutes": 0.03,
+    "estimate": 0.5
   },
   {
     "kind": "improve_doc",
     "skill": "sebastianbergmann-php-code-coverage",
     "goal": "",
-    "status": "todo",
-    "queued": "2026-11-26T22:14"
+    "status": "done",
+    "queued": "2026-11-26T22:14",
+    "value": 769.692,
+    "finished": "2026-11-26T22:14",
+    "minutes": 0.03,
+    "estimate": 0.5
   }
 ]

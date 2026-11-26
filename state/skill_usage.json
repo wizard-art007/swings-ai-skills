@@ -18,5 +18,13 @@
   "drawdb-io-drawdb": {
     "used": 1,
     "success": 1
+  },
+  "affaan-m-ecc": {
+    "used": 1,
+    "success": 1
+  },
+  "sebastianbergmann-php-code-coverage": {
+    "used": 1,
+    "success": 1
   }
 }

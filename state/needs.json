@@ -496,7 +496,7 @@
     ],
     "action": "Implement the agent memory summarizer capability.",
     "priority": 2.0,
-    "status": "building",
+    "status": "closed",
     "source": "self_review",
     "ts": "2026-11-26T18:11",
     "log": [
@@ -511,9 +511,21 @@
         "from": "searching",
         "to": "building",
         "why": "tool task queued on affaan-m-ecc"
+      },
+      {
+        "ts": "2026-11-26T22:14",
+        "from": "building",
+        "to": "verifying",
+        "why": "tool task done"
+      },
+      {
+        "ts": "2026-11-26T22:14",
+        "from": "verifying",
+        "to": "closed",
+        "why": "capability check passes"
       }
     ],
-    "updated": "2026-11-26T22:13",
+    "updated": "2026-11-26T22:14",
     "queries": [
       "agent memory summarizer",
       "agent memory",
@@ -529,7 +541,9 @@
       "need_fit": 0.037
     },
     "skill": "affaan-m-ecc",
-    "module": "agent_memory_summarizer"
+    "module": "agent_memory_summarizer",
+    "closed": "2026-11-26T22:14",
+    "closed_by": "capability check passes"
   },
   {
     "id": "57c35597",
@@ -544,7 +558,7 @@
     ],
     "action": "Implement the test coverage analyzer in the QA testing module.",
     "priority": 2.0,
-    "status": "building",
+    "status": "closed",
     "source": "self_review",
     "ts": "2026-11-26T18:11",
     "updated": "2026-11-26T22:14",
@@ -560,6 +574,18 @@
         "from": "searching",
         "to": "building",
         "why": "tool task queued on sebastianbergmann-php-code-coverage"
+      },
+      {
+        "ts": "2026-11-26T22:14",
+        "from": "building",
+        "to": "verifying",
+        "why": "tool task done"
+      },
+      {
+        "ts": "2026-11-26T22:14",
+        "from": "verifying",
+        "to": "closed",
+        "why": "capability check passes"
       }
     ],
     "queries": [
@@ -577,7 +603,9 @@
       "need_fit": 0.297
     },
     "skill": "sebastianbergmann-php-code-coverage",
-    "module": "test_coverage_analyzer"
+    "module": "test_coverage_analyzer",
+    "closed": "2026-11-26T22:14",
+    "closed_by": "capability check passes"
   },
   {
     "id": "c6aea0cd",
