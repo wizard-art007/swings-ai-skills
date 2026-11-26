@@ -173,5 +173,77 @@
     "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
     "status": "done",
     "finished": "2026-11-26T13:59"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "tt-a1i-archify",
+    "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
+    "status": "todo"
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "tt-a1i-archify",
+    "goal": "",
+    "status": "todo"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "affaan-m-ecc",
+    "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
+    "status": "todo"
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "affaan-m-ecc",
+    "goal": "",
+    "status": "todo"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "microsoft-playwright",
+    "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
+    "status": "todo"
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "microsoft-playwright",
+    "goal": "",
+    "status": "todo"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "mermaid-js-mermaid",
+    "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
+    "status": "todo"
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "mermaid-js-mermaid",
+    "goal": "",
+    "status": "todo"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "leonxlnx-taste-skill",
+    "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
+    "status": "todo"
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "leonxlnx-taste-skill",
+    "goal": "",
+    "status": "todo"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "seleniumbase-seleniumbase",
+    "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
+    "status": "todo"
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "seleniumbase-seleniumbase",
+    "goal": "",
+    "status": "todo"
   }
 ]

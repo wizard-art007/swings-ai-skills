@@ -75,3 +75,4 @@
 - 2026-11-26 14:39 — scout: new skill mermaid-js-mermaid (diagrams, score 78.6)
 - 2026-11-26 14:39 — scout: new skill leonxlnx-taste-skill (ai_agents, score 76.9)
 - 2026-11-26 14:39 — scout: new skill seleniumbase-seleniumbase (qa_testing, score 75.5)
+- 2026-11-26 14:39 — scout: {'added': ['tt-a1i-archify', 'affaan-m-ecc', 'microsoft-playwright', 'mermaid-js-mermaid', 'leonxlnx-taste-skill', 'seleniumbase-seleniumbase'], 'archived': ['ashishps1-awesome-low-level-design', 'purocean-yn', 'yuzutech-kroki', 'k1low-tbls', 'skanaar-nomnoml'], 'cutoff': 66.0, 'active': 11}
