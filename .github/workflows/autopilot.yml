@@ -32,7 +32,8 @@ jobs:
           restore-keys: skill-repos-
       - run: pip install -r engine/requirements.txt
       - name: Run autopilot
-        run: python engine/run_autopilot.py
+        run: python -u engine/run_autopilot.py
+        timeout-minutes: 38
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,6 +43,7 @@ jobs:
           SWINGS_GH_TOKEN: ${{ secrets.SWINGS_GH_TOKEN }}          # PAT that can create repos (GitHub plugin)
           SWINGS_GITHUB_DRY_RUN: ${{ vars.SWINGS_GITHUB_DRY_RUN || 'true' }}   # repo variable; set to false to publish
       - name: Push the agent's work
+        if: always()        # save whatever was done, even if the run step failed or timed out
         run: |
           git config user.name "Swings AI"
           git config user.email "swings-ai@users.noreply.github.com"

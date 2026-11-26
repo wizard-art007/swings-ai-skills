@@ -2,6 +2,8 @@
 import os, sys, json, datetime
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from swings_core import *  # noqa
+import swings_core, time as _time
+swings_core.CYCLE_DEADLINE = _time.time() + 60 * int(os.environ.get("SWINGS_TIME_BUDGET_MIN", "30"))
 
 init_skill_versioning()
 state_file = SKILLS_DIR / "autopilot_state.json"

@@ -302,8 +302,9 @@ def llm(prompt, system="You are an expert software engineer.", model=LLM_MODEL, 
                     return client.models.generate_content(model=m, contents=full).text
                 except Exception as e:      # unknown model name -> try the next one
                     last_err = e
-                    if "not found" not in str(e).lower() and "404" not in str(e):
-                        raise
+                    if not any(k in str(e).upper() for k in ("404", "NOT FOUND", "NOT_FOUND", "503", "UNAVAILABLE",
+                                                             "429", "RESOURCE_EXHAUSTED")):
+                        raise         # only unknown/busy/rate-limited models fall through to the next one
             raise last_err
         except RuntimeError:
             raise
@@ -617,6 +618,10 @@ import schedule, threading
 
 TASKS_FILE = SKILLS_DIR / "tasks.json"   # queue you (or the agent) can add to
 REFRESH_DAYS = 7
+CYCLE_DEADLINE = None   # set by run_autopilot.py on GitHub Actions (time budget per run)
+
+def time_left():
+    return float("inf") if CYCLE_DEADLINE is None else CYCLE_DEADLINE - time.time()
 
 def add_task(kind, skill_name, goal="", **kw):
     tasks = json.loads(TASKS_FILE.read_text()) if TASKS_FILE.exists() else []
@@ -629,7 +634,7 @@ def run_task_queue(limit=3):
         return
     tasks, reg, done = json.loads(TASKS_FILE.read_text()), load_registry(), 0
     for t in tasks:
-        if t["status"] != "todo" or done >= limit:
+        if t["status"] != "todo" or done >= limit or time_left() < 300:
             continue
         skill = reg.get(t["skill"])
         if not skill:
@@ -647,6 +652,7 @@ def run_task_queue(limit=3):
             t["status"] = "done" if ok else "failed"
         except Exception as e:
             t["status"] = f"error: {e}"
+            log(f"task {t['kind']} {t['skill']}: ERROR {type(e).__name__}: {str(e)[:160]}")
         t["finished"] = datetime.datetime.now().isoformat(timespec="minutes")
         done += 1
     TASKS_FILE.write_text(json.dumps(tasks, indent=2))
@@ -1197,6 +1203,8 @@ def orchestrator_tick(max_events=6):
     """One heartbeat: run due watchers, turn system signals into events, dispatch events to agents."""
     # 1. watchers on their schedule
     for a in load_agents().values():
+        if time_left() < 300:
+            log("time budget reached; remaining agent work deferred to the next run"); return
         if a.enabled and _due(a):
             _safe_run(a.name, f"Scheduled run. Your job: {a.role}")
     # 2. demand signals -> events
@@ -1211,6 +1219,8 @@ def orchestrator_tick(max_events=6):
         _jsave(STATE_DIR / "last_review.json", {"ts": datetime.datetime.now().isoformat(timespec="minutes")})
     # 3. dispatch events to the agents that subscribe to them
     for ev in _pending(max_events):
+        if time_left() < 300:
+            log("time budget reached; remaining events deferred to the next run"); break
         handlers = [a for a in load_agents().values() if a.enabled and ev["type"] in a.triggers]
         if not handlers:
             already = any(e["type"] == "agent.needed" and e["payload"].get("event_type") == ev["type"]
