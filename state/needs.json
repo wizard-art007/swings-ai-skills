@@ -78,13 +78,38 @@
         "from": "searching",
         "to": "building",
         "why": "tool task queued on yizhiyanhua-ai-fireworks-tech-graph"
+      },
+      {
+        "ts": "2026-11-26T19:52",
+        "from": "building",
+        "to": "verifying",
+        "why": "tool task failed"
+      },
+      {
+        "ts": "2026-11-26T19:52",
+        "from": "verifying",
+        "to": "open",
+        "why": "tool task failed"
+      },
+      {
+        "ts": "2026-11-26T19:52",
+        "from": "open",
+        "to": "searching",
+        "why": "tool scripts/diagram_helper.py"
+      },
+      {
+        "ts": "2026-11-26T19:52",
+        "from": "searching",
+        "to": "building",
+        "why": "tool task queued on yizhiyanhua-ai-fireworks-tech-graph"
       }
     ],
-    "updated": "2026-11-26T19:38",
+    "updated": "2026-11-26T19:52",
     "skill": "yizhiyanhua-ai-fireworks-tech-graph",
     "module": "diagram_helper",
-    "tries": 1,
+    "tries": 2,
     "failures": [
+      "tool task failed",
       "tool task failed"
     ]
   },
@@ -253,7 +278,7 @@
     ],
     "action": "Implement and verify the agent prompt router capability.",
     "priority": 2.0,
-    "status": "building",
+    "status": "closed",
     "source": "self_review",
     "ts": "2026-11-26T18:11",
     "log": [
@@ -268,9 +293,21 @@
         "from": "searching",
         "to": "building",
         "why": "tool task queued on deepset-ai-haystack"
+      },
+      {
+        "ts": "2026-11-26T19:52",
+        "from": "building",
+        "to": "verifying",
+        "why": "tool task done"
+      },
+      {
+        "ts": "2026-11-26T19:52",
+        "from": "verifying",
+        "to": "closed",
+        "why": "capability check passes"
       }
     ],
-    "updated": "2026-11-26T19:47",
+    "updated": "2026-11-26T19:52",
     "queries": [
       "ai agent prompt router",
       "llm router semantic routing agent",
@@ -286,7 +323,9 @@
       "need_fit": 0.048
     },
     "skill": "deepset-ai-haystack",
-    "module": "agent_prompt_router"
+    "module": "agent_prompt_router",
+    "closed": "2026-11-26T19:52",
+    "closed_by": "capability check passes"
   },
   {
     "id": "d3d569f1",

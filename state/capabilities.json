@@ -174,11 +174,12 @@
     "description": "Classify incoming agent user queries and route them to specialized sub-agent prompts.",
     "check": "from captools import load_tool\n\ndef test_agent_prompt_router():\n    m = load_tool('*', 'agent_prompt_router')\n    result = m.route_prompt(\"Debug this Python segmentation fault error in async code.\")\n    assert isinstance(result, dict)\n    assert \"agent_type\" in result\n    assert result[\"agent_type\"] in [\"coding\", \"debugging\", \"general\"]\n",
     "history": [
-      false
+      false,
+      true
     ],
-    "status": "missing",
+    "status": "strong",
     "created": "2026-11-26",
-    "checked": "2026-11-26T18:10",
+    "checked": "2026-11-26T19:52",
     "weak_skills": []
   },
   {

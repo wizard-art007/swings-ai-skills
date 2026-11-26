@@ -1,6 +1,10 @@
 {
   "yizhiyanhua-ai-fireworks-tech-graph": {
-    "used": 1,
+    "used": 2,
     "success": 0
+  },
+  "deepset-ai-haystack": {
+    "used": 1,
+    "success": 1
   }
 }

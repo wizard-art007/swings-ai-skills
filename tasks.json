@@ -304,25 +304,46 @@
     "kind": "write_tool",
     "skill": "yizhiyanhua-ai-fireworks-tech-graph",
     "goal": "close need: Broken Tech Graph Mermaid Capability [need ef20a2aa]",
-    "status": "todo",
+    "status": "failed",
     "queued": "2026-11-26T19:38",
     "need": "ef20a2aa",
-    "priority": 2.33
+    "priority": 2.33,
+    "value": 1627.804,
+    "finished": "2026-11-26T19:52",
+    "minutes": 4.99,
+    "estimate": 0.5
   },
   {
     "kind": "write_tool",
     "skill": "deepset-ai-haystack",
     "goal": "close need: Missing AI Agent Prompt Router [need e747bf71]",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-26T19:47",
     "need": "e747bf71",
-    "priority": 2.0
+    "priority": 2.0,
+    "value": 1307.175,
+    "finished": "2026-11-26T19:52",
+    "minutes": 0.03,
+    "estimate": 0.5
   },
   {
     "kind": "improve_doc",
     "skill": "deepset-ai-haystack",
     "goal": "",
+    "status": "done",
+    "queued": "2026-11-26T19:47",
+    "value": 653.588,
+    "finished": "2026-11-26T19:52",
+    "minutes": 0.04,
+    "estimate": 4.0
+  },
+  {
+    "kind": "write_tool",
+    "skill": "yizhiyanhua-ai-fireworks-tech-graph",
+    "goal": "close need: Broken Tech Graph Mermaid Capability [need ef20a2aa]",
     "status": "todo",
-    "queued": "2026-11-26T19:47"
+    "queued": "2026-11-26T19:52",
+    "need": "ef20a2aa",
+    "priority": 2.33
   }
 ]
