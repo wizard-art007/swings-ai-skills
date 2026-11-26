@@ -4,3 +4,4 @@ outputs/
 __pycache__/
 .skill_repos/
 .pytest_cache/
+.private_logs/
