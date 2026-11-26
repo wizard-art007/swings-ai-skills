@@ -1,3 +1,4 @@
 - 2026-11-26: Trend: Audio DSP algorithms and OS-level features (like loudness equalization) continue to see active reverse-engineering and open-source porting to modern Linux audio stacks (PipeWire).
 - 2026-11-26: Rising trend in extreme low-level LLM implementations (bare-metal OS / assembly-level execution) exploring minimal inference overhead outside conventional ML runtimes.
 - 2026-11-26: Growing community interest in reverse-engineering and emulation compatibility layers for modern console architectures (Xbox Series / Windows PC translation layers).
+- 2026-11-26: Trend: Growing interest in open-source AI API routing alternatives (like Moat) and privacy-focused local developer tooling for personal finance and notifications.

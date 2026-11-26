@@ -179,5 +179,39 @@
     "source": "agent",
     "status": "done",
     "ts": "2026-11-26T04:45:22"
+  },
+  {
+    "id": "ae69b2904d",
+    "type": "idea.found",
+    "payload": {
+      "title": "Moat: OpenRouter Replacement",
+      "description": "An open-source alternative or replacement for routing LLM requests.",
+      "source_url": "https://commandcode.ai/moat"
+    },
+    "source": "agent",
+    "status": "running",
+    "ts": "2026-11-26T13:41:26"
+  },
+  {
+    "id": "3e2ecb6f4a",
+    "type": "idea.found",
+    "payload": {
+      "title": "iPhone SMS Expense Parser",
+      "description": "A script or local parser concept to categorize bank SMS/notification texts for expense tracking.",
+      "source_url": "https://dev.to/appgenie_aedb1276a9658ec2/how-i-log-bank-sms-expenses-on-iphone-when-apps-cant-read-sms-4jgo"
+    },
+    "source": "agent",
+    "status": "new",
+    "ts": "2026-11-26T13:46:43"
+  },
+  {
+    "id": "f4201f4e7b",
+    "type": "tasks.pending",
+    "payload": {
+      "count": 3
+    },
+    "source": "system",
+    "status": "new",
+    "ts": "2026-11-26T13:49:13"
   }
 ]
