@@ -98,5 +98,17 @@
       "tests/test_agent_loop.py",
       "src/agent_loop.py"
     ]
+  },
+  "net-race-condition-detector-simulator": {
+    "title": ".NET Race Condition Detector Simulator",
+    "description": "A small offline Python script simulating common concurrency hazards like lost updates and TOCTOU in a multi-threaded task queue.",
+    "source_url": "https://dev.to/kirandeepjassalcrypto/7-race-conditions-that-shipped-to-net-production-lost-updates-toctou-dbcontext-threading--3l7e",
+    "status": "passed",
+    "created": "2026-11-26T16:50",
+    "files": [
+      "README.md",
+      "tests/test_race_simulator.py",
+      "src/race_simulator.py"
+    ]
   }
 }
