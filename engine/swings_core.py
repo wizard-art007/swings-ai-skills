@@ -660,6 +660,11 @@ def run_task_queue(limit=3):
         done += 1
     TASKS_FILE.write_text(json.dumps(tasks, indent=2))
 
+def tool_goal_for(name, skill):
+    """What kind of tool to write for a skill (Cell 27 makes this depend on the skill's domain)."""
+    return ("a helper that turns a short text description into this skill's diagram source "
+            "(e.g. PlantUML/Mermaid) and can render it via Kroki")
+
 MAX_TASK_RETRIES = 3   # a failed/errored task is queued again up to this many times
 
 def autopilot_plan(max_retries=MAX_TASK_RETRIES):
@@ -681,8 +686,7 @@ def autopilot_plan(max_retries=MAX_TASK_RETRIES):
         return True
     for name, s in load_registry().items():
         if not any(Path(s["path"], "scripts").glob("*.py")) and wanted("write_tool", name):
-            add_task("write_tool", name, "a helper that turns a short text description into this "
-                     "skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki")
+            add_task("write_tool", name, tool_goal_for(name, s))
         if "## How to use" not in Path(s["path"], "SKILL.md").read_text() and wanted("improve_doc", name):
             add_task("improve_doc", name)
 
@@ -1532,7 +1536,8 @@ def _update_issues():
             continue
         it = issues.setdefault(fp, {"first": rec["ts"], "count": 0, "runs": [], "status": "open", "attempts": 0})
         it.update(last=rec["ts"], component=rec["component"], msg=rec["msg"][:400],
-                  function=rec["data"].get("function"), traceback=rec["data"].get("traceback", "")[-3000:])
+                  function=rec["data"].get("function"), line=rec["data"].get("line"),
+                  traceback=rec["data"].get("traceback", "")[-3000:])
         it["count"] += 1
         if rec["run"] not in it["runs"]:
             it["runs"] = (it["runs"] + [rec["run"]])[-20:]
@@ -1564,8 +1569,8 @@ def finish_run_log(status="ok"):
     return summary
 
 # ---- self-healing ----------------------------------------------------------------------
-def _function_source(src, name):
-    """(start, end, text) of a top-level function or class method called `name` in the engine."""
+def _function_source(src, name, line=None):
+    """(start, end, text) of the function called `name` that contains `line` (else the last, live one)."""
     tree = ast.parse(src)
     lines = src.splitlines(True)
     hits = []
@@ -1573,6 +1578,9 @@ def _function_source(src, name):
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == name:
             start = (node.decorator_list[0].lineno if node.decorator_list else node.lineno) - 1
             hits.append((start, node.end_lineno, "".join(lines[start:node.end_lineno])))
+    for h in hits:
+        if line and h[0] < line <= h[1]:
+            return h
     return hits[-1] if hits else None     # the last definition is the live one
 
 def _replace_function(src, old_text, new_text):
@@ -1634,7 +1642,7 @@ HEAL_BLOCK = re.compile(r"###\s*(?P<kind>FUNCTION|TEST)[^\n]*\n```[\w+-]*\n(?P<b
 def _heal_one(fp, issue):
     src = ENGINE_FILE.read_text(encoding="utf-8")
     name = issue.get("function")
-    found = _function_source(src, name) if name else None
+    found = _function_source(src, name, issue.get("line")) if name else None
     if not found:
         return "skip", f"function {name} not found in engine"
     _, _, old = found
@@ -2172,3 +2180,36 @@ def _upgrade_evolver():
         save_agent(a)
         commit_skills("evolver can tune repo-scoring weights")
 _upgrade_evolver()
+
+
+# ---- tools that fit each domain ------------------------------------------------------
+DOMAIN_TOOL_GOALS = {
+    "diagrams": ("a helper that turns a short text description into this skill's diagram source "
+                 "(e.g. PlantUML/Mermaid) and can render it via Kroki"),
+    "ai_agents": ("a small offline Python helper that captures this project's core technique (for example an agent "
+                  "loop, tool calling, planning, memory or a prompt pattern) and applies it to a toy task; the tests "
+                  "must use a fake LLM function and no network"),
+    "qa_testing": ("a small offline Python helper that applies this project's testing approach (for example test-case "
+                   "generation, fluent assertions, retries and waits, page-object or fixture patterns) to a sample "
+                   "function or spec, with pytest tests"),
+}
+
+def tool_goal_for(name, skill):
+    return DOMAIN_TOOL_GOALS.get(skill.get("domain") or "diagrams", DOMAIN_TOOL_GOALS["diagrams"])
+
+def _retool_mismatched_skills():
+    """Non-diagram skills that only ever got a diagram helper get one fitting tool task (once)."""
+    tasks = _jload(TASKS_FILE, [])
+    for name, s in load_registry().items():
+        dom = s.get("domain") or "diagrams"
+        mine = [t for t in tasks if t.get("skill") == name and t.get("kind") == "write_tool"]
+        if dom != "diagrams" and mine and all("diagram source" in t.get("goal", "") for t in mine):
+            add_task("write_tool", name, tool_goal_for(name, s))
+            log(f"plan: {name} ({dom}) gets a {dom} tool instead of a diagram helper")
+
+if "_plan_without_retool" not in globals():
+    _plan_without_retool = autopilot_plan
+def _plan_with_retool(*a, **kw):
+    _retool_mismatched_skills()
+    return _plan_without_retool(*a, **kw)
+autopilot_plan = _plan_with_retool
