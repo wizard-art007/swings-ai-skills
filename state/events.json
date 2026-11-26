@@ -112,7 +112,7 @@
       "source_url": "https://github.com/alesha-pro/llm.asm/tree/main/02-baremetal-os"
     },
     "source": "agent",
-    "status": "running",
+    "status": "done",
     "ts": "2026-11-26T04:32:47"
   },
   {
@@ -124,7 +124,7 @@
       "title": "Thermodynamic Radiator Dynamics & PID Controller Simulator"
     },
     "source": "agent",
-    "status": "new",
+    "status": "running",
     "ts": "2026-11-26T04:33:07"
   },
   {
@@ -159,5 +159,15 @@
     "source": "system",
     "status": "new",
     "ts": "2026-11-26T04:37:45"
+  },
+  {
+    "id": "5a46860601",
+    "type": "experiment.ready",
+    "payload": {
+      "slug": "minimal-pure-python-quantized-attention-"
+    },
+    "source": "agent",
+    "status": "new",
+    "ts": "2026-11-26T04:41:53"
   }
 ]
