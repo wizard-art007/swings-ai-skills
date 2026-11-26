@@ -167,7 +167,7 @@
       "slug": "minimal-pure-python-quantized-attention-"
     },
     "source": "agent",
-    "status": "running",
+    "status": "done",
     "ts": "2026-11-26T04:41:53"
   },
   {
@@ -177,7 +177,7 @@
       "slug": "thermodynamic-radiator-dynamics-pid-cont"
     },
     "source": "agent",
-    "status": "new",
+    "status": "done",
     "ts": "2026-11-26T04:45:22"
   }
 ]
