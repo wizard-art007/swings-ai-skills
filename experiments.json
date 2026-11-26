@@ -52,5 +52,19 @@
       "tests/test_thermo_sim.py",
       "src/thermo_sim.py"
     ]
+  },
+  "moat-openrouter-replacement": {
+    "title": "Moat: OpenRouter Replacement",
+    "description": "An open-source alternative or replacement for routing LLM requests.",
+    "source_url": "https://commandcode.ai/moat",
+    "status": "passed",
+    "created": "2026-11-26T13:49",
+    "files": [
+      "README.md",
+      "tests/test_moat.py",
+      "src/moat/__init__.py",
+      "src/moat/server.py",
+      "src/moat/router.py"
+    ]
   }
 }
