@@ -3,6 +3,7 @@
     "kind": "write_tool",
     "skill": "plantuml-plantuml",
     "goal": "Create a tool that parses Python class definitions using ast and converts them into PlantUML class diagram syntax",
-    "status": "todo"
+    "status": "done",
+    "finished": "2026-11-26T01:12"
   }
 ]
