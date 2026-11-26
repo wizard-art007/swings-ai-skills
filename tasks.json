@@ -131,5 +131,41 @@
     "goal": "",
     "status": "done",
     "finished": "2026-11-26T04:28"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "plantuml-stdlib-c4-plantuml",
+    "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
+    "status": "todo"
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "plantuml-stdlib-c4-plantuml",
+    "goal": "",
+    "status": "todo"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "purocean-yn",
+    "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
+    "status": "todo"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "ahmadhassan-bted-openheart",
+    "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
+    "status": "todo"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "yuzutech-kroki",
+    "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
+    "status": "todo"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "k1low-tbls",
+    "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
+    "status": "todo"
   }
 ]
