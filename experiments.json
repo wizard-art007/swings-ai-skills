@@ -26,5 +26,17 @@
     ],
     "repo_url": "https://github.com/wizard-art007/swings-exp-algorithmic-integer-factorization-discre",
     "published": "2026-11-26T01:26"
+  },
+  "minimal-pure-python-quantized-attention-": {
+    "title": "Minimal Pure-Python Quantized Attention & Generation Kernel",
+    "description": "Offline, zero-dependency pure Python implementation of minimal 4-bit/8-bit quantized matrix-vector multiplication and single-layer causal self-attention inspired by bare-metal LLM implementations.",
+    "source_url": "https://github.com/alesha-pro/llm.asm/tree/main/02-baremetal-os",
+    "status": "passed",
+    "created": "2026-11-26T04:41",
+    "files": [
+      "README.md",
+      "tests/test_attention.py",
+      "src/quantized_attention.py"
+    ]
   }
 }
