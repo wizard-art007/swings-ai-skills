@@ -1,14 +1,15 @@
 {
   "2026-11-26": {
-    "calls": 13,
+    "calls": 16,
     "errors": 1,
     "overloads": 1,
     "cache_hits": 0,
-    "seconds": 363.5,
+    "seconds": 367.3,
     "by_purpose": {
       "write_tool": 1,
       "self_review": 5,
-      "agent:evolver": 7
+      "agent:evolver": 7,
+      "need_scout": 3
     }
   }
 }

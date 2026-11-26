@@ -286,5 +286,14 @@
     "goal": "a small offline Python helper that applies this project's testing approach (for example test-case generation, fluent assertions, retries and waits, page-object or fixture patterns) to a sample function or spec, with pytest tests",
     "status": "done",
     "finished": "2026-11-26T16:26"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "yizhiyanhua-ai-fireworks-tech-graph",
+    "goal": "close need: Broken Tech Graph Mermaid Capability [need ef20a2aa]",
+    "status": "todo",
+    "queued": "2026-11-26T19:38",
+    "need": "ef20a2aa",
+    "priority": 2.33
   }
 ]

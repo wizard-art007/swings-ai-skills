@@ -13,9 +13,19 @@
     ],
     "action": "Update maintainer model configurations away from deprecated or overloaded endpoints.",
     "priority": 4.5,
-    "status": "open",
+    "status": "parked",
     "source": "self_review",
-    "ts": "2026-11-26T18:11"
+    "ts": "2026-11-26T18:11",
+    "tries": 3,
+    "log": [
+      {
+        "ts": "2026-11-26T19:38",
+        "from": "open",
+        "to": "parked",
+        "why": "not a tool"
+      }
+    ],
+    "updated": "2026-11-26T19:38"
   },
   {
     "id": "ef20a2aa",
@@ -29,9 +39,26 @@
     ],
     "action": "Fix implementation or test for diagrams-tech-graph-mermaid.",
     "priority": 4.0,
-    "status": "open",
+    "status": "building",
     "source": "self_review",
-    "ts": "2026-11-26T18:11"
+    "ts": "2026-11-26T18:11",
+    "log": [
+      {
+        "ts": "2026-11-26T19:38",
+        "from": "open",
+        "to": "searching",
+        "why": "tool scripts/diagram_helper.py"
+      },
+      {
+        "ts": "2026-11-26T19:38",
+        "from": "searching",
+        "to": "building",
+        "why": "tool task queued on yizhiyanhua-ai-fireworks-tech-graph"
+      }
+    ],
+    "updated": "2026-11-26T19:38",
+    "skill": "yizhiyanhua-ai-fireworks-tech-graph",
+    "module": "diagram_helper"
   },
   {
     "id": "8e0b4e27",
@@ -50,7 +77,22 @@
     "status": "open",
     "source": "self_review",
     "ts": "2026-11-26T18:11",
-    "updated": "2026-11-26T18:50"
+    "updated": "2026-11-26T19:38",
+    "log": [
+      {
+        "ts": "2026-11-26T19:38",
+        "from": "open",
+        "to": "searching",
+        "why": "tool scripts/llm_token_budget_estimator.py"
+      },
+      {
+        "ts": "2026-11-26T19:38",
+        "from": "searching",
+        "to": "open",
+        "why": "no repo passes the hard rules"
+      }
+    ],
+    "tries": 1
   },
   {
     "id": "b5c81ace",
@@ -66,9 +108,19 @@
     ],
     "action": "Adjust publisher daily repository limit or queue publications across multiple days.",
     "priority": 4.0,
-    "status": "open",
+    "status": "parked",
     "source": "self_review",
-    "ts": "2026-11-26T18:11"
+    "ts": "2026-11-26T18:11",
+    "tries": 3,
+    "log": [
+      {
+        "ts": "2026-11-26T19:38",
+        "from": "open",
+        "to": "parked",
+        "why": "not a tool"
+      }
+    ],
+    "updated": "2026-11-26T19:38"
   },
   {
     "id": "b3e3c2b0",

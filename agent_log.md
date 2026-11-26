@@ -120,3 +120,9 @@
 - 2026-11-26 18:38 — agent evolver v1: OK — Emitted agent.needed events for missing capabilities and recurring test failures across multiple modules.
 - 2026-11-26 18:50 — events: 5 agent request(s) without a real event type became needs (2 new)
 - 2026-11-26 18:50 — needs: 8 need(s) re-typed to external (their capability is missing or weak)
+- 2026-11-26 19:38 — need f1c410f5: open -> parked (not a tool)
+- 2026-11-26 19:38 — need ef20a2aa: open -> searching (tool scripts/diagram_helper.py)
+- 2026-11-26 19:38 — need ef20a2aa: searching -> building (tool task queued on yizhiyanhua-ai-fireworks-tech-graph)
+- 2026-11-26 19:38 — need 8e0b4e27: open -> searching (tool scripts/llm_token_budget_estimator.py)
+- 2026-11-26 19:38 — need 8e0b4e27: searching -> open (no repo passes the hard rules)
+- 2026-11-26 19:38 — need b5c81ace: open -> parked (not a tool)
