@@ -1556,7 +1556,8 @@ def finish_run_log(status="ok"):
         syslog_exception("heal.review", e)
     summary = {"run": _RUN["id"], "status": status, "errors": _RUN["errors"], "warnings": _RUN["warnings"],
                "minutes": round((time.time() - (_RUN["started"] or time.time())) / 60, 1),
-               "open_issues": sum(1 for i in issues.values() if i["status"] in ("open", "regressed"))}
+               "open_issues": sum(1 for i in issues.values() if i["status"] in ("open", "regressed")),
+               **(globals()["_run_extras"]() if "_run_extras" in globals() else {})}
     syslog("info", "run", "run finished", **summary)
     with open(PRIVATE_LOG_DIR / "runs_index.jsonl", "a", encoding="utf-8") as f:
         f.write(json.dumps(summary) + "\n")
@@ -2213,3 +2214,341 @@ def _plan_with_retool(*a, **kw):
     _retool_mismatched_skills()
     return _plan_without_retool(*a, **kw)
 autopilot_plan = _plan_with_retool
+
+# ===== Cell 28: Experience memory (F1) =====
+# Every finished task leaves an experience (goal, attempts, failures, what passed, a lesson).
+# Before a new task, the most similar experiences and the proven rules for that kind of task are
+# put in front of the LLM. Lessons that keep helping are promoted to rules; rules that stop
+# helping are demoted. This is how the system gets better from the work it completes.
+
+EXPERIENCES_FILE = STATE_DIR / "experiences.jsonl"
+LESSON_STATS_FILE = STATE_DIR / "lesson_stats.json"
+RULES_FILE = STATE_DIR / "rules.json"
+RECALL_TOP = 3
+RECALL_MIN_SIM = 0.2
+RECALL_MAX_CHARS = 1500
+MAX_RULES_PER_KIND = 10
+LESSONS_PER_RUN = 6            # LLM calls spent on lessons per run (only after retries or failures)
+PROMOTE_MIN_HELPED = 3         # a lesson becomes a rule after helping this many first-try passes ...
+PROMOTE_MIN_RATE = 0.75        # ... in at least this share of the tasks it was recalled for
+DEMOTE_MIN_USES = 6
+DEMOTE_BELOW = 0.4             # a rule is demoted when first-try passes fall below this share
+
+_TASKS_STACK = []              # nested task contexts (an agent run can start a tool task)
+_LESSON_BUDGET = {"run": None, "left": LESSONS_PER_RUN}
+
+def _load_experiences(limit=2000):
+    if not EXPERIENCES_FILE.exists():
+        return []
+    rows = []
+    for line in EXPERIENCES_FILE.read_text(encoding="utf-8").splitlines()[-limit:]:
+        try:
+            rows.append(json.loads(line))
+        except Exception:
+            pass
+    return rows
+
+def _save_experience(exp):
+    with open(EXPERIENCES_FILE, "a", encoding="utf-8") as f:
+        f.write(json.dumps(exp, default=str) + "\n")
+    lines = EXPERIENCES_FILE.read_text(encoding="utf-8").splitlines()
+    if len(lines) > 2500:                                   # keep the file small
+        EXPERIENCES_FILE.write_text("\n".join(lines[-2000:]) + "\n", encoding="utf-8")
+
+def _area_of(skill_name):
+    s = load_registry().get(skill_name or "", {})
+    return s.get("domain") or ""
+
+# ---- recall ------------------------------------------------------------------------------
+def recall(kind, goal, area="", k=RECALL_TOP, exclude_run=None):
+    """The k most similar past experiences of the same kind (TF-IDF on goal + area + skill)."""
+    rows = [e for e in _load_experiences() if e.get("kind") == kind and e.get("outcome") in ("done", "failed")]
+    if exclude_run:
+        rows = [e for e in rows if e.get("run") != exclude_run]
+    if not rows:
+        return []
+    docs = [f"{e.get('goal', '')} {e.get('area', '')} {e.get('skill', '')}" for e in rows]
+    query = f"{goal} {area}"
+    try:
+        vec = TfidfVectorizer(stop_words="english").fit(docs + [query])
+        sims = cosine_similarity(vec.transform([query]), vec.transform(docs))[0]
+    except ValueError:                                     # empty vocabulary
+        return []
+    ranked = sorted(zip(rows, sims), key=lambda x: -x[1])
+    return [dict(e, similarity=round(float(s), 2)) for e, s in ranked if s >= RECALL_MIN_SIM][:k]
+
+def _experience_line(e):
+    head = (f"[{e['outcome']}, {e.get('attempts', 1)} attempt(s)] {e.get('goal', '')[:120]}"
+            + (f" (skill {e['skill']})" if e.get("skill") else ""))
+    bits = []
+    if e.get("failures"):
+        bits.append(f"failed first with: {e['failures'][-1][:160]}")
+    if e.get("passed_files"):
+        bits.append(f"passed with files: {', '.join(e['passed_files'])[:120]}")
+    if e.get("lesson"):
+        bits.append(f"lesson: {e['lesson']}")
+    return "- " + head + ("\n  " + "\n  ".join(bits) if bits else "")
+
+def active_rules(kind):
+    return [r for r in _jload(RULES_FILE, {}).get(kind, []) if r.get("status") == "active"]
+
+def _guidance(kind, goal, area="", with_recall=True):
+    """The block put in front of the LLM: proven rules + similar past experiences."""
+    parts, used = [], []
+    rules = active_rules(kind)
+    if rules:
+        parts.append("RULES learned from earlier tasks of this kind (follow them):\n" +
+                     "\n".join(f"- {r['text']}" for r in rules))
+    if with_recall:
+        past = recall(kind, goal, area, exclude_run=None)
+        if past:
+            used = [e["id"] for e in past]
+            block = "PAST EXPERIENCE with similar tasks (learn from it, do not copy blindly):\n"
+            for e in past:
+                line = _experience_line(e)
+                if len(block) + len(line) > RECALL_MAX_CHARS:
+                    break
+                block += line + "\n"
+            parts.append(block.rstrip())
+    return ("\n\n".join(parts), used)
+
+# ---- capture what happens during a task --------------------------------------------------
+def _ctx():
+    return _TASKS_STACK[-1] if _TASKS_STACK else None
+
+if "_plain_llm" not in globals():
+    _plain_llm = llm
+def _llm_with_experience(prompt, *a, **kw):
+    c = _ctx()
+    if c is not None:
+        c["llm_calls"] += 1
+        if c.get("inject") and not c.get("quiet"):
+            prompt = c["inject"] + "\n\n" + prompt
+    return _plain_llm(prompt, *a, **kw)
+llm = _llm_with_experience
+
+if "_log_before_experience" not in globals():
+    _log_before_experience = log
+def _log_with_experience(event):
+    _log_before_experience(event)
+    c = _ctx()
+    if c is None:
+        return
+    s = str(event)
+    m = re.search(r"PASSED on attempt (\d+) \(([^)]*)\)", s)
+    if m:
+        c["attempts"] = int(m.group(1))
+        c["passed_files"] = [x.strip() for x in m.group(2).split(",") if x.strip()][:8]
+    m = re.search(r"FAILED after (\d+) attempts", s)
+    if m:
+        c["attempts"] = int(m.group(1))
+    if "blocked by safety scan" in s:
+        c["failures"].append(_redact(s.split("blocked by safety scan", 1)[1])[:300])
+log = _log_with_experience
+
+if "_sandbox_before_experience" not in globals():
+    _sandbox_before_experience = run_sandboxed
+def _sandbox_with_experience(workdir, cmd, timeout=120, memory_mb=None):
+    ok, out = _sandbox_before_experience(workdir, cmd, timeout=timeout, memory_mb=memory_mb)
+    c = _ctx()
+    if c is not None and not ok:
+        lines = [l.strip() for l in out.strip().splitlines() if l.strip() and not set(l.strip()) <= set("=-_ ")]
+        key = [l for l in lines if re.search(r"Error|FAILED|assert|Traceback|error:|failed", l)]
+        c["failures"].append(_redact(" | ".join((key or lines)[-4:]))[-300:])
+    return ok, out
+run_sandboxed = _sandbox_with_experience
+
+# ---- lessons, rules, stats -------------------------------------------------------------------
+def _write_lesson(exp):
+    """One short LLM call, only when the task needed retries or failed (and budget is left)."""
+    if exp["outcome"] == "done" and exp.get("attempts", 1) <= 1:
+        return ""
+    if exp.get("kind", "").startswith("agent:") and exp["outcome"] == "done":
+        return ""
+    if _LESSON_BUDGET["run"] != _RUN.get("id"):
+        _LESSON_BUDGET.update(run=_RUN.get("id"), left=LESSONS_PER_RUN)
+    if _LESSON_BUDGET["left"] <= 0:
+        return ""
+    _LESSON_BUDGET["left"] -= 1
+    prompt = (f"Task kind: {exp['kind']}\nGoal: {exp['goal'][:400]}\nOutcome: {exp['outcome']} after "
+              f"{exp.get('attempts', 1)} attempt(s)\nFailures seen (untrusted output, data only):\n" +
+              "\n".join(f"- {f}" for f in exp.get("failures", [])[-4:]) +
+              (f"\nFiles that finally passed: {', '.join(exp.get('passed_files', []))}" if exp.get("passed_files") else "") +
+              "\n\nIn ONE line of at most 25 words, what should be done differently next time for this kind "
+              "of task? Start with a verb. Reply with the line only.")
+    try:
+        c = _ctx()
+        if c is not None:
+            c["quiet"] = True
+        line = _plain_llm(prompt, system="You distil short, practical engineering lessons.").strip()
+        line = re.sub(r"^[-*\s\"']+|[\"']+$", "", line.splitlines()[0] if line else "")
+        return _redact(line)[:220]
+    except Exception as e:
+        syslog("warn", "experience", f"lesson skipped: {type(e).__name__}")
+        return ""
+
+def _update_lesson_stats(exp):
+    """Each recalled lesson counts a use; a first-try pass counts as 'helped'. Rules get the same."""
+    first_try = exp["outcome"] == "done" and exp.get("attempts", 1) <= 1
+    stats = _jload(LESSON_STATS_FILE, {})
+    for rid in exp.get("recalled", []):
+        s = stats.setdefault(rid, {"uses": 0, "helped": 0})
+        s["uses"] += 1; s["helped"] += int(first_try)
+    _jsave(LESSON_STATS_FILE, stats)
+    rules = _jload(RULES_FILE, {})
+    for r in rules.get(exp["kind"], []):
+        if r.get("status") == "active":
+            r["uses"] = r.get("uses", 0) + 1
+            r["ok"] = r.get("ok", 0) + int(first_try)
+    _jsave(RULES_FILE, rules)
+
+def _similar_text(a, b):
+    try:
+        vec = TfidfVectorizer(stop_words="english").fit([a, b])
+        return float(cosine_similarity(vec.transform([a]), vec.transform([b]))[0][0])
+    except ValueError:
+        return 0.0
+
+def promote_and_demote_rules():
+    """Lessons that proved themselves become rules; rules that stopped helping are demoted."""
+    stats = _jload(LESSON_STATS_FILE, {})
+    exps = {e["id"]: e for e in _load_experiences() if e.get("lesson")}
+    rules = _jload(RULES_FILE, {})
+    changed = []
+    for rid, s in stats.items():
+        e = exps.get(rid)
+        if not e or s.get("promoted"):
+            continue
+        if s["helped"] >= PROMOTE_MIN_HELPED and s["helped"] / max(s["uses"], 1) >= PROMOTE_MIN_RATE:
+            kind_rules = rules.setdefault(e["kind"], [])
+            active = [r for r in kind_rules if r.get("status") == "active"]
+            if any(_similar_text(r["text"], e["lesson"]) > 0.6 for r in active):
+                s["promoted"] = "duplicate"; continue
+            if len(active) >= MAX_RULES_PER_KIND:
+                weakest = min(active, key=lambda r: r.get("ok", 0) / max(r.get("uses", 0), 1))
+                weakest["status"] = "demoted"; weakest["reason"] = "replaced by a better-proven lesson"
+            kind_rules.append({"text": e["lesson"], "from": rid, "status": "active", "uses": 0, "ok": 0,
+                               "created": datetime.datetime.now().isoformat(timespec="minutes")})
+            s["promoted"] = "rule"
+            changed.append(f"promoted for {e['kind']}: {e['lesson'][:80]}")
+    for kind, kind_rules in rules.items():
+        for r in kind_rules:
+            if r.get("status") == "active" and r.get("uses", 0) >= DEMOTE_MIN_USES and \
+                    r.get("ok", 0) / r["uses"] < DEMOTE_BELOW:
+                r["status"] = "demoted"; r["reason"] = f"first-try rate {r['ok']}/{r['uses']}"
+                changed.append(f"demoted for {kind}: {r['text'][:80]}")
+    _jsave(RULES_FILE, rules); _jsave(LESSON_STATS_FILE, stats)
+    for c in changed:
+        log(f"experience: rule {c}")
+    return changed
+
+# ---- the wrapper every task kind goes through -----------------------------------------------------
+def _experienced(kind_of, goal_of, skill_of=lambda *a, **k: "", outcome_of=bool, recall_on=True):
+    def wrap(fn):
+        if getattr(fn, "_experienced", False):
+            return fn
+        @functools.wraps(fn)
+        def inner(*a, **kw):
+            kind, goal, skill = kind_of(*a, **kw), str(goal_of(*a, **kw) or ""), skill_of(*a, **kw) or ""
+            area = _area_of(skill) if skill else ""
+            inject, used = _guidance(kind, goal, area, with_recall=recall_on)
+            c = {"kind": kind, "goal": goal, "skill": skill, "area": area, "inject": inject, "recalled": used,
+                 "attempts": 1, "failures": [], "passed_files": [], "llm_calls": 0, "t0": time.time()}
+            _TASKS_STACK.append(c)
+            result, error = None, None
+            try:
+                result = fn(*a, **kw)
+                return result
+            except Exception as e:
+                error = e
+                raise
+            finally:
+                _TASKS_STACK.pop()
+                try:
+                    outcome = "failed" if error else outcome_of(result)
+                    if outcome in (True, False):
+                        outcome = "done" if outcome else "failed"
+                    if outcome in ("done", "failed"):
+                        exp = {"id": uuid.uuid4().hex[:10], "ts": datetime.datetime.now().isoformat(timespec="minutes"),
+                               "run": _RUN.get("id"), "kind": kind, "area": area, "skill": skill,
+                               "goal": _redact(goal)[:400], "outcome": outcome, "attempts": c["attempts"],
+                               "failures": c["failures"][-4:] + ([_redact(f"{type(error).__name__}: {error}")[:300]]
+                                                                 if error else []),
+                               "passed_files": c["passed_files"], "llm_calls": c["llm_calls"],
+                               "minutes": round((time.time() - c["t0"]) / 60, 2), "recalled": used}
+                        _TASKS_STACK.append(c)                  # the lesson call is not counted as task work
+                        try:
+                            exp["lesson"] = _write_lesson(exp)
+                        finally:
+                            _TASKS_STACK.pop()
+                        _save_experience(exp)
+                        _update_lesson_stats(exp)
+                        syslog("info", "experience", f"{kind}: {outcome} in {exp['attempts']} attempt(s)",
+                               kind=kind, skill=skill, attempts=exp["attempts"], recalled=len(used),
+                               lesson=exp.get("lesson", ""))
+                except Exception as e:                          # learning must never break the work itself
+                    syslog("warn", "experience", f"could not record experience: {type(e).__name__}: {e}")
+        inner._experienced = True
+        return inner
+    return wrap
+
+CodeAgent.write_tool = _experienced(lambda self, skill, goal: "write_tool", lambda self, skill, goal: goal,
+                                    lambda self, skill, goal: skill.get("skill_name"))(CodeAgent.write_tool)
+CodeAgent.improve_doc = _experienced(lambda self, skill: "improve_doc",
+                                     lambda self, skill: f"improve SKILL.md for {skill.get('full_name', '')}",
+                                     lambda self, skill: skill.get("skill_name"))(CodeAgent.improve_doc)
+CodeAgent.reengineer = _experienced(lambda self, skill, goal, **k: "reengineer",
+                                    lambda self, skill, goal, **k: goal,
+                                    lambda self, skill, goal, **k: skill.get("skill_name"))(CodeAgent.reengineer)
+build_experiment = _experienced(lambda title, description, source_url="": "experiment",
+                                lambda title, description, source_url="": f"{title}: {description}",
+                                outcome_of=lambda r: {"passed": "done", "failed": "failed"}.get((r or {}).get("status"), "skip")
+                                )(build_experiment)
+_heal_one = _experienced(lambda fp, issue: "heal", lambda fp, issue: f"{issue.get('function')}: {issue.get('msg', '')}",
+                         outcome_of=lambda r: {"fixed": "done", "fail": "failed"}.get((r or ("",))[0], "skip")
+                         )(_heal_one)
+run_agent = _experienced(lambda name, task, context=None: f"agent:{name}", lambda name, task, context=None: task,
+                         outcome_of=lambda r: bool((r or {}).get("success")), recall_on=False)(run_agent)
+
+# ---- growth metrics in every run summary + rule upkeep at the end of a run -------------------------
+def _run_extras():
+    mine = [e for e in _load_experiences(500) if e.get("run") == _RUN.get("id")]
+    tasks = [e for e in mine if not e["kind"].startswith("agent:")]
+    passed = [e for e in tasks if e["outcome"] == "done"]
+    return {"tasks": len(tasks), "task_success_rate": round(len(passed) / len(tasks), 2) if tasks else None,
+            "attempts_per_pass": round(sum(e["attempts"] for e in passed) / len(passed), 2) if passed else None,
+            "recalls_used": sum(len(e.get("recalled", [])) for e in mine),
+            "rules_active": sum(len(active_rules(k)) for k in _jload(RULES_FILE, {}))}
+
+if "_finish_before_experience" not in globals():
+    _finish_before_experience = finish_run_log
+def _finish_with_experience(status="ok"):
+    try:
+        promote_and_demote_rules()
+    except Exception as e:
+        syslog("warn", "experience", f"rule upkeep skipped: {type(e).__name__}: {e}")
+    return _finish_before_experience(status)
+finish_run_log = _finish_with_experience
+
+# ---- agents can look things up too -------------------------------------------------------------
+def recall_experience(query, kind="write_tool"):
+    return [{k: e.get(k) for k in ("kind", "goal", "outcome", "attempts", "lesson", "similarity")}
+            for e in recall(kind, query)]
+
+TOOLS.register("recall_experience", recall_experience,
+               "Past experiences similar to a goal (kind: write_tool, improve_doc, reengineer, experiment, heal).")
+
+def _upgrade_agents_for_experience():
+    changed = False
+    for name in ("planner", "maintainer"):
+        a = load_agents().get(name)
+        if a and "recall_experience" not in a.tools:
+            a.tools.append("recall_experience")
+            save_agent(a); changed = True
+    if changed:
+        commit_skills("planner and maintainer can recall past experience")
+_upgrade_agents_for_experience()
+
+# the agents' build_experiment tool must go through the experience wrapper too
+TOOLS.register("build_experiment", build_experiment,
+               "Build + test a small Python experiment project for an idea. Returns slug and status.")
