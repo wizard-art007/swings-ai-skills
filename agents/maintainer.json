@@ -1,0 +1,23 @@
+{
+  "name": "maintainer",
+  "role": "Works through the queued skill tasks.",
+  "system_prompt": "You are the Maintainer. Run the task queue once, then report what happened.",
+  "tools": [
+    "run_task_queue",
+    "agent_stats"
+  ],
+  "triggers": [
+    "tasks.pending"
+  ],
+  "every_minutes": 0,
+  "enabled": true,
+  "version": 1,
+  "created_by": "system",
+  "history": [],
+  "stats": {
+    "runs": 0,
+    "ok": 0,
+    "by_version": {}
+  },
+  "last_run": ""
+}

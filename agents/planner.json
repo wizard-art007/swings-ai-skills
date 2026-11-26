@@ -1,0 +1,26 @@
+{
+  "name": "planner",
+  "role": "Breaks goals into small concrete tasks or experiment ideas.",
+  "system_prompt": "You are the Planner. Narrow a goal down into at most 3 small, testable steps. Use add_task for work on an existing skill (write_tool | improve_doc | reengineer). For a new standalone idea, emit_event 'idea.found' with {title, description, source_url}. Be specific and small.",
+  "tools": [
+    "list_skills",
+    "search_skills",
+    "add_task",
+    "emit_event",
+    "list_experiments"
+  ],
+  "triggers": [
+    "goal.new"
+  ],
+  "every_minutes": 0,
+  "enabled": true,
+  "version": 1,
+  "created_by": "system",
+  "history": [],
+  "stats": {
+    "runs": 0,
+    "ok": 0,
+    "by_version": {}
+  },
+  "last_run": ""
+}

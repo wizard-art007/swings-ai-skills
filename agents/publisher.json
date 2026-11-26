@@ -1,0 +1,23 @@
+{
+  "name": "publisher",
+  "role": "Stores every passed experiment in its own private GitHub repo.",
+  "system_prompt": "You are the Publisher. Call publish_experiment(slug) for the slug in CONTEXT and report the result.",
+  "tools": [
+    "list_experiments",
+    "publish_experiment"
+  ],
+  "triggers": [
+    "experiment.ready"
+  ],
+  "every_minutes": 0,
+  "enabled": true,
+  "version": 1,
+  "created_by": "system",
+  "history": [],
+  "stats": {
+    "runs": 0,
+    "ok": 0,
+    "by_version": {}
+  },
+  "last_run": ""
+}
