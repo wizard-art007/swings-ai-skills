@@ -56,7 +56,7 @@ SEARCH_QUERIES = [
     "topic:plantuml",
     "uml diagram in:name,description",
 ]
-MIN_STARS = 500
+MIN_STARS = 5000   # only well-established projects (was 500)
 MAX_RESULTS = 10          # how many repos to turn into skills
 CLONE_DEPTH = 1           # shallow clone = latest code only
 
@@ -660,14 +660,30 @@ def run_task_queue(limit=3):
         done += 1
     TASKS_FILE.write_text(json.dumps(tasks, indent=2))
 
-def autopilot_plan():
-    """The agent decides its own work: skills with no tools or thin docs get tasks."""
-    queued = {(t["kind"], t["skill"]) for t in (json.loads(TASKS_FILE.read_text()) if TASKS_FILE.exists() else [])}
+MAX_TASK_RETRIES = 3   # a failed/errored task is queued again up to this many times
+
+def autopilot_plan(max_retries=MAX_TASK_RETRIES):
+    """The agent decides its own work: skills with no tools or thin docs get tasks.
+    Failed or errored tasks are retried (up to max_retries) so one bad run never blocks a skill forever."""
+    tasks = json.loads(TASKS_FILE.read_text()) if TASKS_FILE.exists() else []
+    active = {(t["kind"], t["skill"]) for t in tasks if t["status"] in ("todo", "done")}
+    fails = {}
+    for t in tasks:
+        if t["status"] not in ("todo", "done") and not str(t["status"]).startswith("skipped"):
+            fails[(t["kind"], t["skill"])] = fails.get((t["kind"], t["skill"]), 0) + 1
+    def wanted(kind, name):
+        if (kind, name) in active:
+            return False
+        if fails.get((kind, name), 0) >= max_retries:
+            return False
+        if fails.get((kind, name)):
+            log(f"plan: retrying {kind} for {name} (failed {fails[(kind, name)]}x before)")
+        return True
     for name, s in load_registry().items():
-        if not any(Path(s["path"], "scripts").glob("*.py")) and ("write_tool", name) not in queued:
+        if not any(Path(s["path"], "scripts").glob("*.py")) and wanted("write_tool", name):
             add_task("write_tool", name, "a helper that turns a short text description into this "
                      "skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki")
-        if "## How to use" not in Path(s["path"], "SKILL.md").read_text() and ("improve_doc", name) not in queued:
+        if "## How to use" not in Path(s["path"], "SKILL.md").read_text() and wanted("improve_doc", name):
             add_task("improve_doc", name)
 
 def refresh_skills():
