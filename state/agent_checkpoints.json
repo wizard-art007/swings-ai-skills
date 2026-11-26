@@ -1,1 +1,22 @@
-{}
+{
+  "builder": {
+    "task": "Handle event 'idea.found'",
+    "context": {
+      "title": "YouTube Ad Punisher",
+      "description": "Auto-reloads YouTube pages when an ad plays via a lightweight userscript/extension concept.",
+      "source_url": "https://github.com/antonpictures/youtube-punisher"
+    },
+    "transcript": [
+      "SYSTEM: reply was not valid JSON. Reply with JSON only.",
+      "SYSTEM: reply was not valid JSON. Reply with JSON only.",
+      "SYSTEM: reply was not valid JSON. Reply with JSON only.",
+      "SYSTEM: reply was not valid JSON. Reply with JSON only.",
+      "SYSTEM: reply was not valid JSON. Reply with JSON only.",
+      "SYSTEM: reply was not valid JSON. Reply with JSON only.",
+      "SYSTEM: reply was not valid JSON. Reply with JSON only.",
+      "CALL emit_event({\"type\": \"experiment.ready\", \"payload\": {\"slug\": \"youtube-ad-punisher\"}}) -> \"event experiment.ready queued\""
+    ],
+    "resumes": 1,
+    "ts": "2026-11-26T23:28"
+  }
+}

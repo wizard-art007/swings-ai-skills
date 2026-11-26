@@ -200,3 +200,7 @@
 - 2026-11-26 23:27 — exp/llm-in-assembly: 'experiment llm-in-assembly' PASSED on attempt 1 (README.md, src/qwen_asm.py, tests/test_qwen_asm.py)
 - 2026-11-26 23:27 — agent builder v1: OK — Successfully built and tested the experiment for 'LLM in Assembly' and emitted the experiment.ready event.
 - 2026-11-26 23:27 — exp/youtube-ad-punisher: 'experiment youtube-ad-punisher' PASSED on attempt 2 (README.md, src/yt_punisher/__init__.py, src/yt_punisher/core.py, tests/test_punisher.py)
+- 2026-11-26 23:28 — agent builder v1: PAUSED — paused at the step limit (6); will continue next run
+- 2026-11-26 23:28 — need c6aea0cd: open -> searching (tool scripts/flake_hunter.py)
+- 2026-11-26 23:28 — need c6aea0cd: searching -> open (no repo passes the hard rules for ['flaky test hunter', 'test flake analyzer', 'flaky', 'flaky test', 'test flake'])
+- 2026-11-26 23:28 — projects: created private repo swings-ai-projects

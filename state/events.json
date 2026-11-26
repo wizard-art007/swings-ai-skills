@@ -594,7 +594,7 @@
       "source_url": "https://github.com/antonpictures/youtube-punisher"
     },
     "source": "agent",
-    "status": "running",
+    "status": "done",
     "ts": "2026-11-26T23:27:25"
   },
   {
@@ -606,5 +606,15 @@
     "source": "agent",
     "status": "new",
     "ts": "2026-11-26T23:27:34"
+  },
+  {
+    "id": "ec0ce4d8e4",
+    "type": "experiment.ready",
+    "payload": {
+      "slug": "youtube-ad-punisher"
+    },
+    "source": "agent",
+    "status": "new",
+    "ts": "2026-11-26T23:28:15"
   }
 ]

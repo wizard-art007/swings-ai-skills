@@ -634,16 +634,29 @@
         "from": "searching",
         "to": "open",
         "why": "no repo passes the hard rules for ['flaky test detector', 'flake hunter', 'flaky', 'flaky test']"
+      },
+      {
+        "ts": "2026-11-26T23:28",
+        "from": "open",
+        "to": "searching",
+        "why": "tool scripts/flake_hunter.py"
+      },
+      {
+        "ts": "2026-11-26T23:28",
+        "from": "searching",
+        "to": "open",
+        "why": "no repo passes the hard rules for ['flaky test hunter', 'test flake analyzer', 'flaky', 'flaky test', 'test flake']"
       }
     ],
-    "updated": "2026-11-26T23:27",
+    "updated": "2026-11-26T23:28",
     "queries": [
-      "flaky test detector",
-      "flake hunter",
+      "flaky test hunter",
+      "test flake analyzer",
       "flaky",
-      "flaky test"
+      "flaky test",
+      "test flake"
     ],
-    "tries": 1
+    "tries": 2
   },
   {
     "id": "345d80bd",

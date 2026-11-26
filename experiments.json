@@ -11,7 +11,10 @@
       "tests/test_loudness_eq.py"
     ],
     "repo_url": "https://github.com/wizard-art007/swings-exp-loudness-equalization-dsp-filter",
-    "published": "2026-11-26T01:26"
+    "published": "2026-11-26T01:26",
+    "projects_path": "experiments/loudness-equalization-dsp-filter",
+    "pushed": "2026-11-26T23:28",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/loudness-equalization-dsp-filter"
   },
   "algorithmic-integer-factorization-discre": {
     "title": "Algorithmic Integer Factorization & Discrete Log Experiment",
@@ -25,7 +28,10 @@
       "tests/test_heuristics.py"
     ],
     "repo_url": "https://github.com/wizard-art007/swings-exp-algorithmic-integer-factorization-discre",
-    "published": "2026-11-26T01:26"
+    "published": "2026-11-26T01:26",
+    "projects_path": "experiments/algorithmic-integer-factorization-discre",
+    "pushed": "2026-11-26T23:28",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/algorithmic-integer-factorization-discre"
   },
   "minimal-pure-python-quantized-attention-": {
     "title": "Minimal Pure-Python Quantized Attention & Generation Kernel",
@@ -39,7 +45,10 @@
       "src/quantized_attention.py"
     ],
     "repo_url": "https://github.com/wizard-art007/swings-exp-minimal-pure-python-quantized-attention-",
-    "published": "2026-11-26T07:43"
+    "published": "2026-11-26T07:43",
+    "projects_path": "experiments/minimal-pure-python-quantized-attention-",
+    "pushed": "2026-11-26T23:28",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/minimal-pure-python-quantized-attention-"
   },
   "thermodynamic-radiator-dynamics-pid-cont": {
     "title": "Thermodynamic Radiator Dynamics & PID Controller Simulator",
@@ -51,7 +60,11 @@
       "README.md",
       "tests/test_thermo_sim.py",
       "src/thermo_sim.py"
-    ]
+    ],
+    "projects_path": "experiments/thermodynamic-radiator-dynamics-pid-cont",
+    "published": "2026-11-26T23:28",
+    "pushed": "2026-11-26T23:28",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/thermodynamic-radiator-dynamics-pid-cont"
   },
   "moat-openrouter-replacement": {
     "title": "Moat: OpenRouter Replacement",
@@ -65,7 +78,11 @@
       "src/moat/__init__.py",
       "src/moat/server.py",
       "src/moat/router.py"
-    ]
+    ],
+    "projects_path": "experiments/moat-openrouter-replacement",
+    "published": "2026-11-26T23:28",
+    "pushed": "2026-11-26T23:28",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/moat-openrouter-replacement"
   },
   "iphone-sms-expense-parser": {
     "title": "iPhone SMS Expense Parser",
@@ -77,7 +94,11 @@
       "README.md",
       "tests/test_expense_parser.py",
       "src/expense_parser.py"
-    ]
+    ],
+    "projects_path": "experiments/iphone-sms-expense-parser",
+    "published": "2026-11-26T23:28",
+    "pushed": "2026-11-26T23:28",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/iphone-sms-expense-parser"
   },
   "snaptrap-fake-server": {
     "title": "SNAPTRAP Fake Server",
@@ -97,7 +118,11 @@
       "README.md",
       "tests/test_agent_loop.py",
       "src/agent_loop.py"
-    ]
+    ],
+    "projects_path": "experiments/langgraph-planner-executor-stopping-loop",
+    "published": "2026-11-26T23:28",
+    "pushed": "2026-11-26T23:28",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/langgraph-planner-executor-stopping-loop"
   },
   "net-race-condition-detector-simulator": {
     "title": ".NET Race Condition Detector Simulator",
@@ -109,7 +134,11 @@
       "README.md",
       "tests/test_race_simulator.py",
       "src/race_simulator.py"
-    ]
+    ],
+    "projects_path": "experiments/net-race-condition-detector-simulator",
+    "published": "2026-11-26T23:28",
+    "pushed": "2026-11-26T23:28",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/net-race-condition-detector-simulator"
   },
   "llm-in-assembly": {
     "title": "LLM in Assembly",
@@ -121,7 +150,11 @@
       "README.md",
       "tests/test_qwen_asm.py",
       "src/qwen_asm.py"
-    ]
+    ],
+    "projects_path": "experiments/llm-in-assembly",
+    "published": "2026-11-26T23:28",
+    "pushed": "2026-11-26T23:28",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/llm-in-assembly"
   },
   "youtube-ad-punisher": {
     "title": "YouTube Ad Punisher",
@@ -134,6 +167,10 @@
       "tests/test_punisher.py",
       "src/yt_punisher/__init__.py",
       "src/yt_punisher/core.py"
-    ]
+    ],
+    "projects_path": "experiments/youtube-ad-punisher",
+    "published": "2026-11-26T23:28",
+    "pushed": "2026-11-26T23:28",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/youtube-ad-punisher"
   }
 }
