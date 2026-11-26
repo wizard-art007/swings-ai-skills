@@ -320,7 +320,7 @@
       "slug": "langgraph-planner-executor-stopping-loop"
     },
     "source": "agent",
-    "status": "new",
+    "status": "done",
     "ts": "2026-11-26T16:50:29"
   },
   {
@@ -330,7 +330,7 @@
       "slug": "net-race-condition-detector-simulator"
     },
     "source": "agent",
-    "status": "new",
+    "status": "done",
     "ts": "2026-11-26T16:50:48"
   }
 ]
