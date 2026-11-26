@@ -3912,3 +3912,258 @@ def autopilot_cycle():
 HIGH_VALUE = HIGH_VALUE + ("need_scout",)
 HEAL_PROTECTED |= {"_remove_acceptance", "_reopen_tampered", "_splice", "_patch_view", "_write_tool_for_need", "_skill_context", "_install_acceptance", "work_needs", "verify_need",
                    "_run_extras_with_needs", "score_components", "_details"}
+
+# ===== Cell 33: Projects repo (F7) =====
+# Every passed experiment becomes a folder in ONE private repo (swings-ai-projects) instead of a new repo
+# each, so there is no daily cap on publishing. The repo's README index is rebuilt on every push. Only
+# finished, worthwhile projects "graduate" to a repo of their own (at most 1 a day, inside the 3-repo limit).
+
+PROJECTS_REPO_NAME = os.environ.get("SWINGS_PROJECTS_REPO", "swings-ai-projects")
+PROJECTS_DIR = SKILLS_DIR / ".projects_repo"          # local clone; git-ignored in the skills repo
+MAX_GRADUATIONS_PER_DAY = 1
+GRADUATE_MIN_SKILLS = 2
+PROJECTS_GITIGNORE = "outputs/\n__pycache__/\n.pytest_cache/\n*.npz\n*.pyc\n.venv/\n"
+
+if ".projects_repo/" not in GITIGNORE_LINES:
+    GITIGNORE_LINES.append(".projects_repo/")
+def _ignore_projects_clone():
+    gi = SKILLS_DIR / ".gitignore"
+    lines = gi.read_text(encoding="utf-8").splitlines() if gi.exists() else []
+    if ".projects_repo/" not in lines:
+        gi.write_text("\n".join(lines + [".projects_repo/"]) + "\n", encoding="utf-8")
+_ignore_projects_clone()
+
+def _gh_auth():
+    basic = base64.b64encode(f"x-access-token:{GITHUB._token()}".encode()).decode()
+    return ["-c", f"http.https://github.com/.extraheader=AUTHORIZATION: basic {basic}"]
+
+def _projects_repo_sync():
+    """Clone (creating it once, private) or pull the projects repo. Refuses to use a public repo."""
+    owner = GITHUB.whoami()
+    if not GITHUB.repo_exists(owner, PROJECTS_REPO_NAME):
+        GITHUB.create_repo(PROJECTS_REPO_NAME, "Swings AI projects and experiments (one folder each)", private=True)
+        log(f"projects: created private repo {PROJECTS_REPO_NAME}")
+    r = requests.get(f"{GITHUB.api}/repos/{owner}/{PROJECTS_REPO_NAME}", headers=GITHUB._h(), timeout=30)
+    if r.ok and not r.json().get("private", False):
+        raise RuntimeError(f"{PROJECTS_REPO_NAME} is PUBLIC; refusing to publish there")
+    url = GITHUB._remote(owner, PROJECTS_REPO_NAME)
+    if not (PROJECTS_DIR / ".git").exists():
+        if PROJECTS_DIR.exists():
+            shutil.rmtree(PROJECTS_DIR)
+        if git(_gh_auth() + ["clone", "-q", url, str(PROJECTS_DIR)], SKILLS_DIR).returncode != 0:
+            PROJECTS_DIR.mkdir(parents=True, exist_ok=True)               # brand-new, empty repo
+            git(["init", "-q", "-b", "main"], PROJECTS_DIR)
+            git(["remote", "add", "origin", url], PROJECTS_DIR)
+    else:
+        git(_gh_auth() + ["pull", "-q", "--rebase", "origin", "main"], PROJECTS_DIR)
+    return owner
+
+def _projects_push(message):
+    git(["add", "-A"], PROJECTS_DIR)
+    if git(["diff", "--cached", "--quiet"], PROJECTS_DIR).returncode == 0:
+        return "nothing to push"
+    git(["-c", "user.name=Swings AI", "-c", "user.email=swings-ai@users.noreply.github.com",
+         "commit", "-q", "-m", message], PROJECTS_DIR)
+    for _ in range(3):                                    # another run may have pushed: rebase and retry
+        r = git(_gh_auth() + ["push", "-q", "origin", "HEAD:main"], PROJECTS_DIR)
+        if r.returncode == 0:
+            return "pushed"
+        git(_gh_auth() + ["pull", "-q", "--rebase", "origin", "main"], PROJECTS_DIR)
+    raise RuntimeError(f"projects push failed: {_redact(r.stderr)[-200:]}")
+
+# ---- the index -----------------------------------------------------------------------------------------
+def _tests_in(folder):
+    return len([p for p in Path(folder).rglob("test_*.py") if "__pycache__" not in p.parts])
+
+def write_projects_index(owner=None):
+    exps = load_experiments()
+    rows = []
+    for name, e in sorted(exps.items(), key=lambda kv: kv[1].get("created", ""), reverse=True):
+        if e.get("status") != "passed":
+            continue
+        folder = PROJECTS_DIR / "experiments" / name
+        where = f"[folder](experiments/{name})" if folder.exists() else "not pushed yet"
+        if e.get("graduated") or e.get("repo_url"):
+            where += f" · [own repo]({e['repo_url']})" if e.get("repo_url") else ""
+        nt = _tests_in(folder) if folder.exists() else 0
+        rows.append(f"| {e.get('kind', 'experiment')} | **{e.get('title', name)[:70]}** | {e.get('status')} "
+                    f"({nt} test file{'' if nt == 1 else 's'}) | "
+                    f"{', '.join(e.get('skills', [])) or '—'} | {str(e.get('created', ''))[:10]} | {where} |")
+    text = (f"# Swings AI — projects\n\nEverything Swings AI has built and tested by itself, one folder each. "
+            f"Rebuilt on every push ({datetime.datetime.now():%Y-%m-%d %H:%M} UTC).\n\n"
+            f"{len(rows)} passed experiments and projects. A project graduates to its own repo when its tests "
+            f"pass, it uses at least {GRADUATE_MIN_SKILLS} skills and all its milestones are done.\n\n"
+            "| Kind | Title | Tests | Skills used | Built | Where |\n|---|---|---|---|---|---|\n" + "\n".join(rows) + "\n")
+    (PROJECTS_DIR / "README.md").write_text(_redact(text), encoding="utf-8")
+    (PROJECTS_DIR / ".gitignore").write_text(PROJECTS_GITIGNORE, encoding="utf-8")
+
+# ---- publishing ----------------------------------------------------------------------------------------
+def publish_to_projects_repo(slugs, dry_run=None):
+    """Copy passed experiments into experiments/<slug>/ of the projects repo; one commit, no new repo."""
+    dry_run = GITHUB_DRY_RUN if dry_run is None else dry_run
+    slugs = [slugs] if isinstance(slugs, str) else list(slugs)
+    exps, done, refused = load_experiments(), [], {}
+    for s in slugs:
+        e = exps.get(s)
+        if not e:
+            refused[s] = "unknown experiment"
+        elif e.get("status") != "passed":
+            refused[s] = "has not passed its tests"
+        elif GITHUB.secret_scan(EXPERIMENTS_DIR / s):
+            refused[s] = f"possible secrets in {GITHUB.secret_scan(EXPERIMENTS_DIR / s)}"
+    ok = [s for s in slugs if s not in refused]
+    for s, why in refused.items():
+        log(f"projects: not publishing {s}: {why}")
+    if not ok:
+        return {"published": [], "refused": refused}
+    if dry_run:
+        return {"published": [], "refused": refused, "dry_run": f"would publish {ok} to {PROJECTS_REPO_NAME}"}
+    owner = _projects_repo_sync()
+    for s in ok:
+        dest = PROJECTS_DIR / "experiments" / s
+        if dest.exists():
+            shutil.rmtree(dest)                           # replace only this folder
+        shutil.copytree(EXPERIMENTS_DIR / s, dest,
+                        ignore=shutil.ignore_patterns(".git", "__pycache__", ".pytest_cache", "outputs", "*.npz"))
+        done.append(s)
+    write_projects_index(owner)
+    if GITHUB.secret_scan(PROJECTS_DIR):                  # last line of defence before anything leaves
+        raise RuntimeError(f"Refusing to push the projects repo: possible secrets in {GITHUB.secret_scan(PROJECTS_DIR)}")
+    result = _projects_push(f"publish {', '.join(done)}"[:200])
+    now, exps = datetime.datetime.now().isoformat(timespec="minutes"), load_experiments()
+    for s in done:
+        exps[s].update(projects_path=f"experiments/{s}", published=exps[s].get("published") or now, pushed=now,
+                       projects_url=f"https://github.com/{owner}/{PROJECTS_REPO_NAME}/tree/main/experiments/{s}")
+    _jsave(EXPERIMENTS_FILE, exps)
+    commit_skills(f"projects repo: published {len(done)}")
+    log(f"projects: {result} {len(done)} folder(s) to {PROJECTS_REPO_NAME}: {', '.join(done)}")
+    _PROJECTS_RUN["published"] = _PROJECTS_RUN.get("published", 0) + len(done)
+    return {"published": done, "refused": refused}
+
+_PROJECTS_RUN = {}
+
+def publish_experiment_folder(slug):
+    """Publisher tool: put a PASSED experiment in the projects repo (no daily limit)."""
+    r = publish_to_projects_repo(slug)
+    if r.get("published"):
+        return load_experiments()[slug]["projects_url"]
+    return r.get("dry_run") or f"not published: {r['refused'].get(slug, 'unknown reason')}"
+
+# ---- graduation -----------------------------------------------------------------------------------------
+def graduation_check(e):
+    """None if the project may graduate, else the reason it stays a folder."""
+    if e.get("status") != "passed":
+        return "tests not passing"
+    if e.get("graduated") or (e.get("repo_url") and e.get("kind") == "project"):
+        return "already graduated"
+    if len(set(e.get("skills", []))) < GRADUATE_MIN_SKILLS:
+        return f"uses {len(set(e.get('skills', [])))} skill(s), needs {GRADUATE_MIN_SKILLS}"
+    ms = e.get("milestones") or []
+    if not ms or not all(m.get("done") for m in ms):
+        return "milestones not all done"
+    return None
+
+def _new_repos_today(exps):
+    today = str(datetime.date.today())
+    return sum(1 for x in exps.values() if str(x.get("repo_created", "")).startswith(today))
+
+def graduate_project(slug, dry_run=None):
+    """Give a finished project its own private repo (1 a day, inside the 3-new-repos limit)."""
+    dry_run = GITHUB_DRY_RUN if dry_run is None else dry_run
+    exps = load_experiments()
+    e = exps.get(slug)
+    if not e:
+        return f"unknown project {slug}"
+    why = graduation_check(e)
+    if why:
+        return f"{slug} stays a folder: {why}"
+    today = str(datetime.date.today())
+    if sum(1 for x in exps.values() if str(x.get("graduated", "")).startswith(today)) >= MAX_GRADUATIONS_PER_DAY:
+        return f"graduation limit ({MAX_GRADUATIONS_PER_DAY}/day) reached; {slug} graduates next time"
+    if _new_repos_today(exps) >= MAX_NEW_REPOS_PER_DAY:
+        return f"daily limit of {MAX_NEW_REPOS_PER_DAY} new repos reached; {slug} graduates next time"
+    if dry_run:
+        return f"DRY RUN: would graduate {slug} to its own repo"
+    owner = GITHUB.whoami()
+    name = EXPERIMENT_PREFIX + slug
+    if not GITHUB.repo_exists(owner, name):
+        e["repo_url"] = GITHUB.create_repo(name, f"Swings AI project: {e.get('title', slug)}")
+        e["repo_created"] = datetime.datetime.now().isoformat(timespec="minutes")
+    GITHUB.push_dir(EXPERIMENTS_DIR / slug, owner, name, f"Swings AI project: {e.get('title', slug)}")
+    e["repo_url"] = e.get("repo_url") or f"https://github.com/{owner}/{name}"
+    e["graduated"] = datetime.datetime.now().isoformat(timespec="minutes")
+    exps[slug] = e
+    _jsave(EXPERIMENTS_FILE, exps)
+    log(f"projects: {slug} graduated to its own repo {e['repo_url']}")
+    publish_to_projects_repo(slug)                        # the index links the new repo
+    return e["repo_url"]
+
+def graduate_ready(dry_run=None):
+    for slug, e in load_experiments().items():
+        if graduation_check(e) is None:
+            return graduate_project(slug, dry_run=dry_run)
+    return "nothing ready to graduate"
+
+# ---- migration + catching up ------------------------------------------------------------------------------
+def publish_pending():
+    """Every passed experiment not yet in the projects repo goes in (the 3 old own-repo ones are listed too)."""
+    waiting = [s for s, e in load_experiments().items() if e.get("status") == "passed" and not e.get("projects_path")]
+    return publish_to_projects_repo(waiting) if waiting else {"published": [], "refused": {}}
+
+# ---- the old per-experiment publisher now writes folders ------------------------------------------------
+if "_publish_own_repo" not in globals():
+    _publish_own_repo = GitHubPlugin.publish_experiment
+GitHubPlugin.publish_experiment = lambda self, slug_name, dry_run=None: publish_experiment_folder(slug_name) \
+    if not dry_run else publish_to_projects_repo(slug_name, dry_run=True).get("dry_run")
+TOOLS.register("publish_experiment", publish_experiment_folder,
+               "Publish a PASSED experiment as a folder in the private projects repo (no daily limit).", protected=True)
+TOOLS.register("graduate_project", graduate_project,
+               "Give a finished project (tests pass, 2+ skills, all milestones done) its own private repo.", protected=True)
+
+PUBLISHER_PROMPT = ("You are the Publisher. Call publish_experiment(slug) for the slug in CONTEXT: it puts the experiment "
+                    "in its own folder of the private projects repo, with no daily limit, and returns the folder link. "
+                    "Then check list_experiments: if a project there has passed tests, uses 2 or more skills and all its "
+                    "milestones are done, call graduate_project(slug) once (1 a day; a 'limit reached' reply is fine). "
+                    "Report what you published.")
+def _upgrade_publisher():
+    a = load_agents().get("publisher")
+    if a and "projects repo" not in a.system_prompt:
+        a.role = "Stores every passed experiment as a folder in the private projects repo; graduates finished projects."
+        if "graduate_project" not in a.tools:
+            a.tools.append("graduate_project")
+        save_agent(a)
+        update_agent_prompt("publisher", PUBLISHER_PROMPT, "F7: experiments go to one projects repo, no daily limit")
+_upgrade_publisher()
+
+# ---- run step + metrics -----------------------------------------------------------------------------------
+if "_cycle_before_projects" not in globals():
+    _cycle_before_projects = autopilot_cycle
+def autopilot_cycle():
+    _cycle_before_projects()
+    try:
+        GITHUB._token()
+    except RuntimeError:
+        return syslog("info", "projects", "no GitHub token: publishing skipped this run")
+    try:
+        if not IN_COLAB and time_left() > 300:
+            publish_pending()                             # catches anything the publisher agent missed
+            got = graduate_ready()
+            if not got.startswith(("nothing", "DRY")) and "stays" not in got:
+                _PROJECTS_RUN["graduated"] = got
+    except Exception as e:
+        syslog_exception("projects", e)
+
+if "_extras_before_projects" not in globals():
+    _extras_before_projects = _run_extras
+def _run_extras_with_projects():
+    d = _extras_before_projects()
+    exps = load_experiments()
+    d.update(projects_published_run=_PROJECTS_RUN.get("published", 0),
+             projects_in_repo=sum(1 for e in exps.values() if e.get("projects_path")),
+             projects_waiting=sum(1 for e in exps.values() if e.get("status") == "passed" and not e.get("projects_path")),
+             projects_graduated=sum(1 for e in exps.values() if e.get("graduated")))
+    return d
+_run_extras = _run_extras_with_projects
+
+HEAL_PROTECTED |= {"publish_to_projects_repo", "_projects_repo_sync", "_projects_push", "graduate_project",
+                   "publish_experiment_folder", "write_projects_index", "_gh_auth", "_run_extras_with_projects"}
