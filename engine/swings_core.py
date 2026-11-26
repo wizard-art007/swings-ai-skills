@@ -19,8 +19,8 @@ try:
             pass
 except ImportError:
     pass
-if GITHUB_TOKEN:
-    os.environ["SWINGS_GH_TOKEN"] = GITHUB_TOKEN   # lets the GitHub plugin use it too
+if GITHUB_TOKEN and not os.environ.get("SWINGS_GH_TOKEN"):
+    os.environ["SWINGS_GH_TOKEN"] = GITHUB_TOKEN   # Colab: plugin uses the same token (Actions keeps its own secret)
 
 HEADERS = {"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"}
 if GITHUB_TOKEN:
@@ -163,6 +163,7 @@ def save_as_skill(project, clone=True):
     if skill_md_path.exists() and "## How to use" in skill_md_path.read_text(encoding="utf-8"):
         pass   # keep the agent-improved SKILL.md on refresh
     else:
+        summary = textwrap.shorten(re.sub(r"<[^>]+>|!\[.*?\]\(.*?\)", "", readme), 1500)   # outside the f-string: Python 3.11 compatible
         skill_md = f"""---
 name: {skill_name}
 description: {project['description'][:200].replace(chr(10), ' ')}
@@ -182,7 +183,7 @@ Use this skill when the task involves: {', '.join(project['topics'][:10]) or 'UM
 - Original README: `README_source.md`
 
 ## Summary from README
-{textwrap.shorten(re.sub(r'<[^>]+>|!\\[.*?\\]\\(.*?\\)', '', readme), 1500)}
+{summary}
 """
         skill_md_path.write_text(skill_md, encoding="utf-8")
     return {**project, "skill_name": skill_name, "readme_text": readme[:5000]}
@@ -275,7 +276,15 @@ def llm(prompt, system="You are an expert software engineer.", model=LLM_MODEL, 
                 raise RuntimeError("No LLM: google.colab.ai missing and no GEMINI_API_KEY.")
             from google import genai
             client = genai.Client(api_key=key)
-            return client.models.generate_content(model=model or "gemini-flash-latest", contents=full).text
+            last_err = None
+            for m in ([model] if model else ["gemini-flash-latest", "gemini-2.5-flash", "gemini-2.0-flash"]):
+                try:
+                    return client.models.generate_content(model=m, contents=full).text
+                except Exception as e:      # unknown model name -> try the next one
+                    last_err = e
+                    if "not found" not in str(e).lower() and "404" not in str(e):
+                        raise
+            raise last_err
         except RuntimeError:
             raise
         except Exception as e:          # rate limits / transient errors
@@ -1153,12 +1162,23 @@ def _due(a):
     last = datetime.datetime.fromisoformat(a.last_run)
     return (datetime.datetime.now() - last).total_seconds() >= a.every_minutes * 60 - 120
 
+def _safe_run(name, task, context=None):
+    """One agent's error (rate limit, bad reply, API outage) must never stop the whole cycle."""
+    try:
+        return run_agent(name, task, context)
+    except Exception as e:
+        log(f"agent {name}: ERROR {type(e).__name__}: {str(e)[:200]}")
+        with open(RUNS_FILE, "a", encoding="utf-8") as f:
+            f.write(json.dumps({"agent": name, "task": task[:200], "success": False, "summary": f"error: {e}"[:500],
+                                "ts": datetime.datetime.now().isoformat(timespec="minutes")}) + "\n")
+        return {"success": False, "summary": str(e)}
+
 def orchestrator_tick(max_events=6):
     """One heartbeat: run due watchers, turn system signals into events, dispatch events to agents."""
     # 1. watchers on their schedule
     for a in load_agents().values():
         if a.enabled and _due(a):
-            run_agent(a.name, f"Scheduled run. Your job: {a.role}")
+            _safe_run(a.name, f"Scheduled run. Your job: {a.role}")
     # 2. demand signals -> events
     pending_types = {e["type"] for e in _pending(100)}
     todo = [t for t in _jload(TASKS_FILE, []) if t.get("status") == "todo"]
@@ -1181,7 +1201,7 @@ def orchestrator_tick(max_events=6):
             continue
         _mark(ev["id"], "running")
         for h in handlers:
-            run_agent(h.name, f"Handle event '{ev['type']}'", context=ev["payload"])
+            _safe_run(h.name, f"Handle event '{ev['type']}'", context=ev["payload"])
         _mark(ev["id"], "done")
     # 4. keep only improvements that actually help
     auto_rollback()
@@ -1251,7 +1271,10 @@ if "_base_autopilot_cycle" not in globals():
     _base_autopilot_cycle = autopilot_cycle
 
 def autopilot_cycle():
-    _base_autopilot_cycle()   # skill upkeep (Cell 13)
-    orchestrator_tick()       # agents (Cell 18)
+    for part in (_base_autopilot_cycle, orchestrator_tick):   # skill upkeep (Cell 13), agents (Cell 18)
+        try:
+            part()
+        except Exception as e:      # keep going; the error is logged for the evolver
+            log(f"autopilot: {part.__name__} failed: {type(e).__name__}: {str(e)[:200]}")
 
 bootstrap_agents()

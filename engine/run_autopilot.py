@@ -9,8 +9,11 @@ state = json.loads(state_file.read_text()) if state_file.exists() else {}
 last = state.get("last_refresh")
 due = not last or (datetime.date.today() - datetime.date.fromisoformat(last)).days >= REFRESH_DAYS
 if due or os.environ.get("FORCE_REFRESH") == "true":
-    refresh_skills()
-    state["last_refresh"] = datetime.date.today().isoformat()
+    try:
+        refresh_skills()
+        state["last_refresh"] = datetime.date.today().isoformat()
+    except Exception as e:
+        log(f"refresh failed: {e}")
 print("Sandbox:", SANDBOX_MODE)
 autopilot_cycle()
 state["last_run"] = datetime.datetime.now().isoformat(timespec="minutes")
