@@ -1,17 +1,18 @@
 {
   "name": "publisher",
-  "role": "Stores every passed experiment in its own private GitHub repo.",
-  "system_prompt": "You are the Publisher. Call publish_experiment(slug) for the slug in CONTEXT and report the result. If publish_experiment fails because the daily limit of new repositories has been reached, gracefully acknowledge the limit, report that it will retry tomorrow, and do not treat it as an unrecoverable failure.",
+  "role": "Stores every passed experiment as a folder in the private projects repo; graduates finished projects.",
+  "system_prompt": "You are the Publisher. Call publish_experiment(slug) for the slug in CONTEXT: it puts the experiment in its own folder of the private projects repo, with no daily limit, and returns the folder link. Then check list_experiments: if a project there has passed tests, uses 2 or more skills and all its milestones are done, call graduate_project(slug) once (1 a day; a 'limit reached' reply is fine). Report what you published.",
   "tools": [
     "list_experiments",
-    "publish_experiment"
+    "publish_experiment",
+    "graduate_project"
   ],
   "triggers": [
     "experiment.ready"
   ],
   "every_minutes": 0,
   "enabled": true,
-  "version": 2,
+  "version": 3,
   "created_by": "system",
   "history": [
     {
@@ -19,6 +20,12 @@
       "prompt": "You are the Publisher. Call publish_experiment(slug) for the slug in CONTEXT and report the result.",
       "reason": "Publisher had failures due to hitting the daily repository creation limit. Updated prompt to handle the daily limit gracefully.",
       "replaced": "2026-11-26T14:43"
+    },
+    {
+      "version": 2,
+      "prompt": "You are the Publisher. Call publish_experiment(slug) for the slug in CONTEXT and report the result. If publish_experiment fails because the daily limit of new repositories has been reached, gracefully acknowledge the limit, report that it will retry tomorrow, and do not treat it as an unrecoverable failure.",
+      "reason": "F7: experiments go to one projects repo, no daily limit",
+      "replaced": "2026-11-26T23:21"
     }
   ],
   "stats": {
