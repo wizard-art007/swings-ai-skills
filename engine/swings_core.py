@@ -258,6 +258,26 @@ def _colab_ai():
     except Exception:
         return None
 
+_GEMINI_CACHE = []
+def _gemini_models(client):
+    """Ask the API which Gemini models exist right now (names get retired); newest 'flash' first."""
+    if not _GEMINI_CACHE:
+        names = []
+        try:
+            for m in client.models.list():
+                n = m.name.split("/")[-1]
+                acts = getattr(m, "supported_actions", None) or []
+                if "flash" in n and "generateContent" in acts and not any(
+                        x in n for x in ("image", "tts", "audio", "live", "embed", "thinking-exp")):
+                    names.append(n)
+        except Exception as e:
+            print("model list failed:", e)
+        ver = lambda n: float((re.findall(r"(\d+(?:\.\d+)?)", n) or ["0"])[0])
+        names.sort(key=lambda n: (ver(n), "lite" not in n, "preview" not in n), reverse=True)
+        _GEMINI_CACHE.extend(names + ["gemini-flash-latest"])
+        print("Gemini models available:", _GEMINI_CACHE[:5])
+    return list(dict.fromkeys(_GEMINI_CACHE))[:6]
+
 def llm(prompt, system="You are an expert software engineer.", model=LLM_MODEL, retries=3):
     full = f"{system}\n\n{prompt}"
     for attempt in range(retries):
@@ -277,7 +297,7 @@ def llm(prompt, system="You are an expert software engineer.", model=LLM_MODEL, 
             from google import genai
             client = genai.Client(api_key=key)
             last_err = None
-            for m in ([model] if model else ["gemini-flash-latest", "gemini-2.5-flash", "gemini-2.0-flash"]):
+            for m in ([model] if model else _gemini_models(client)):
                 try:
                     return client.models.generate_content(model=m, contents=full).text
                 except Exception as e:      # unknown model name -> try the next one
