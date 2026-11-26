@@ -26,3 +26,21 @@
 - 2026-11-26 02:29 — purocean-yn: SKILL.md improved
 - 2026-11-26 02:45 — ahmadhassan-bted-openheart: SKILL.md improved
 - 2026-11-26 02:46 — agent maintainer: ERROR ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}
+- 2026-11-26 02:52 — task write_tool yuzutech-kroki: ERROR PermissionError: [Errno 1] Operation not permitted: 8
+- 2026-11-26 02:53 — yuzutech-kroki: SKILL.md improved
+- 2026-11-26 02:55 — task write_tool k1low-tbls: ERROR PermissionError: [Errno 1] Operation not permitted: 8
+- 2026-11-26 02:59 — k1low-tbls: SKILL.md improved
+- 2026-11-26 02:59 — task write_tool skanaar-nomnoml: ERROR PermissionError: [Errno 1] Operation not permitted: 10
+- 2026-11-26 04:24 — k1low-tbls: SKILL.md improved
+- 2026-11-26 04:27 — skanaar-nomnoml: 'a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki' PASSED on attempt 2 (scripts/nomnoml_helper.py, tests/test_nomnoml_helper.py)
+- 2026-11-26 04:28 — skanaar-nomnoml: SKILL.md improved
+- 2026-11-26 04:37 — agent news_scout v1: FAIL — step limit reached
+- 2026-11-26 04:41 — exp/minimal-pure-python-quantized-attention-: 'experiment minimal-pure-python-quantized-attention-' PASSED on attempt 1 (src/quantized_attention.py, tests/test_attention.py, README.md)
+- 2026-11-26 04:42 — agent builder v1: OK — Experiment built successfully and experiment.ready event emitted.
+- 2026-11-26 04:43 — exp/thermodynamic-radiator-dynamics-pid-cont: 'experiment thermodynamic-radiator-dynamics-pid-cont' PASSED on attempt 2 (README.md, src/thermo_sim.py, tests/test_thermo_sim.py)
+- 2026-11-26 04:45 — agent builder v1: OK — Successfully built the thermodynamic radiator dynamics and PID controller simulator experiment and emitted experiment.ready event.
+- 2026-11-26 04:47 — agent evolver v1: OK — All agents with >=3 runs have a success rate >= 0.6. No prompt updates needed.
+- 2026-11-26 07:43 — agent news_scout v1: OK — Fetched tech news and identified potential offline Python experiment ideas and trends.
+- 2026-11-26 07:43 — published experiment minimal-pure-python-quantized-attention- -> https://github.com/wizard-art007/swings-exp-minimal-pure-python-quantized-attention-
+- 2026-11-26 07:43 — agent publisher v1: OK — Successfully published experiment 'minimal-pure-python-quantized-attention-' to https://github.com/wizard-art007/swings-exp-minimal-pure-python-quanti
+- 2026-11-26 07:43 — agent publisher v1: FAIL — Failed to publish experiment 'thermodynamic-radiator-dynamics-pid-cont' because the daily limit of 3 new repos has been reached.
