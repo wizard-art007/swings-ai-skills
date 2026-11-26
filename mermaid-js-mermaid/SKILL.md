@@ -11,10 +11,28 @@ saved: 2026-11-26
 
 # mermaid-js/mermaid
 
-Use this skill when the task involves: diagrams, diagrams-as-code, documentation, flowchart, javascript, mindmap, typescript, uml-diagrams.
+## About
+Mermaid is a JavaScript-based diagramming and charting tool that uses Markdown-inspired text definitions and a renderer to create and modify complex diagrams, such as flowcharts, sequence diagrams, mindmaps, and UML diagrams.
 
-- Source code: cloned on demand (`ensure_repo(skill)`); licence file(s): see source
-- Original README: `README_source.md`
+## When to use
+Use this skill when the task involves:
+- Creating, generating, or modifying diagrams as code (flowcharts, sequence diagrams, mindmaps, UML, etc.).
+- Writing or parsing Markdown-like text definitions for documentation visuals.
+- Automating diagram rendering using JavaScript, TypeScript, or helper scripts.
 
-## Summary from README
-Mermaid Generate diagrams from Markdown-like text. Live Editor! 📖 Documentation | 🚀 Getting Started | 🌐 CDN | 🙌 Join Us 简体中文 Try Live Editor previews of future releases: Develop | Next [](https://www.npmjs.com/package/mermaid) [](https://github.com/mermaid-js/mermaid/actions/workflows/build.yml) [](https://bundlephobia.com/package/mermaid) [](https://app.codecov.io/github/mermaid-js/mermaid/tree/develop) [](https://www.jsdelivr.com/package/npm/mermaid) [](https://www.npmjs.com/package/mermaid) [](https://discord.gg/sKeNQX4Wtj) [](https://twitter.com/mermaidjs_) [](https://argos-ci.com?utm_source=mermaid&utm_campaign=oss) [](https://securityscorecards.dev/viewer/?uri=github.com/mermaid-js/mermaid) :trophy: **Mermaid was nominated and won the [JS Open Source Awards (2019)](https://osawards.com/javascript/2019) in the category "The most exciting use of technology"!!!** **Thanks to all involved, people committing pull requests, people answering questions! 🙏** ## Table of content Expand contents - [About](#about) - [Examples](#examples) - [Release](#release) - [Related projects](#related-projects) - [Contributors](#contributors---) - [Security and safe diagrams](#security-and-safe-diagrams) - [Reporting vulnerabilities](#reporting-vulnerabilities) - [Appreciation](#appreciation) ## About --> Mermaid is a JavaScript-based diagramming and charting tool that uses Markdown-inspired text definitions and a renderer to create and modify complex diagrams. The main purpose of Mermaid [...]
+## How to use
+This repository provides helper scripts to interact with and generate diagrams.
+
+- **Helper script**: `mermaid_helper.py`
+  - Run or inspect the helper script for common automation tasks related to Mermaid diagram generation and parsing.
+- **Node/TypeScript API**: 
+  - Import `mermaid` in your project to render diagrams programmatically:
+    ```typescript
+    import mermaid from 'mermaid';
+    mermaid.initialize({ startOnLoad: true });
+    ```
+
+## Limitations
+- Complex layouts can occasionally result in overlapping text or edge crossings depending on the diagram type and renderer constraints.
+- Advanced styling and custom themes require familiarity with Mermaid's configuration structure.
+- Requires an appropriate environment (browser or Node.js with a DOM/canvas polyfill) for full SVG rendering capabilities.
