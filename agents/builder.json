@@ -17,12 +17,12 @@
   "created_by": "system",
   "history": [],
   "stats": {
-    "runs": 7,
-    "ok": 7,
+    "runs": 8,
+    "ok": 8,
     "by_version": {
       "1": [
-        7,
-        7
+        8,
+        8
       ]
     }
   },

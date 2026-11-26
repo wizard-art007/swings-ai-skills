@@ -105,3 +105,4 @@
 - 2026-11-26 16:50 — exp/langgraph-planner-executor-stopping-loop: 'experiment langgraph-planner-executor-stopping-loop' PASSED on attempt 2 (README.md, src/agent_loop.py, tests/test_agent_loop.py)
 - 2026-11-26 16:50 — agent builder v1: OK — Built experiment 'langgraph-planner-executor-stopping-loop' and emitted experiment.ready event successfully.
 - 2026-11-26 16:50 — exp/net-race-condition-detector-simulator: 'experiment net-race-condition-detector-simulator' PASSED on attempt 1 (src/race_simulator.py, tests/test_race_simulator.py, README.md)
+- 2026-11-26 16:50 — agent builder v1: OK — Successfully built the .NET Race Condition Detector Simulator experiment and emitted experiment.ready event.

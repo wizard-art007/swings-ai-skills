@@ -310,7 +310,7 @@
       "source_url": "https://dev.to/kirandeepjassalcrypto/7-race-conditions-that-shipped-to-net-production-lost-updates-toctou-dbcontext-threading--3l7e"
     },
     "source": "agent",
-    "status": "running",
+    "status": "done",
     "ts": "2026-11-26T16:50:14"
   },
   {
@@ -322,5 +322,15 @@
     "source": "agent",
     "status": "new",
     "ts": "2026-11-26T16:50:29"
+  },
+  {
+    "id": "9f692c883b",
+    "type": "experiment.ready",
+    "payload": {
+      "slug": "net-race-condition-detector-simulator"
+    },
+    "source": "agent",
+    "status": "new",
+    "ts": "2026-11-26T16:50:48"
   }
 ]
