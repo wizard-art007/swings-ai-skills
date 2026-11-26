@@ -432,5 +432,14 @@
     "queued": "2026-11-26T22:13",
     "need": "d3d569f1",
     "priority": 2.0
+  },
+  {
+    "kind": "write_tool",
+    "skill": "sebastianbergmann-php-code-coverage",
+    "goal": "close need: Missing Test Coverage Analyzer [need 57c35597]",
+    "status": "todo",
+    "queued": "2026-11-26T22:14",
+    "need": "57c35597",
+    "priority": 2.0
   }
 ]
