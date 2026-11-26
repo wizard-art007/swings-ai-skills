@@ -38,5 +38,17 @@
       "tests/test_attention.py",
       "src/quantized_attention.py"
     ]
+  },
+  "thermodynamic-radiator-dynamics-pid-cont": {
+    "title": "Thermodynamic Radiator Dynamics & PID Controller Simulator",
+    "description": "Offline Python simulation (<300 lines) modeling radiator thermal dissipation, room heat loss dynamics, and comparing bang-bang vs PID thermostat control loops.",
+    "source_url": "https://qsantos.fr/2026/11/20/hacking-radiators-for-fun-and-no-profit/",
+    "status": "passed",
+    "created": "2026-11-26T04:43",
+    "files": [
+      "README.md",
+      "tests/test_thermo_sim.py",
+      "src/thermo_sim.py"
+    ]
   }
 }
