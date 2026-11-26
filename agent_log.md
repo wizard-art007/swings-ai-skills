@@ -32,3 +32,4 @@
 - 2026-11-26 02:59 — k1low-tbls: SKILL.md improved
 - 2026-11-26 02:59 — task write_tool skanaar-nomnoml: ERROR PermissionError: [Errno 1] Operation not permitted: 10
 - 2026-11-26 04:24 — k1low-tbls: SKILL.md improved
+- 2026-11-26 04:27 — skanaar-nomnoml: 'a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki' PASSED on attempt 2 (scripts/nomnoml_helper.py, tests/test_nomnoml_helper.py)
