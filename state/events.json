@@ -92,5 +92,15 @@
     "source": "system",
     "status": "done",
     "ts": "2026-11-26T02:45:01"
+  },
+  {
+    "id": "6d9c2ba49f",
+    "type": "tasks.pending",
+    "payload": {
+      "count": 3
+    },
+    "source": "system",
+    "status": "running",
+    "ts": "2026-11-26T02:55:06"
   }
 ]

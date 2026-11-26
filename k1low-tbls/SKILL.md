@@ -11,10 +11,111 @@ saved: 2026-11-26
 
 # k1LoW/tbls
 
-Use this skill when the task involves: bigquery, continuous-integration, database-document, database-schema, documentation-tool, dynamodb, er-diagram, excel, hacktoberfest, mariadb.
+`tbls` is a CI-friendly command-line tool written in Go to automatically document databases, lint database schemas, measure documentation coverage, and render ER diagrams in multiple formats.
 
-- Source code: cloned on demand (`ensure_repo(skill)`); licence file(s): see source
-- Original README: `README_source.md`
+## When to use
 
-## Summary from README
-[](https://github.com/k1LoW/tbls/actions) [](https://github.com/k1LoW/tbls/releases) [](https://goreportcard.com/report/github.com/k1LoW/tbls) `tbls` (pronounced /ˈteɪbl̩z/) is a CI-Friendly tool to document a database, written in Go. Key features of `tbls` are: - **Document a database automatically in [GFM](https://github.github.com/gfm/) format. Output database schema [in many formats](#output-formats).** - **Single binary = CI-Friendly.** - **[Support many databases](#support-datasource).** - **Work as linter for database** ### Table of Contents - [Quick Start](#quick-start) - [Install](#install) - [Getting Started](#getting-started) - [Document a database](#document-a-database) - [Diff database and (document or database)](#diff-database-and-document-or-database) - [Lint a database](#lint-a-database) - [Measure document coverage](#measure-document-coverage) - [Continuous Integration](#continuous-integration) - [Configuration](#configuration) - [Name](#name) - [Description](#description) - [Labels](#labels) - [DSN](#dsn) - [Support Datasource](#support-datasource) - [Document path](#document-path) - [Document format](#document-format) - [ER diagram](#er-diagram) - [Filter tables](#filter-tables) - [Lint](#lint) - [Comments](#comments) - [Relations](#relations) - [Viewpoints](#viewpoints) - [Dictionary](#dictionary) - [Personalized Templates](#personalized-templates) - [Required Version](#required-version) - [Expand environment variables](#expand-environment-variables) [...]
+Use `tbls` when you need to:
+- **Generate Database Documentation**: Automatically produce GFM (GitHub Flavored Markdown), HTML, JSON, YAML, or Excel database documentation.
+- **Draw ER Diagrams**: Generate ER diagrams using Mermaid, PlantUML, PNG, or SVG.
+- **Lint Database Schemas**: Enforce conventions such as mandatory column comments, table naming schemes, primary key presence, or foreign key constraints.
+- **Check Schema Diffs**: Verify diffs between a running database and current documentation or between two database instances in CI/CD pipelines.
+- **Track Doc Coverage**: Calculate and enforce documentation coverage metrics across tables and columns.
+- **Enhance Schemas Virtually**: Define virtual relations, extra comments, and viewpoints without modifying the database schema directly.
+
+---
+
+## How to use
+
+### Basic CLI Commands
+
+#### 1. Generate Documentation
+Generate GFM markdown files in the `./docs/` directory from a database DSN:
+
+```bash
+# PostgreSQL
+tbls doc postgres://user:password@localhost:5432/dbname?sslmode=disable docs/
+
+# MySQL / MariaDB
+tbls doc my://user:password@tcp(localhost:3306)/dbname docs/
+
+# SQLite
+tbls doc sq://path/to/sqlite.db docs/
+```
+
+#### 2. Diff Database and Documentation
+Compare current database state against existing generated documentation:
+
+```bash
+tbls diff postgres://user:password@localhost:5432/dbname docs/
+```
+
+Compare two databases:
+```bash
+tbls diff postgres://user:pass@host1:5432/db postgres://user:pass@host2:5432/db
+```
+
+#### 3. Lint Database Schema
+Run schema linting using default or configured rules:
+
+```bash
+tbls lint postgres://user:password@localhost:5432/dbname
+```
+
+#### 4. Measure Documentation Coverage
+Check documentation percentage for tables and columns:
+
+```bash
+tbls coverage postgres://user:password@localhost:5432/dbname
+```
+
+---
+
+### Configuration (`.tbls.yml`)
+
+Save a `.tbls.yml` file in the project root to store credentials, virtual relations, lint rules, and formatting options.
+
+```yaml
+dsn: postgres://root:secret@127.0.0.1:5432/my_db?sslmode=disable
+docPath: docs
+
+er:
+  format: mermaid # options: mermaid, plantuml, png, svg
+  comment: true
+
+comments:
+  - table: users
+    tableComment: Primary application user accounts.
+    columnComments:
+      id: Unique user identifier
+      email: User login email address
+
+relations:
+  - table: orders
+    columns:
+      - user_id
+    parentTable: users
+    parentColumns:
+      - id
+    def: "Virtual relation for unconstrained user_id foreign key"
+
+lint:
+  requireTableComment:
+    enabled: true
+  requireColumnComment:
+    enabled: true
+    exclude:
+      - created_at
+      - updated_at
+  requireUnqiueIndexName:
+    enabled: true
+```
+
+---
+
+## Limitations
+
+- **Database Connectivity**: Requires direct network access to the target database server or supported exported metadata.
+- **External Image Rendering Dependencies**: Generating image-based ER diagrams (`png`, `svg`) via PlantUML or Mermaid requires external CLI installations (`plantuml`, `@mermaid-js/mermaid-cli`), unless outputting native text format (`mermaid` / `plantuml`).
+- **Static Schema Inspection**: Linting and documentation rely on schema reflection metadata rather than runtime query analysis.
+- **Driver-Specific Features**: Advanced data types or vendor-specific features across cloud databases (e.g., BigQuery, DynamoDB, Spanner) may have partial metadata support compared to standard relational databases (PostgreSQL/MySQL).

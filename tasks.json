@@ -94,19 +94,22 @@
     "kind": "write_tool",
     "skill": "yuzutech-kroki",
     "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
-    "status": "todo"
+    "status": "error: [Errno 1] Operation not permitted: 8",
+    "finished": "2026-11-26T02:52"
   },
   {
     "kind": "improve_doc",
     "skill": "yuzutech-kroki",
     "goal": "",
-    "status": "todo"
+    "status": "done",
+    "finished": "2026-11-26T02:53"
   },
   {
     "kind": "write_tool",
     "skill": "k1low-tbls",
     "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
-    "status": "todo"
+    "status": "error: [Errno 1] Operation not permitted: 8",
+    "finished": "2026-11-26T02:55"
   },
   {
     "kind": "improve_doc",
