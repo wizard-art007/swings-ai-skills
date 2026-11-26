@@ -421,7 +421,7 @@ def scan_python(code, filename="<llm>"):
 def run_sandboxed(workdir, cmd, timeout=120, memory_mb=None):
     """Run `cmd` in a throw-away copy of `workdir`: no network, no secrets, 'nobody' user,
     CPU/file-size/memory limits and a timeout. Real files are never touched."""
-    with tempfile.TemporaryDirectory() as tmp:
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
         dst = Path(tmp) / "work"
         shutil.copytree(workdir, dst, ignore=shutil.ignore_patterns(".git", "repo", "outputs"))
         os.chmod(tmp, 0o777)
@@ -436,6 +436,8 @@ def run_sandboxed(workdir, cmd, timeout=120, memory_mb=None):
             return r.returncode == 0, (r.stdout + r.stderr)[-4000:]
         except subprocess.TimeoutExpired:
             return False, f"Timed out after {timeout}s"
+        finally:   # files written by 'nobody' must stay deletable by us (GitHub Actions runs as a normal user)
+            subprocess.run(_sandbox_cmd(["chmod", "-R", "a+rwX", tmp]), capture_output=True)
 
 
 # ===== Cell 12: Self-editing code agent =====
@@ -591,7 +593,7 @@ class CodeAgent:
                             "\nRewrite without those calls/imports and resend all files.")
                 log(f"{label}: attempt {i} blocked by safety scan ({problems[0]})")
                 continue
-            with tempfile.TemporaryDirectory() as tmp:
+            with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
                 trial = Path(tmp) / "trial"
                 skip = (".git", "outputs") if sandbox_repo else (".git", "outputs", "repo")
                 shutil.copytree(workdir, trial, ignore=shutil.ignore_patterns(*skip))
@@ -614,7 +616,7 @@ class CodeAgent:
 agent = CodeAgent()
 
 # ===== Cell 13: Autopilot + scheduler =====
-import schedule, threading
+import schedule, threading, traceback
 
 TASKS_FILE = SKILLS_DIR / "tasks.json"   # queue you (or the agent) can add to
 REFRESH_DAYS = 7
@@ -652,7 +654,8 @@ def run_task_queue(limit=3):
             t["status"] = "done" if ok else "failed"
         except Exception as e:
             t["status"] = f"error: {e}"
-            log(f"task {t['kind']} {t['skill']}: ERROR {type(e).__name__}: {str(e)[:160]}")
+            where = traceback.format_exc().strip().splitlines()[-3].strip()[:120]
+            log(f"task {t['kind']} {t['skill']}: ERROR {type(e).__name__}: {str(e)[:160]} @ {where}")
         t["finished"] = datetime.datetime.now().isoformat(timespec="minutes")
         done += 1
     TASKS_FILE.write_text(json.dumps(tasks, indent=2))
