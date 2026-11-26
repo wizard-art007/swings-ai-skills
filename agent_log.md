@@ -179,3 +179,6 @@
 - 2026-11-26 20:07 — need ef20a2aa: verifying -> closed (capability check passes)
 - 2026-11-26 20:07 — need 966f88c3: building -> verifying (tool task done)
 - 2026-11-26 20:07 — need 966f88c3: verifying -> closed (capability check passes)
+- 2026-11-26 22:13 — need d3d569f1: open -> searching (tool scripts/agent_memory_summarizer.py)
+- 2026-11-26 22:13 — need d3d569f1: searching -> building (tool task queued on affaan-m-ecc)
+- 2026-11-26 22:13 — need 57c35597: open -> searching (tool scripts/test_coverage_analyzer.py)

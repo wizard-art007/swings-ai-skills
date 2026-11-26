@@ -496,9 +496,40 @@
     ],
     "action": "Implement the agent memory summarizer capability.",
     "priority": 2.0,
-    "status": "open",
+    "status": "building",
     "source": "self_review",
-    "ts": "2026-11-26T18:11"
+    "ts": "2026-11-26T18:11",
+    "log": [
+      {
+        "ts": "2026-11-26T22:13",
+        "from": "open",
+        "to": "searching",
+        "why": "tool scripts/agent_memory_summarizer.py"
+      },
+      {
+        "ts": "2026-11-26T22:13",
+        "from": "searching",
+        "to": "building",
+        "why": "tool task queued on affaan-m-ecc"
+      }
+    ],
+    "updated": "2026-11-26T22:13",
+    "queries": [
+      "agent memory summarizer",
+      "agent memory",
+      "summarizer"
+    ],
+    "tried_repos": [
+      "affaan-m/ECC"
+    ],
+    "repo": {
+      "full_name": "affaan-m/ECC",
+      "stars": 311266,
+      "score": 74.1,
+      "need_fit": 0.037
+    },
+    "skill": "affaan-m-ecc",
+    "module": "agent_memory_summarizer"
   },
   {
     "id": "57c35597",

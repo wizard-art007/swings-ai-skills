@@ -423,5 +423,14 @@
     "finished": "2026-11-26T20:07",
     "minutes": 0.03,
     "estimate": 0.5
+  },
+  {
+    "kind": "write_tool",
+    "skill": "affaan-m-ecc",
+    "goal": "close need: Missing Agent Memory Summarizer [need d3d569f1]",
+    "status": "todo",
+    "queued": "2026-11-26T22:13",
+    "need": "d3d569f1",
+    "priority": 2.0
   }
 ]
