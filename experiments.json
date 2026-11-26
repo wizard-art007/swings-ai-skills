@@ -110,5 +110,17 @@
       "tests/test_race_simulator.py",
       "src/race_simulator.py"
     ]
+  },
+  "llm-in-assembly": {
+    "title": "LLM in Assembly",
+    "description": "Qwen3-0.6B inference in pure Assembly / bare-metal bootable OS experiment.",
+    "source_url": "https://github.com/alesha-pro/llm.asm",
+    "status": "passed",
+    "created": "2026-11-26T23:27",
+    "files": [
+      "README.md",
+      "tests/test_qwen_asm.py",
+      "src/qwen_asm.py"
+    ]
   }
 }
