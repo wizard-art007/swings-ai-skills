@@ -183,3 +183,4 @@
 - 2026-11-26 22:13 — need d3d569f1: searching -> building (tool task queued on affaan-m-ecc)
 - 2026-11-26 22:13 — need 57c35597: open -> searching (tool scripts/test_coverage_analyzer.py)
 - 2026-11-26 22:14 — need 57c35597: searching -> building (tool task queued on sebastianbergmann-php-code-coverage)
+- 2026-11-26 22:14 — need d3d569f1: dropped the LLM's rewrite of tests/test_need_d3d569f1.py (acceptance test is fixed)

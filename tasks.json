@@ -441,5 +441,12 @@
     "queued": "2026-11-26T22:14",
     "need": "57c35597",
     "priority": 2.0
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "sebastianbergmann-php-code-coverage",
+    "goal": "",
+    "status": "todo",
+    "queued": "2026-11-26T22:14"
   }
 ]
