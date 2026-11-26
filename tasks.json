@@ -262,19 +262,22 @@
     "kind": "write_tool",
     "skill": "affaan-m-ecc",
     "goal": "a small offline Python helper that captures this project's core technique (for example an agent loop, tool calling, planning, memory or a prompt pattern) and applies it to a toy task; the tests must use a fake LLM function and no network",
-    "status": "todo"
+    "status": "done",
+    "finished": "2026-11-26T16:23"
   },
   {
     "kind": "write_tool",
     "skill": "microsoft-playwright",
     "goal": "a small offline Python helper that applies this project's testing approach (for example test-case generation, fluent assertions, retries and waits, page-object or fixture patterns) to a sample function or spec, with pytest tests",
-    "status": "todo"
+    "status": "done",
+    "finished": "2026-11-26T16:25"
   },
   {
     "kind": "write_tool",
     "skill": "leonxlnx-taste-skill",
     "goal": "a small offline Python helper that captures this project's core technique (for example an agent loop, tool calling, planning, memory or a prompt pattern) and applies it to a toy task; the tests must use a fake LLM function and no network",
-    "status": "todo"
+    "status": "done",
+    "finished": "2026-11-26T16:25"
   },
   {
     "kind": "write_tool",
