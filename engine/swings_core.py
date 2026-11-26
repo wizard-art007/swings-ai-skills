@@ -1783,3 +1783,392 @@ def autopilot_cycle():
     except Exception as e:
         syslog_exception("heal", e)
     _unhealed_autopilot_cycle()
+
+# ===== Cell 27: Mission + repo scout with learned scoring =====
+# The system searches GitHub in its mission domains, scores every candidate 0-100, keeps the best
+# ~30 as active skills (balanced across domains) and archives the rest. The score weights are learned:
+# components that predict which skills actually turn out useful gain weight over time.
+import math
+
+MISSION = {
+    "goal": "Grow by itself: find the best open-source projects, turn them into skills, and build real, "
+            "tested projects from those skills — within free limits.",
+    "domains": {
+        "diagrams": {"about": "UML, PlantUML, architecture diagrams, diagrams as code, software modelling",
+                     "queries": ["topic:uml", "topic:plantuml", "topic:diagrams-as-code",
+                                 "topic:architecture-diagram", "uml diagram in:name,description"]},
+        "ai_agents": {"about": "AI agents, LLM frameworks, agent tooling, coding assistants, developer tools",
+                      "queries": ["topic:ai-agents", "topic:llm-agent", "topic:agent-framework",
+                                  "topic:coding-assistant", "topic:developer-tools"]},
+        "qa_testing": {"about": "test automation, testing frameworks, end-to-end tests, test generation, code quality",
+                       "queries": ["topic:test-automation", "topic:testing-tools", "topic:e2e-testing",
+                                   "topic:property-based-testing", "topic:mutation-testing"]},
+    },
+}
+SCOUT_MIN_STARS = MIN_STARS            # 5000 (Cell 2)
+SCOUT_MAX_AGE_DAYS = 365               # must have been updated within a year
+MAX_ACTIVE_SKILLS = 30
+MAX_NEW_SKILLS_PER_REFRESH = 6         # grow gradually: every new skill costs LLM work (tool + docs)
+SCOUT_DETAIL_TOP = 60                  # only the best candidates get the (slower) detail checks
+ARCHIVE_MARGIN = 5                     # an active skill is only archived when clearly worse (no churn)
+REFRESH_DAYS = 2                       # scout every 2 days (was 7)
+WEIGHTS_FILE = STATE_DIR / "score_weights.json"
+SCORES_FILE = STATE_DIR / "repo_scores.json"
+USAGE_FILE = STATE_DIR / "skill_usage.json"
+NEEDS_FILE = STATE_DIR / "needs.json"
+ARCHIVE_FILE = SKILLS_DIR / "archive.json"
+LEADERBOARD = SKILLS_DIR / "SCOUTING.md"
+DEFAULT_WEIGHTS = {"popularity": 25, "activity": 20, "health": 15, "license": 10, "fit": 20, "usefulness": 10}
+WEIGHT_BOUNDS = (5, 40)
+LICENSE_SCORE = {"MIT": 1.0, "Apache-2.0": 1.0, "BSD-2-Clause": 1.0, "BSD-3-Clause": 1.0, "ISC": 1.0,
+                 "0BSD": 1.0, "Unlicense": 1.0, "Zlib": 1.0, "BSL-1.0": 1.0, "Artistic-2.0": 0.8,
+                 "MPL-2.0": 0.7, "LGPL-2.1": 0.7, "LGPL-3.0": 0.7, "EPL-1.0": 0.7, "EPL-2.0": 0.7,
+                 "GPL-2.0": 0.5, "GPL-3.0": 0.5, "AGPL-3.0": 0.3}
+
+def score_weights():
+    w = _jload(WEIGHTS_FILE, {})
+    return {k: float(w.get(k, v)) for k, v in DEFAULT_WEIGHTS.items()}
+
+def _save_weights(w, reason):
+    lo, hi = WEIGHT_BOUNDS
+    w = {k: min(hi, max(lo, v)) for k, v in w.items()}
+    total = sum(w.values())
+    w = {k: round(v * 100 / total, 1) for k, v in w.items()}
+    hist = _jload(WEIGHTS_FILE, {}).get("_history", [])[-30:]
+    hist.append({"ts": datetime.datetime.now().isoformat(timespec="minutes"), "reason": reason[:200], "weights": w})
+    _jsave(WEIGHTS_FILE, {**w, "_history": hist})
+    return w
+
+# ---- usefulness: what really happened with each skill --------------------------------
+def record_skill_use(skill_name, success):
+    """Called whenever a build/project used a skill's tools (Phase 2/3 call this too)."""
+    u = _jload(USAGE_FILE, {})
+    s = u.setdefault(skill_name, {"used": 0, "success": 0})
+    s["used"] += 1; s["success"] += int(bool(success))
+    _jsave(USAGE_FILE, u)
+
+def usefulness(skill_name):
+    """Laplace-smoothed success rate of the work done with this skill (0.5 = no evidence yet)."""
+    att = ok = 0
+    for t in _jload(TASKS_FILE, []):
+        if t.get("skill") == skill_name and t.get("status") in ("done", "failed"):   # infra errors don't count
+            att += 1; ok += t.get("status") == "done"
+    u = _jload(USAGE_FILE, {}).get(skill_name, {})
+    att += u.get("used", 0); ok += u.get("success", 0)
+    return (1 + ok) / (2 + att), att
+
+# ---- GitHub candidates --------------------------------------------------------------
+def _gh_get(url, params=None):
+    for i in range(3):
+        r = requests.get(url, headers=HEADERS, params=params, timeout=30)
+        if r.status_code in (403, 429) and "rate limit" in r.text.lower():
+            time.sleep(20 * (i + 1)); continue
+        return r
+    return r
+
+def _candidate(repo, domain):
+    return {"name": repo["name"], "full_name": repo["full_name"], "url": repo["html_url"],
+            "clone_url": repo["clone_url"], "stars": repo["stargazers_count"],
+            "license": (repo.get("license") or {}).get("spdx_id"), "language": repo.get("language"),
+            "topics": repo.get("topics", []), "description": repo.get("description") or "",
+            "default_branch": repo.get("default_branch"), "pushed_at": repo.get("pushed_at"),
+            "open_issues": repo.get("open_issues_count", 0), "forks": repo.get("forks_count", 0),
+            "archived": repo.get("archived", False), "domain": domain}
+
+def search_domain(domain, per_query=15):
+    since = (datetime.date.today() - datetime.timedelta(days=SCOUT_MAX_AGE_DAYS)).isoformat()
+    out = {}
+    for q in MISSION["domains"][domain]["queries"]:
+        r = _gh_get("https://api.github.com/search/repositories",
+                    {"q": f"{q} stars:>={SCOUT_MIN_STARS} pushed:>={since} is:public archived:false",
+                     "sort": "stars", "order": "desc", "per_page": per_query})
+        if r.ok:
+            for repo in r.json().get("items", []):
+                out.setdefault(repo["full_name"], _candidate(repo, domain))
+        else:
+            log(f"scout: search '{q}' failed {r.status_code}")
+        time.sleep(2.5)          # search API: 30 requests/minute
+    return out
+
+def _details(c):
+    """Commits in the last 90 days + date of the latest release."""
+    since = (datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=90)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    r = _gh_get(f"https://api.github.com/repos/{c['full_name']}/commits", {"since": since, "per_page": 1})
+    commits = 0
+    if r.ok:
+        m = re.search(r'[?&]page=(\d+)>; rel="last"', r.headers.get("Link", ""))
+        commits = int(m.group(1)) if m else len(r.json())
+    r = _gh_get(f"https://api.github.com/repos/{c['full_name']}/releases", {"per_page": 1})
+    rel = r.json()[0].get("published_at") if r.ok and r.json() else None
+    c.update(commits_90d=commits, last_release=rel)
+    return c
+
+def _days_since(ts):
+    if not ts:
+        return 9999
+    return (datetime.datetime.now(datetime.timezone.utc) -
+            datetime.datetime.fromisoformat(ts.replace("Z", "+00:00"))).days
+
+def _needs_text():
+    """What the system currently needs: mission domains + goals + open needs (Phase 2 adds to needs.json)."""
+    goals = [e["payload"].get("goal", "") for e in _jload(EVENTS_FILE, [])[-50:] if e["type"] == "goal.new"]
+    needs = [n.get("need", "") for n in _jload(NEEDS_FILE, []) if n.get("status", "open") == "open"]
+    return " ".join(goals + needs)
+
+def score_components(cands):
+    """Every component on a 0..1 scale."""
+    docs, keys = [], list(cands)
+    for k in keys:
+        c = cands[k]
+        docs.append(" ".join([c["full_name"].replace("/", " "), c["description"], " ".join(c["topics"])]))
+    need = _needs_text()
+    queries = {d: MISSION["domains"][d]["about"] + " " + need for d in MISSION["domains"]}
+    vec = TfidfVectorizer(stop_words="english").fit(docs + list(queries.values()))
+    sims = cosine_similarity(vec.transform(docs), vec.transform([queries[cands[k]["domain"]] for k in keys]))
+    fit_raw = [sims[i][i] for i in range(len(keys))]
+    top = max(fit_raw) or 1
+    for i, k in enumerate(keys):
+        c = cands[k]
+        recency = max(0.0, 1 - _days_since(c.get("pushed_at")) / SCOUT_MAX_AGE_DAYS)
+        commits = min(1.0, c.get("commits_90d", 0) / 50) if "commits_90d" in c else recency
+        rel_bonus = 1.0 if _days_since(c.get("last_release")) < 365 else 0.0
+        issues_per_k = c.get("open_issues", 0) / max(c["stars"] / 1000, 1)
+        use, att = usefulness(c["skill_name"]) if c.get("skill_name") else (0.5, 0)
+        c["components"] = {
+            "popularity": round(min(1.0, math.log10(max(c["stars"], 1)) / 5), 3),
+            "activity": round(0.5 * recency + 0.5 * commits, 3),
+            "health": round(0.7 / (1 + issues_per_k / 10) + 0.3 * rel_bonus, 3),
+            "license": LICENSE_SCORE.get(c.get("license"), 0.0),
+            "fit": round(float(fit_raw[i] / top), 3),
+            "usefulness": round(use, 3)}
+        c["evidence"] = att
+    return cands
+
+def total_score(c, w=None):
+    w = w or score_weights()
+    return round(float(sum(w[k] * c["components"][k] for k in w)), 1)
+
+def _hard_fail(c):
+    if c.get("archived"): return "archived upstream"
+    if c.get("license") not in OPEN_SOURCE_LICENSES: return f"licence {c.get('license')}"
+    if c["stars"] < SCOUT_MIN_STARS: return f"{c['stars']} stars < {SCOUT_MIN_STARS}"
+    if _days_since(c.get("pushed_at")) > SCOUT_MAX_AGE_DAYS: return "no updates for a year"
+    return None
+
+def _guess_domain(c):
+    text = " ".join([c.get("description", ""), " ".join(c.get("topics", []))]).lower()
+    best = max(MISSION["domains"], key=lambda d: sum(w in text for w in MISSION["domains"][d]["about"].lower().split()))
+    return best
+
+# ---- the scout -------------------------------------------------------------------------
+def scout_repos(dry_run=False):
+    """Search every mission domain, score candidates + current skills, keep the best, archive the rest."""
+    log("scout: searching GitHub across " + ", ".join(MISSION["domains"]))
+    cands = {}
+    for d in MISSION["domains"]:
+        for k, v in search_domain(d).items():
+            cands.setdefault(k, v)
+    reg = load_registry()
+    for name, s in reg.items():                 # current skills are re-scored with fresh data
+        if s["full_name"] not in cands:
+            r = _gh_get(f"https://api.github.com/repos/{s['full_name']}")
+            if r.ok:
+                cands[s["full_name"]] = _candidate(r.json(), s.get("domain") or "diagrams")
+        if s["full_name"] in cands:
+            cands[s["full_name"]]["skill_name"] = name
+            cands[s["full_name"]]["domain"] = s.get("domain") or cands[s["full_name"]]["domain"]
+    if not cands:
+        return "scout: no candidates (GitHub search unavailable?)"
+    w = score_weights()
+    score_components(cands)                       # cheap pass on all
+    ranked = sorted(cands.values(), key=lambda c: -total_score(c, w))
+    for c in ranked[:SCOUT_DETAIL_TOP] + [c for c in ranked[SCOUT_DETAIL_TOP:] if c.get("skill_name")]:
+        try:
+            _details(c)
+        except Exception as e:
+            log(f"scout: details failed for {c['full_name']}: {type(e).__name__}")
+    score_components(cands)                       # full pass with details
+    for c in cands.values():
+        c["score"] = total_score(c, w)
+        c["fail"] = _hard_fail(c)
+    ok = sorted((c for c in cands.values() if not c["fail"]), key=lambda c: -c["score"])
+    # pick the active set: a fair share per domain, then the best of the rest
+    quota = MAX_ACTIVE_SKILLS // len(MISSION["domains"])
+    chosen = []
+    for d in MISSION["domains"]:
+        chosen += [c for c in ok if c["domain"] == d][:quota]
+    chosen += [c for c in ok if c not in chosen][:MAX_ACTIVE_SKILLS - len(chosen)]
+    cutoff = min((c["score"] for c in chosen), default=0)
+    keep = {c["full_name"] for c in chosen}
+    # existing skills stay unless they fail a hard rule or are clearly worse than the cut-off
+    archive, added = [], []
+    for c in cands.values():
+        if c.get("skill_name") and c["full_name"] not in keep:
+            if c["fail"] or c["score"] < cutoff - ARCHIVE_MARGIN:
+                archive.append(c)
+    room = MAX_ACTIVE_SKILLS - (len(reg) - len(archive))
+    fresh = {d: [c for c in chosen if not c.get("skill_name") and c["domain"] == d] for d in MISSION["domains"]}
+    new = []                                      # round-robin over domains, best first, so growth stays balanced
+    while any(fresh.values()) and len(new) < max(0, min(room, MAX_NEW_SKILLS_PER_REFRESH)):
+        for d in MISSION["domains"]:
+            if fresh[d] and len(new) < min(room, MAX_NEW_SKILLS_PER_REFRESH):
+                new.append(fresh[d].pop(0))
+    _jsave(SCORES_FILE, {"ts": datetime.datetime.now().isoformat(timespec="minutes"), "weights": w,
+                         "cutoff": cutoff, "candidates": sorted(cands.values(), key=lambda c: -c["score"])})
+    if dry_run:
+        return {"new": [c["full_name"] for c in new], "archive": [c["full_name"] for c in archive], "cutoff": cutoff}
+    # apply
+    stored = _jload(REGISTRY_FILE, {})
+    arch = _jload(ARCHIVE_FILE, {})
+    for c in archive:
+        n = c["skill_name"]
+        arch[n] = {**stored.pop(n, {}), "archived": datetime.date.today().isoformat(),
+                   "reason": c["fail"] or f"score {c['score']} < cut-off {cutoff}", "score": c["score"]}
+        log(f"scout: archived {n} ({arch[n]['reason']})")
+    for c in new:
+        try:
+            skill = save_as_skill({k: c[k] for k in ("name", "full_name", "url", "clone_url", "stars", "license",
+                                                     "language", "topics", "description", "default_branch")},
+                                  clone=False)
+            stored[skill["skill_name"]] = {k: v for k, v in skill.items() if k not in ("path", "repo_path")}
+            added.append(skill["skill_name"])
+            log(f"scout: new skill {skill['skill_name']} ({c['domain']}, score {c['score']})")
+        except Exception as e:
+            log(f"scout: could not add {c['full_name']}: {type(e).__name__}: {e}")
+    for c in cands.values():                     # remember domain + score on every active skill
+        n = c.get("skill_name") or next((a for a in added if stored.get(a, {}).get("full_name") == c["full_name"]), None)
+        if n in stored:
+            stored[n].update(domain=c["domain"], score=c["score"], components=c["components"], stars=c["stars"])
+    _jsave(REGISTRY_FILE, stored)
+    _jsave(ARCHIVE_FILE, arch)
+    write_leaderboard(cands, cutoff)
+    commit_skills(f"scout: +{len(added)} skills, {len(archive)} archived")
+    return {"added": added, "archived": [c["skill_name"] for c in archive], "cutoff": cutoff,
+            "active": len(stored)}
+
+def write_leaderboard(cands, cutoff):
+    w = score_weights()
+    reg = load_registry()
+    rows = sorted(cands.values(), key=lambda c: -c["score"])
+    lines = [f"# Swings AI — scouting leaderboard", "",
+             f"Updated {datetime.date.today()} · active skills: {len(reg)}/{MAX_ACTIVE_SKILLS} · cut-off score: {cutoff}",
+             "", "Weights (learned): " + ", ".join(f"{k} {v:g}" for k, v in w.items()), "",
+             "| # | Repo | Domain | ★ | Score | Pop | Act | Health | Lic | Fit | Useful | Status |",
+             "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    for i, c in enumerate(rows[:60], 1):
+        k = c["components"]
+        status = ("active" if c["full_name"] in {s["full_name"] for s in reg.values()}
+                  else f"rejected: {c['fail']}" if c["fail"] else "candidate")
+        lines.append(f"| {i} | [{c['full_name']}]({c['url']}) | {c['domain']} | {c['stars']:,} | **{c['score']}** | "
+                     f"{k['popularity']:.2f} | {k['activity']:.2f} | {k['health']:.2f} | {k['license']:.2f} | "
+                     f"{k['fit']:.2f} | {k['usefulness']:.2f} | {status} |")
+    LEADERBOARD.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+# ---- learning the weights ---------------------------------------------------------------
+def learn_weights(min_points=6, step=3.0):
+    """Shift weight toward components that predict real usefulness among active skills."""
+    reg = load_registry()
+    pts = []
+    for n, s in reg.items():
+        use, att = usefulness(n)
+        if att >= 2 and s.get("components"):
+            pts.append((s["components"], use))
+    if len(pts) < min_points:
+        return f"not enough evidence yet ({len(pts)}/{min_points} skills with results)"
+    w = score_weights()
+    ys = [u for _, u in pts]
+    my = sum(ys) / len(ys)
+    sy = math.sqrt(sum((y - my) ** 2 for y in ys)) or 1e-9
+    changes = {}
+    for k in w:
+        if k == "usefulness":
+            continue
+        xs = [c.get(k, 0) for c, _ in pts]
+        mx = sum(xs) / len(xs)
+        sx = math.sqrt(sum((x - mx) ** 2 for x in xs)) or 1e-9
+        corr = sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / (sx * sy)
+        changes[k] = round(step * corr, 2)
+        w[k] += changes[k]
+    w["usefulness"] += step * 0.5            # evidence itself becomes more trusted as it accumulates
+    w = _save_weights(w, f"learned from {len(pts)} skills: {changes}")
+    log(f"scout: weights learned {w}")
+    return w
+
+def tune_score_weights(component, delta, reason):
+    """Evolver tool: small, bounded manual nudge of one weight."""
+    w = score_weights()
+    if component not in w:
+        return f"unknown component; use one of {list(w)}"
+    w[component] += max(-3.0, min(3.0, float(delta)))
+    w = _save_weights(w, f"evolver: {reason}")
+    log(f"evolver tuned score weight {component} by {delta}: {reason[:100]}")
+    return w
+
+def top_repos(domain="", n=10):
+    rows = _jload(SCORES_FILE, {}).get("candidates", [])
+    return [{k: c.get(k) for k in ("full_name", "domain", "stars", "score", "fail")}
+            for c in rows if not domain or c["domain"] == domain][:n]
+
+def add_need(need, domain=""):
+    """Record a capability the system is missing; scouting will favour repos that fit it."""
+    needs = _jload(NEEDS_FILE, [])
+    needs.append({"need": need[:300], "domain": domain, "status": "open",
+                  "ts": datetime.datetime.now().isoformat(timespec="minutes")})
+    _jsave(NEEDS_FILE, needs[-50:])
+    return "need recorded"
+
+# news scout may only add repos that pass the same rules and beat the cut-off
+def add_skill_from_repo(full_name):
+    r = _gh_get(f"https://api.github.com/repos/{full_name}")
+    if not r.ok:
+        return f"repo not found: {full_name}"
+    c = _candidate(r.json(), _guess_domain(_candidate(r.json(), "diagrams")))
+    if _hard_fail(c):
+        return f"rejected {full_name}: {_hard_fail(c)}"
+    _details(c)
+    score_components({full_name: c})
+    c["score"] = total_score(c)
+    cutoff = _jload(SCORES_FILE, {}).get("cutoff", 0)
+    if c["score"] < cutoff:
+        return f"rejected {full_name}: score {c['score']} below cut-off {cutoff}"
+    if len(load_registry()) >= MAX_ACTIVE_SKILLS:
+        return f"skill limit reached; {full_name} (score {c['score']}) will compete at the next scouting"
+    skill = save_as_skill({k: c[k] for k in ("name", "full_name", "url", "clone_url", "stars", "license", "language",
+                                             "topics", "description", "default_branch")}, clone=False)
+    stored = _jload(REGISTRY_FILE, {})
+    stored[skill["skill_name"]] = {**{k: v for k, v in skill.items() if k not in ("path", "repo_path")},
+                                   "domain": c["domain"], "score": c["score"], "components": c["components"]}
+    _jsave(REGISTRY_FILE, stored)
+    commit_skills(f"new skill from news: {full_name} (score {c['score']})")
+    return f"added skill {skill['skill_name']} (score {c['score']})"
+
+def refresh_skills():
+    log("refresh: scouting GitHub (mission domains, learned scoring)")
+    try:
+        learn_weights()
+    except Exception as e:
+        log(f"scout: weight learning skipped: {type(e).__name__}: {e}")
+    result = scout_repos()
+    log(f"scout: {result}")
+    return result
+
+refresh_skills = _trace("refresh")(refresh_skills)
+scout_repos = _trace("scout")(scout_repos)
+
+TOOLS.register("add_skill_from_repo", add_skill_from_repo,
+               "Add an open-source GitHub repo (owner/name) as a skill — only if it passes the rules and scores high enough.")
+TOOLS.register("top_repos", top_repos, "Best-scored GitHub repos from the last scouting (optionally for one domain).")
+TOOLS.register("add_need", add_need, "Record a capability the system is missing, so scouting looks for it.")
+TOOLS.register("tune_score_weights", tune_score_weights,
+               "Nudge one repo-scoring weight by at most ±3 (popularity, activity, health, license, fit, usefulness).",
+               protected=True)
+
+def _upgrade_evolver():
+    a = load_agents().get("evolver")
+    if a and "tune_score_weights" not in a.tools:
+        a.tools += ["tune_score_weights", "top_repos"]
+        a.system_prompt += (" Also check top_repos: if active skills keep failing although they scored high, "
+                            "tune_score_weights by a small step (state the reason). At most one weight change per run.")
+        save_agent(a)
+        commit_skills("evolver can tune repo-scoring weights")
+_upgrade_evolver()
