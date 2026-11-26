@@ -2,3 +2,5 @@
 outputs/
 *.npz
 __pycache__/
+.skill_repos/
+.pytest_cache/
