@@ -3492,6 +3492,7 @@ def search_for_need(n, exclude=()):
     cands, failed = {}, 0
     domain = n.get("domain") or ""
     queries = _need_queries(n)
+    n["queries"] = queries
     for q in queries:
         r = _gh_get("https://api.github.com/search/repositories",
                     {"q": f"{q} stars:>={SCOUT_MIN_STARS} pushed:>={since} is:public archived:false",
@@ -3602,7 +3603,8 @@ def start_need(n):
             return _move(n, "open", f"{e}; retried next run")
         if not best:
             n["tries"] = n.get("tries", 0) + 1
-            return _move(n, "parked" if n["tries"] >= MAX_NEED_TRIES else "open", "no repo passes the hard rules")
+            return _move(n, "parked" if n["tries"] >= MAX_NEED_TRIES else "open",
+                         f"no repo passes the hard rules for {n.get('queries')}")
         n.setdefault("tried_repos", []).append(best["full_name"])
         n["repo"] = {k: best.get(k) for k in ("full_name", "stars", "score", "need_fit")}
         skill = best.get("skill_name") or _add_need_skill(best, n)
@@ -3687,7 +3689,9 @@ def _skill_context(skill, max_chars=6000):
     text += (f"\n\nACCEPTANCE CHECK (already in tests/test_need_{n['id']}.py; it MUST pass, do not rewrite it):\n"
              f"```python\n{_need_check(n)}\n```\nThe tool is scripts/{module}.py with exactly the functions and "
              "return values this check uses. tests/captools.py loads it; do not write captools.py. "
-             "The skill's existing tests must keep passing.")
+             "The skill's existing tests must keep passing. If the check and an existing test seem to want different "
+             "output, satisfy BOTH: keep the old behaviour for the inputs the old tests use and give the check's "
+             "inputs (e.g. a parameter value the old tests never pass) the behaviour the check expects.")
     if len(src) > PATCH_MODE_OVER:
         index, used = _patch_view(src, _need_check(n))
         return text + (f"\n\nscripts/{module}.py already exists ({len(src)} chars) and is too big to resend. "
