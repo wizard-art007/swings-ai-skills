@@ -52,3 +52,4 @@
 - 2026-11-26 13:27 — plan: retrying write_tool for yuzutech-kroki (failed 1x before)
 - 2026-11-26 13:27 — plan: retrying write_tool for k1low-tbls (failed 1x before)
 - 2026-11-26 13:30 — plantuml-stdlib-c4-plantuml: 'a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki' PASSED on attempt 1 (scripts/c4_plantuml_generator.py, tests/test_c4_plantuml_generator.py)
+- 2026-11-26 13:33 — plantuml-stdlib-c4-plantuml: SKILL.md improved
