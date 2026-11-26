@@ -11,10 +11,56 @@ saved: 2026-11-26
 
 # microsoft/playwright
 
-Use this skill when the task involves: automation, chrome, chromium, e2e-testing, electron, end-to-end-testing, firefox, javascript, playwright, test.
+Playwright is a framework for web automation and testing. It drives Chromium, Firefox, and WebKit with a single API — in your tests, in your scripts, and as a tool for AI agents.
 
-- Source code: cloned on demand (`ensure_repo(skill)`); licence file(s): see source
-- Original README: `README_source.md`
+## When to use
+Use this skill when the task involves:
+- End-to-end (E2E) testing for web applications across multiple browsers (Chromium, Firefox, WebKit).
+- Web automation, browser scripting, and web scraping.
+- Generating automated browser workflows using Playwright Test, the Playwright CLI, or Playwright MCP for AI agents.
+- Interacting with single-page applications, handling auto-waiting, and using web-first assertions.
 
-## Summary from README
-# 🎭 Playwright [](https://www.npmjs.com/package/playwright) [](https://www.chromium.org/Home) [](https://www.mozilla.org/en-US/firefox/new/) [](https://webkit.org/) [](https://aka.ms/playwright/discord) ## [Documentation](https://playwright.dev) | [API reference](https://playwright.dev/docs/api/class-playwright) Playwright is a framework for web automation and testing. It drives Chromium, Firefox, and WebKit with a single API — in your tests, in your scripts, and as a tool for AI agents. ## Get Started Choose the path that fits your workflow: | | Best for | Install | |---|---|---| | **[Playwright Test](#playwright-test)** | End-to-end testing | `npm init playwright@latest` | | **[Playwright CLI](#playwright-cli)** | Coding agents (Claude Code, Copilot) | `npm i -g @playwright/cli@latest` | | **[Playwright MCP](#playwright-mcp)** | AI agents and LLM-driven automation | `npx @playwright/mcp@latest` | | **[Playwright Library](#playwright-library)** | Browser automation scripts | `npm i playwright` | | **[VS Code Extension](#vs-code-extension)** | Test authoring and debugging in VS Code | [Install from Marketplace](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright) | --- ## Playwright Test Playwright Test is a full-featured test runner built for end-to-end testing. It runs tests across Chromium, Firefox, and WebKit with full browser isolation, auto-waiting, and web-first assertions. ### Install ```bash npm init playwright@latest ``` Or add [...]
+## How to use
+
+### Installation
+Choose the path that fits your workflow:
+- **Playwright Test (E2E Testing):**
+  ```bash
+  npm init playwright@latest
+  ```
+- **Playwright Library (Browser automation scripts):**
+  ```bash
+  npm i playwright
+  ```
+- **Playwright CLI (Coding agents):**
+  ```bash
+  npm i -g @playwright/cli@latest
+  ```
+- **Playwright MCP (AI agents and LLM-driven automation):**
+  ```bash
+  npx @playwright/mcp@latest
+  ```
+
+### Basic Automation Script Example (TypeScript/JavaScript)
+```typescript
+import { chromium } from 'playwright';
+
+(async () => {
+  const browser = await chromium.launch({ headless: true });
+  const page = await browser.newPage();
+  await page.goto('https://playwright.dev');
+  console.log(await page.title());
+  await browser.close();
+})();
+```
+
+### Running Tests
+Execute your Playwright test suite using the CLI:
+```bash
+npx playwright test
+```
+
+## Limitations
+- **Browser Binary Size:** Downloading and caching browser binaries (Chromium, Firefox, WebKit) requires significant disk space and network bandwidth during initial setup.
+- **Environment Dependencies:** Running WebKit and certain headless browser configurations on minimal Linux containers may require additional system dependencies and libraries installed via `npx playwright install-deps`.
+- **Anti-Bot Protections:** Modern web scraping targets often employ advanced bot detection (e.g., Cloudflare, Akamai) that can flag headless browser automation unless properly configured with stealth plugins or user-agent tweaks.
