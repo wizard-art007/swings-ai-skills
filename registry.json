@@ -4,7 +4,7 @@
     "full_name": "ashishps1/awesome-low-level-design",
     "url": "https://github.com/ashishps1/awesome-low-level-design",
     "clone_url": "https://github.com/ashishps1/awesome-low-level-design.git",
-    "stars": 28257,
+    "stars": 28263,
     "license": "GPL-3.0",
     "language": "Java",
     "topics": [
@@ -31,7 +31,7 @@
     "full_name": "plantuml/plantuml",
     "url": "https://github.com/plantuml/plantuml",
     "clone_url": "https://github.com/plantuml/plantuml.git",
-    "stars": 13438,
+    "stars": 13440,
     "license": "LGPL-3.0",
     "language": "Java",
     "topics": [
@@ -54,7 +54,7 @@
     "full_name": "yizhiyanhua-ai/fireworks-tech-graph",
     "url": "https://github.com/yizhiyanhua-ai/fireworks-tech-graph",
     "clone_url": "https://github.com/yizhiyanhua-ai/fireworks-tech-graph.git",
-    "stars": 12067,
+    "stars": 12075,
     "license": "MIT",
     "language": "Python",
     "topics": [
@@ -68,14 +68,14 @@
     "description": "Generate production-quality SVG+PNG technical diagrams from natural language. 7 styles, UML support, and AI/Agent workflow patterns.",
     "default_branch": "main",
     "skill_name": "yizhiyanhua-ai-fireworks-tech-graph",
-    "readme_text": "[English](README.md) | [\u4e2d\u6587](README.zh.md)\n\n[Release history](docs/releases/README.md) \u00b7 [Changelog](CHANGELOG.md)\n\n# fireworks-tech-graph\n\n> **Stop drawing diagrams by hand.** Describe your system in English or Chinese \u2014 get geometry-safe SVG, PNG, focused SVG-to-GIF motion, and offline interactive technical diagrams.\n\n[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)\n[![GitHub Release](https://img.shields.io/github/v/release/yizhiyanhua-ai/fireworks-tech-graph)](https://github.com/yizhiyanhua-ai/fireworks-tech-graph/releases)\n[![Codex Skill](https://img.shields.io/badge/Codex-Skill-10a37f)](https://learn.chatgpt.com/docs/build-skills)\n[![Claude Code Skill](https://img.shields.io/badge/Claude%20Code-Skill-d97757)](https://code.claude.com/docs/en/skills)\n[![12 Visual Styles](https://img.shields.io/badge/Styles-12-purple)]()\n[![14 Diagram Types](https://img.shields.io/badge/Diagram%20Types-14-green)]()\n[![UML Support](https://img.shields.io/badge/UML-Full%20Support-orange)]()\n\n---\n\n## Output quality\n\nThe current checkout adds complete-text reporting and stronger supporting text across the default themes. Add `\"text_policy\": \"strict\"` to reject visible truncation before output is written; reports preserve the full source label and explain how to recover. Chinese descriptions use the available second line. See [visual quality](references/visual-quality.md) for theme-specific guidance and measurement limits.\n\n```bash\npython3 \"$SKILL_ROOT/scripts/fireworks.py\" version\npython3 \"$SKILL_ROOT/scripts/fireworks.py\" export-png diagram.svg diagram.png --width 1920\n```\n\n`version` reports the package, actual Skill root and Git state when available. `doctor` distinguishes SVG/HTML support from optional PNG/GIF dependencies. PNG export checks the root canvas, bounds image size, writes atomically and reads the resulting pixel dimensions back. The browser PNG exporter remains available for Chromium fidelity. The showcase GIFs below are the published 1.2.0 references; this unreleased upgrade preserves their motion contracts.\n\n\n## Overview\n\n`fireworks-tech-graph` is one Agent Skill that works unchanged in **Codex and Claude Code**. It turns natural language descriptions into polished, geometry-checked SVG diagrams, high-resolution PNGs, validated SVG-to-GIF semantic motion, and offline interactive HTML. The focused animation path accepts a generated semantic SVG and emits one compact, probed GIF. It ships with **11 generator-backed styles** and **1 AI-authored style (Dark Luxury)**. Four engineering-first styles add executable contracts for C4 reviews, cloud deployments, event streams, and reliability investigations, alongside deep AI/Agent domain patterns and all 14 UML diagram types.\n\n```\nUser: \"Generate a Mem0 memory architecture diagram, dark style\"\n  \u2192 Skill classifies: Memory Architecture Diagram, Style 2\n  \u2192 Generates SVG with swim lanes, cylinders, semantic arrows\n  \u2192 Exports 1920px PNG\n  \u2192 Reports: mem0-architecture.svg / mem0-architecture.png\n```\n\n---\n\n## Sponsors\n\n<table>\n  <tr>\n    <td width=\"200\" align=\"center\"><a href=\"https://aigocode.app/invite/yizhiyanhua\"><img src=\"assets/sponsors/aigocode.png\" alt=\"AIGoCode\" width=\"160\" /></a></td>\n    <td>Thanks to <strong>AIGoCode</strong> for sponsoring this project! AIGoCode is an all-in-one platform that integrates Claude Code, Codex, and the latest Gemini models, providing you with stable, efficient, and highly cost-effective AI coding services. The sponsor advertises flexible subscriptions and direct access without a VPN; availability and account conditions follow its own service terms. AIGoCode has prepared a special benefit for <strong>fireworks-tech-graph</strong> users: if you register via <a href=\"https://aigocode.app/invite/yizhiyanhua\">this link</a>, you'll receive an extra <strong>10% bonus credit</strong> on your first top-up!</td>\n  </tr>\n</table>\n\nInterested in becoming a sponsor? Contact: <a href=\"mailto:ccc7574@gmail.com\">ccc7574@gmail.com</a>\n\n---\n\n## Work With the Builder\n\nThis project is also a proof surface for a broader capability: turning vague AI/devtool workflows into constrained, reusable systems with validation, documentation, export paths, and product-facing polish.\n\nIf you are building agent infrastructure, AI IDEs, internal copilots, developer tools, technical documentation systems, or applied AI workflow products, I am open to scoped paid sprints, design-partner work, and founding engineer conversations.\n\n- Founder-facing profile: https://bradzhang.dev/en\n- Commercial case study: https://bradzhang.dev/en/case-studies/fireworks-tech-graph\n- Work with me: https://bradzhang.dev/en/work-with-me\n\n---\n\n## Showcase\n\n> The animated previews use the user-approved 5.75-second settled-flow timeline: routes draw in first, then the final topology keeps live data moving for two additional seconds. Each full-size GIF is 960px wide at 20fps / 115 frames; the 3\u00d74 overview is an optimized 1200px preview. Lossless 1920px PNGs remai"
+    "readme_text": "[English](README.md) | [\u4e2d\u6587](README.zh.md)\n\n[Release history](docs/releases/README.md) \u00b7 [Changelog](CHANGELOG.md)\n\n# fireworks-tech-graph\n\n> **Stop drawing diagrams by hand.** Describe your system in English or Chinese \u2014 get geometry-safe SVG, PNG, focused SVG-to-GIF motion, and offline interactive technical diagrams.\n\n[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)\n[![GitHub Release](https://img.shields.io/github/v/release/yizhiyanhua-ai/fireworks-tech-graph)](https://github.com/yizhiyanhua-ai/fireworks-tech-graph/releases)\n[![Codex Skill](https://img.shields.io/badge/Codex-Skill-10a37f)](https://learn.chatgpt.com/docs/build-skills)\n[![Claude Code Skill](https://img.shields.io/badge/Claude%20Code-Skill-d97757)](https://code.claude.com/docs/en/skills)\n[![12 Visual Styles](https://img.shields.io/badge/Styles-12-purple)]()\n[![14 Diagram Types](https://img.shields.io/badge/Diagram%20Types-14-green)]()\n[![UML Support](https://img.shields.io/badge/UML-Full%20Support-orange)]()\n\n---\n\n## Output quality\n\nThe current checkout adds complete-text reporting and stronger supporting text across the default themes. Add `\"text_policy\": \"strict\"` to reject visible truncation before output is written; reports preserve the full source label and explain how to recover. Chinese descriptions use the available second line. See [visual quality](references/visual-quality.md) for theme-specific guidance and measurement limits.\n\n```bash\npython3 \"$SKILL_ROOT/scripts/fireworks.py\" version\npython3 \"$SKILL_ROOT/scripts/fireworks.py\" export-png diagram.svg diagram.png --width 1920\n```\n\n`version` reports the package, actual Skill root and Git state when available. `doctor` distinguishes SVG/HTML support from optional PNG/GIF dependencies. PNG export checks the root canvas, bounds image size, writes atomically and reads the resulting pixel dimensions back. The browser PNG exporter remains available for Chromium fidelity. The showcase GIFs below are the published 1.2.0 references; this unreleased upgrade preserves their motion contracts.\n\n\n## Overview\n\n`fireworks-tech-graph` is one Agent Skill that works unchanged in **Codex and Claude Code**. It turns natural language descriptions into polished, geometry-checked SVG diagrams, high-resolution PNGs, validated SVG-to-GIF semantic motion, and offline interactive HTML. The focused animation path accepts a generated semantic SVG and emits one compact, probed GIF. It ships with **11 generator-backed styles** and **1 AI-authored style (Dark Luxury)**. Four engineering-first styles add executable contracts for C4 reviews, cloud deployments, event streams, and reliability investigations, alongside deep AI/Agent domain patterns and all 14 UML diagram types.\n\n```\nUser: \"Generate a Mem0 memory architecture diagram, dark style\"\n  \u2192 Skill classifies: Memory Architecture Diagram, Style 2\n  \u2192 Generates SVG with swim lanes, cylinders, semantic arrows\n  \u2192 Exports 1920px PNG\n  \u2192 Reports: mem0-architecture.svg / mem0-architecture.png\n```\n\n---\n\n## Sponsors\n\nInterested in becoming a sponsor? Contact: <a href=\"mailto:ccc7574@gmail.com\">ccc7574@gmail.com</a>\n\n---\n\n## Work With the Builder\n\nThis project is also a proof surface for a broader capability: turning vague AI/devtool workflows into constrained, reusable systems with validation, documentation, export paths, and product-facing polish.\n\nIf you are building agent infrastructure, AI IDEs, internal copilots, developer tools, technical documentation systems, or applied AI workflow products, I am open to scoped paid sprints, design-partner work, and founding engineer conversations.\n\n- Founder-facing profile: https://bradzhang.dev/en\n- Commercial case study: https://bradzhang.dev/en/case-studies/fireworks-tech-graph\n- Work with me: https://bradzhang.dev/en/work-with-me\n\n---\n\n## Showcase\n\n> The animated previews use the user-approved 5.75-second settled-flow timeline: routes draw in first, then the final topology keeps live data moving for two additional seconds. Each full-size GIF is 960px wide at 20fps / 115 frames; the 3\u00d74 overview is an optimized 1200px preview. Lossless 1920px PNGs remain in `assets/samples/` as static regression baselines.\n\n![Animated 12-style showcase \u2014 one distinct engineering scenario per style](assets/samples/showcase-12-styles.gif)\n\nThe v1.2.0 overview above and every full-size animated sample below come from the approved regression set. Each style keeps a distinct scenario while sharing the same geometry, text-fit, wire-routing, and semantic-motion quality gates.\n\n### Style 1 \u2014 Flat Icon (default)\n*Mem0 Memory Architecture \u2014 personal-memory extraction, conflict resolution, storage, and retrieval*\n![Style 1 \u2014 Flat Icon](assets/samples/sample-style1-flat.gif)\n\n### Style 2 \u2014 Dark Terminal\n*Tool Call Flow \u2014 dark terminal execution, source grounding, retrieval, and answer synthesis*\n![Style 2 \u2014 Dark Terminal](assets/samples/sample-style2-dark.gif)\n\n### Style 3 \u2014 Blueprint\n*Microservices Architecture \u2014 engineeri"
   },
   "agents365-ai-drawio-skill": {
     "name": "drawio-skill",
     "full_name": "Agents365-ai/drawio-skill",
     "url": "https://github.com/Agents365-ai/drawio-skill",
     "clone_url": "https://github.com/Agents365-ai/drawio-skill.git",
-    "stars": 10949,
+    "stars": 10957,
     "license": "MIT",
     "language": "Python",
     "topics": [
@@ -110,7 +110,7 @@
     "full_name": "plantuml-stdlib/C4-PlantUML",
     "url": "https://github.com/plantuml-stdlib/C4-PlantUML",
     "clone_url": "https://github.com/plantuml-stdlib/C4-PlantUML.git",
-    "stars": 7465,
+    "stars": 7466,
     "license": "MIT",
     "language": "PlantUML",
     "topics": [
@@ -132,7 +132,7 @@
     "full_name": "purocean/yn",
     "url": "https://github.com/purocean/yn",
     "clone_url": "https://github.com/purocean/yn.git",
-    "stars": 6784,
+    "stars": 6783,
     "license": "AGPL-3.0",
     "language": "TypeScript",
     "topics": [
@@ -167,7 +167,7 @@
     "full_name": "AhmadHassan-BTed/OpenHeart",
     "url": "https://github.com/AhmadHassan-BTed/OpenHeart",
     "clone_url": "https://github.com/AhmadHassan-BTed/OpenHeart.git",
-    "stars": 5918,
+    "stars": 5917,
     "license": "MIT",
     "language": "Rust",
     "topics": [

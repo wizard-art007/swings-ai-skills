@@ -3,7 +3,7 @@ name: plantuml-stdlib-c4-plantuml
 description: C4-PlantUML combines the benefits of PlantUML and the C4 model for providing a simple way of describing and communicate software architectures
 source: https://github.com/plantuml-stdlib/C4-PlantUML
 license: MIT
-stars: 7465
+stars: 7466
 language: PlantUML
 topics: architecture, c4, c4model, diagram, graphviz, plantuml, uml
 saved: 2026-11-26
