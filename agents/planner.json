@@ -7,7 +7,8 @@
     "search_skills",
     "add_task",
     "emit_event",
-    "list_experiments"
+    "list_experiments",
+    "recall_experience"
   ],
   "triggers": [
     "goal.new"

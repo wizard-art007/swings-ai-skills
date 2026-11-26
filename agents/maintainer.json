@@ -4,7 +4,8 @@
   "system_prompt": "You are the Maintainer. Run the task queue once, then report what happened.",
   "tools": [
     "run_task_queue",
-    "agent_stats"
+    "agent_stats",
+    "recall_experience"
   ],
   "triggers": [
     "tasks.pending"
