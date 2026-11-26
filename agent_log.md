@@ -192,3 +192,8 @@
 - 2026-11-26 22:14 — need d3d569f1: verifying -> closed (capability check passes)
 - 2026-11-26 22:14 — need 57c35597: building -> verifying (tool task done)
 - 2026-11-26 22:14 — need 57c35597: verifying -> closed (capability check passes)
+- 2026-11-26 23:27 — need c6aea0cd: open -> searching (tool scripts/flake_hunter.py)
+- 2026-11-26 23:27 — need c6aea0cd: searching -> open (no repo passes the hard rules for ['flaky test detector', 'flake hunter', 'flaky', 'flaky test'])
+- 2026-11-26 23:27 — need 345d80bd: open -> parked (not a tool)
+- 2026-11-26 23:27 — need 51cb20cf: open -> parked (not a tool)
+- 2026-11-26 23:27 — agent news_scout v1: OK — Successfully scanned tech news and rising GitHub repos, identified 2 tech experiment ideas ('LLM in Assembly' and 'YouTube Ad Punisher'), emitted the 

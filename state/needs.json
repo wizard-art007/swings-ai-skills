@@ -621,7 +621,29 @@
     "priority": 2.0,
     "status": "open",
     "source": "self_review",
-    "ts": "2026-11-26T18:11"
+    "ts": "2026-11-26T18:11",
+    "log": [
+      {
+        "ts": "2026-11-26T23:27",
+        "from": "open",
+        "to": "searching",
+        "why": "tool scripts/flake_hunter.py"
+      },
+      {
+        "ts": "2026-11-26T23:27",
+        "from": "searching",
+        "to": "open",
+        "why": "no repo passes the hard rules for ['flaky test detector', 'flake hunter', 'flaky', 'flaky test']"
+      }
+    ],
+    "updated": "2026-11-26T23:27",
+    "queries": [
+      "flaky test detector",
+      "flake hunter",
+      "flaky",
+      "flaky test"
+    ],
+    "tries": 1
   },
   {
     "id": "345d80bd",
@@ -635,9 +657,19 @@
     ],
     "action": "find or build what closes this",
     "priority": 1.0,
-    "status": "open",
+    "status": "parked",
     "source": "agent",
-    "ts": "2026-11-26T18:50"
+    "ts": "2026-11-26T18:50",
+    "tries": 3,
+    "log": [
+      {
+        "ts": "2026-11-26T23:27",
+        "from": "open",
+        "to": "parked",
+        "why": "not a tool"
+      }
+    ],
+    "updated": "2026-11-26T23:27"
   },
   {
     "id": "51cb20cf",
@@ -651,8 +683,18 @@
     ],
     "action": "find or build what closes this",
     "priority": 1.0,
-    "status": "open",
+    "status": "parked",
     "source": "agent",
-    "ts": "2026-11-26T18:50"
+    "ts": "2026-11-26T18:50",
+    "tries": 3,
+    "log": [
+      {
+        "ts": "2026-11-26T23:27",
+        "from": "open",
+        "to": "parked",
+        "why": "not a tool"
+      }
+    ],
+    "updated": "2026-11-26T23:27"
   }
 ]

@@ -572,5 +572,29 @@
     "source": "system",
     "status": "done",
     "ts": "2026-11-26T19:57:30"
+  },
+  {
+    "id": "ae18898c36",
+    "type": "idea.found",
+    "payload": {
+      "title": "LLM in Assembly",
+      "description": "Qwen3-0.6B inference in pure Assembly / bare-metal bootable OS experiment.",
+      "source_url": "https://github.com/alesha-pro/llm.asm"
+    },
+    "source": "agent",
+    "status": "running",
+    "ts": "2026-11-26T23:27:24"
+  },
+  {
+    "id": "26f5ba8dc3",
+    "type": "idea.found",
+    "payload": {
+      "title": "YouTube Ad Punisher",
+      "description": "Auto-reloads YouTube pages when an ad plays via a lightweight userscript/extension concept.",
+      "source_url": "https://github.com/antonpictures/youtube-punisher"
+    },
+    "source": "agent",
+    "status": "new",
+    "ts": "2026-11-26T23:27:25"
   }
 ]
