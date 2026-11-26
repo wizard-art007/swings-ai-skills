@@ -1,0 +1,12 @@
+{
+  "2026-11-26": {
+    "calls": 1,
+    "errors": 0,
+    "overloads": 0,
+    "cache_hits": 0,
+    "seconds": 4.7,
+    "by_purpose": {
+      "write_tool": 1
+    }
+  }
+}

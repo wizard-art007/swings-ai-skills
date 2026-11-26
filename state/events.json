@@ -332,5 +332,15 @@
     "source": "agent",
     "status": "done",
     "ts": "2026-11-26T16:50:48"
+  },
+  {
+    "id": "219f469a4c",
+    "type": "tasks.pending",
+    "payload": {
+      "count": 1
+    },
+    "source": "system",
+    "status": "running",
+    "ts": "2026-11-26T17:30:34"
   }
 ]

@@ -1,85 +1,60 @@
-"""
-OpenHeart Diagram Helper
-
-Turns a short text description into diagram source compatible with OpenHeart/Kroki,
-and provides a client to render it via the public Kroki API.
-"""
-
+import base64
+import json
+import zlib
 import requests
 
+def text_to_diagram(description: str, diagram_type: str = "sequence") -> str:
+    """
+    Converts a short text description into a Mermaid diagram source string
+    compatible with OpenHeart diagram conventions.
+    """
+    clean_desc = description.strip()
+    if not clean_desc:
+        clean_desc = "No description provided"
 
-class OpenHeartDiagramHelper:
-    """Helper class to generate and render diagram descriptions."""
+    if diagram_type.lower() == "class":
+        lines = [
+            "classDiagram",
+            "    class OpenHeartAnalyzer {",
+            f"        +String description",
+            f"        +analyze()",
+            "    }",
+            f"    note for OpenHeartAnalyzer \"{clean_desc}\""
+        ]
+    else:
+        lines = [
+            "sequenceDiagram",
+            "    autonumber",
+            "    participant Client",
+            "    participant OpenHeart",
+            "    Client->>OpenHeart: analyze(description)",
+            f"    Note over OpenHeart: {clean_desc}",
+            "    OpenHeart-->>Client: Return diagrams / SCPG"
+        ]
+    return "\n".join(lines)
 
-    def __init__(self, kroki_url: str = "https://kroki.io"):
-        self.kroki_url = kroki_url.rstrip("/")
+def encode_mermaid_for_kroki(mermaid_code: str) -> str:
+    """
+    Encodes mermaid diagram source code for Kroki API using deflate and base64.
+    """
+    compressed = zlib.compress(mermaid_code.encode("utf-8"), level=9)
+    # Kroki uses URL-safe base64 without padding
+    encoded = base64.urlsafe_b64encode(compressed).decode("ascii")
+    return encoded.rstrip("=")
 
-    def generate_diagram_source(self, description: str, diagram_type: str = "plantuml") -> str:
-        """
-        Transforms a short text description into a diagram source string.
-        
-        Args:
-            description: A short natural language description of the architecture/flow.
-            diagram_type: The diagram type (e.g., 'plantuml', 'mermaid', 'dot').
-            
-        Returns:
-            A string containing the valid diagram source code.
-        """
-        clean_desc = description.strip()
-        if not clean_desc:
-            clean_desc = "Empty Description"
+def get_kroki_url(mermaid_code: str, format_type: str = "svg", server_url: str = "https://kroki.io") -> str:
+    """
+    Generates the Kroki URL for rendering a Mermaid diagram.
+    """
+    encoded = encode_mermaid_for_kroki(mermaid_code)
+    return f"{server_url}/mermaid/{format_type}/{encoded}"
 
-        if diagram_type.lower() == "mermaid":
-            lines = ["graph TD;", f"    subgraph OpenHeartAnalysis", f"        A[Input Source] --> B[{clean_desc}]", f"        B --> C[UML / SCPG Output]", f"    end"]
-            return "\n".join(lines)
-        
-        elif diagram_type.lower() == "dot":
-            lines = [
-                "digraph OpenHeartCFG {",
-                "    node [shape=box, fontname=\"Helvetica\"];",
-                f"    \"Start\" -> \"Process: {clean_desc}\";",
-                "    \"Process: " + clean_desc + "\" -> \"End\";",
-                "}"
-            ]
-            return "\n".join(lines)
-
-        else:  # Default to PlantUML
-            lines = [
-                "@startuml",
-                "skinparam monochrome true",
-                f"title OpenHeart Analysis: {clean_desc}",
-                "participant \"Tree-Sitter\" as TS",
-                "participant \"OpenHeart Pipeline\" as OH",
-                "participant \"UML Generator\" as UML",
-                "",
-                "[-> TS: Source Code (.java)",
-                "activate TS",
-                "TS -> OH: Concrete Syntax Tree",
-                "deactivate TS",
-                "activate OH",
-                f"note right of OH: Analyzing: {clean_desc}",
-                "OH -> UML: SSA, CFG, Call Graph",
-                "deactivate OH",
-                "activate UML",
-                "[<- UML: Export Diagrams (SVG/DOT)",
-                "deactivate UML",
-                "@enduml"
-            ]
-            return "\n".join(lines)
-
-    def render_via_kroki(self, diagram_source: str, diagram_type: str = "plantuml", output_format: str = "svg") -> str:
-        """
-        Sends the diagram source to Kroki and returns the rendered output (e.g., SVG).
-        
-        Args:
-            diagram_source: The source code of the diagram.
-            diagram_type: The diagram engine (plantuml, mermaid, dot, etc.).
-            output_format: The target format (svg, png, pdf, etc.).
-            
-        Returns:
-            The raw response content (string for SVG/text, bytes otherwise).
-        """
-        url = f"{self.kroki_url}/{diagram_type.lower()}/{output_format.lower()}"
-        response = requests.post(url, data=diagram_source.encode("utf-8"), timeout=15)
-        response.raise_for_status()
-        return response.text
+def render_diagram_remotely(mermaid_code: str, server_url: str = "https://kroki.io", timeout: int = 10) -> str:
+    """
+    Sends the mermaid code to the Kroki API and returns the rendered content (e.g. SVG).
+    """
+    encoded = encode_mermaid_for_kroki(mermaid_code)
+    url = f"{server_url}/mermaid/svg/{encoded}"
+    response = requests.get(url, timeout=timeout)
+    response.raise_for_status()
+    return response.text

@@ -108,3 +108,4 @@
 - 2026-11-26 16:50 — agent builder v1: OK — Successfully built the .NET Race Condition Detector Simulator experiment and emitted experiment.ready event.
 - 2026-11-26 17:07 — agent publisher v2: OK — Daily limit of new repositories reached for publishing 'langgraph-planner-executor-stopping-loop'; will retry tomorrow as instructed.
 - 2026-11-26 17:07 — agent publisher v2: OK — Daily limit of new repositories reached for publishing 'net-race-condition-detector-simulator'; will retry tomorrow.
+- 2026-11-26 17:30 — llm: 1 task(s) hit by an LLM outage went back to the queue (retries not used up)

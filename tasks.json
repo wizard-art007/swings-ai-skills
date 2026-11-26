@@ -80,8 +80,9 @@
     "kind": "write_tool",
     "skill": "ahmadhassan-bted-openheart",
     "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
-    "status": "error: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
-    "finished": "2026-11-26T02:35"
+    "status": "todo",
+    "finished": "2026-11-26T02:35",
+    "infra_requeues": 1
   },
   {
     "kind": "improve_doc",
