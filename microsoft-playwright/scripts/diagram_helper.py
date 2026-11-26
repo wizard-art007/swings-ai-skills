@@ -1,55 +1,113 @@
-import base64
-import json
-import zlib
-import requests
+"""
+diagram_helper.py
+
+A small, offline Python helper that mirrors Playwright-inspired architectural patterns
+(such as fluent builders, explicit wait/retry policies, and declarative specs/fixtures)
+applied to text-based diagram generation and validation.
+"""
+
+import time
+from typing import List, Dict, Any, Callable
 
 
-def text_to_mermaid(description: str) -> str:
-    """Converts a short text description into a Mermaid diagram source.
+class TimeoutError(Exception):
+    """Raised when an operation exceeds its allotted retry/wait time."""
+    pass
 
-    Designed for Playwright-related workflows and architectures.
+
+class RetryPolicy:
+    """Configures retry behavior with backoff, mirroring robust web automation waits."""
+    def __init__(self, retries: int = 3, delay: float = 0.01):
+        self.retries = retries
+        self.delay = delay
+
+
+class DiagramBuilder:
     """
-    clean_desc = description.strip()
-    if not clean_desc:
-        return "graph TD\n    Start([Start]) --> End([End])"
+    A fluent builder pattern for constructing text diagrams, 
+    inspired by Playwright's fluent method chaining API.
+    """
+    def __init__(self, title: str = "Diagram"):
+        self._title = title
+        self._nodes: List[str] = []
+        self._connections: List[tuple[str, str]] = []
+        self._metadata: Dict[str, Any] = {}
 
-    # Generate a sensible structured Mermaid diagram based on keywords or general flow
-    lines = ["graph TD", "    classDef default fill:#f9f,stroke:#333,stroke-width:2px;"]
-    
-    # Simple heuristic to extract steps or build a flowchart
-    steps = [s.strip() for s in clean_desc.split("->") if s.strip()]
-    if len(steps) > 1:
-        node_ids = []
-        for i, step in enumerate(steps):
-            node_id = f"Step{i+1}"
-            node_ids.append(node_id)
-            lines.append(f'    {node_id}["{step}"]')
-        for i in range(len(node_ids) - 1):
-            lines.append(f"    {node_ids[i]} --> {node_ids[i+1]}")
-    else:
-        # Fallback keyword-based breakdown or generic structured flow
-        lines.append(f'    Input["User Input: {clean_desc}"]')
-        lines.append('    Playwright["Playwright Automation / Test Runner"]')
-        lines.append('    Browsers["Chromium / Firefox / WebKit"]')
-        lines.append('    Results["Test Results / Artifacts"]')
-        lines.append('    Input --> Playwright')
-        lines.append('    Playwright --> Browsers')
-        lines.append('    Browsers --> Results')
+    def add_node(self, node_name: str) -> 'DiagramBuilder':
+        cleaned = node_name.strip()
+        if cleaned and cleaned not in self._nodes:
+            self._nodes.append(cleaned)
+        return self
 
-    return "\n".join(lines)
+    def connect(self, source: str, target: str) -> 'DiagramBuilder':
+        self._nodes_must_exist(source, target)
+        edge = (source, target)
+        if edge not in self._connections:
+            self._connections.append(edge)
+        return self
+
+    def set_metadata(self, key: str, value: Any) -> 'DiagramBuilder':
+        self._metadata[key] = value
+        return self
+
+    def _nodes_must_exist(self, *names: str) -> None:
+        for name in names:
+            if name not in self._nodes:
+                raise ValueError(f"Node '{name}' must be added before connecting.")
+
+    def build(self) -> Dict[str, Any]:
+        """Returns the compiled diagram representation."""
+        return {
+            "title": self._title,
+            "nodes": list(self._nodes),
+            "connections": list(self._connections),
+            "metadata": dict(self._metadata)
+        }
 
 
-def get_kroki_url(diagram_source: str, diagram_type: str = "mermaid", format: str = "svg") -> str:
-    """Generates the Kroki render URL for the given diagram source."""
-    compressed = zlib.compress(diagram_source.encode("utf-8"), level=9)
-    encoded = base64.urlsafe_b64encode(compressed).decode("ascii")
-    return f"https://kroki.io/{diagram_type}/{format}/{encoded}"
+class DiagramEvaluator:
+    """
+    Evaluates diagram structures with built-in retry and auto-waiting semantics,
+    mirroring Playwright's web-first assertions and polling mechanisms.
+    """
+    def __init__(self, policy: RetryPolicy | None = None):
+        self.policy = policy or RetryPolicy()
+
+    def wait_for_condition(self, condition: Callable[[], bool]) -> bool:
+        """Repeatedly evaluates a condition until True or retries are exhausted."""
+        attempts = 0
+        while attempts <= self.policy.retries:
+            if condition():
+                return True
+            attempts += 1
+            if attempts <= self.policy.retries:
+                time.sleep(self.policy.delay)
+        raise TimeoutError(f"Condition not met after {self.policy.retries} retries.")
+
+    def assert_node_count(self, diagram: Dict[str, Any], expected_count: int) -> bool:
+        """Asserts node count with retry semantics (useful for async/dynamic rendering)."""
+        def check():
+            return len(diagram.get("nodes", [])) == expected_count
+
+        return self.wait_for_condition(check)
 
 
-def render_via_kroki(diagram_source: str, diagram_type: str = "mermaid", format: str = "svg", timeout: int = 10) -> str:
-    """Renders a diagram via the public Kroki API and returns the response content (e.g., SVG markup)."""
-    url = f"https://kroki.io/{diagram_type}/{format}"
-    payload = {"diagram_source": diagram_source}
-    response = requests.post(url, json=payload, timeout=timeout)
-    response.raise_for_status()
-    return response.text
+class DiagramPageObject:
+    """
+    A Page Object Model pattern encapsulating diagram operations and assertions
+    for clean test-case generation and maintainability.
+    """
+    def __init__(self, title: str = "Workflow"):
+        self.builder = DiagramBuilder(title)
+        self.evaluator = DiagramEvaluator()
+
+    def create_basic_flow(self, steps: List[str]) -> Dict[str, Any]:
+        for step in steps:
+            self.builder.add_node(step)
+        
+        for i in range(len(steps) - 1):
+            self.builder.connect(steps[i], steps[i+1])
+            
+        diagram = self.builder.build()
+        self.evaluator.assert_node_count(diagram, len(steps))
+        return diagram

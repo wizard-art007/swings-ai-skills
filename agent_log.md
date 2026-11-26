@@ -96,3 +96,4 @@
 - 2026-11-26 16:22 — plan: leonxlnx-taste-skill (ai_agents) gets a ai_agents tool instead of a diagram helper
 - 2026-11-26 16:22 — plan: seleniumbase-seleniumbase (qa_testing) gets a qa_testing tool instead of a diagram helper
 - 2026-11-26 16:22 — affaan-m-ecc: attempt 1 blocked by safety scan (tests/test_ecc_agent.py: syntax error: expected '(' (test_ecc_agent.py, line 25))
+- 2026-11-26 16:23 — affaan-m-ecc: 'a small offline Python helper that captures this project's core technique (for example an agent loop, tool calling, planning, memory or a prompt pattern) and applies it to a toy task; the tests must use a fake LLM function and no network' PASSED on attempt 2 (scripts/ecc_agent_harness.py, tests/test_ecc_harness.py)
