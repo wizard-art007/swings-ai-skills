@@ -26,3 +26,4 @@
 - 2026-11-26 02:29 — purocean-yn: SKILL.md improved
 - 2026-11-26 02:45 — ahmadhassan-bted-openheart: SKILL.md improved
 - 2026-11-26 02:46 — agent maintainer: ERROR ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}
+- 2026-11-26 02:52 — task write_tool yuzutech-kroki: ERROR PermissionError: [Errno 1] Operation not permitted: 8
