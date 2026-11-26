@@ -10,5 +10,17 @@
       "src/loudness_eq.py",
       "tests/test_loudness_eq.py"
     ]
+  },
+  "algorithmic-integer-factorization-discre": {
+    "title": "Algorithmic Integer Factorization & Discrete Log Experiment",
+    "description": "A lightweight Python experiment implementing classical discrete logarithm and integer factorization heuristics (e.g. Pollard rho, Baby-step Giant-step) inspired by recent algebraic computation research.",
+    "source_url": "https://github.com/google-research/google-research/tree/master/cogentic_research_papers",
+    "status": "passed",
+    "created": "2026-11-26T01:10",
+    "files": [
+      "README.md",
+      "src/heuristics.py",
+      "tests/test_heuristics.py"
+    ]
   }
 }
