@@ -636,7 +636,8 @@ def run_task_queue(limit=3):
         return
     tasks, reg, done = json.loads(TASKS_FILE.read_text()), load_registry(), 0
     for t in tasks:
-        if t["status"] != "todo" or done >= limit or time_left() < 300:
+        if t["status"] != "todo" or done >= limit or time_left() < 300 or \
+                not globals().get("llm_allowed", lambda kind: True)(t["kind"]):   # F3: budget / outage
             continue
         skill = reg.get(t["skill"])
         if not skill:
@@ -1276,6 +1277,7 @@ def _safe_run(name, task, context=None, resume=None):
         log(f"agent {name}: ERROR {type(e).__name__}: {str(e)[:200]}")
         with open(RUNS_FILE, "a", encoding="utf-8") as f:
             f.write(json.dumps({"agent": name, "task": task[:200], "success": False, "summary": f"error: {e}"[:500],
+                                "paused": bool(globals().get("_is_infra_error", lambda err: False)(e)),
                                 "ts": datetime.datetime.now().isoformat(timespec="minutes")}) + "\n")
         return {"success": False, "summary": str(e)}
 
@@ -2529,7 +2531,8 @@ def _experienced(kind_of, goal_of, skill_of=lambda *a, **k: "", outcome_of=bool,
             finally:
                 _TASKS_STACK.pop()
                 try:
-                    outcome = "failed" if error else outcome_of(result)
+                    outcome = (("skip" if globals().get("_is_infra_error", lambda err: False)(error) else "failed")
+                               if error else outcome_of(result))     # an outage is not a lesson
                     if outcome in (True, False):
                         outcome = "done" if outcome else "failed"
                     if outcome in ("done", "failed"):
@@ -2618,3 +2621,184 @@ _upgrade_agents_for_experience()
 # the agents' build_experiment tool must go through the experience wrapper too
 TOOLS.register("build_experiment", build_experiment,
                "Build + test a small Python experiment project for an idea. Returns slug and status.")
+
+# ===== Cell 29: LLM budget (F3) =====
+# Counts every Gemini call, backs off on overload instead of stalling, stops LLM work for the rest
+# of a run when Gemini stays overloaded (non-LLM work carries on), keeps a daily call budget,
+# caches replies that are safe to reuse, and skips calls that are not needed.
+import random
+
+LLM_DAILY_CAP = int(os.environ.get("SWINGS_LLM_DAILY_CAP", "300"))   # tuned from real use (F9)
+LLM_HIGH_VALUE_AT = 0.8         # above 80% of the cap only high-value work may use the LLM
+LLM_BREAKER_AFTER = 3           # 3 overloaded calls in a row = no more LLM work this run
+LLM_BACKOFF = (5, 10, 20)       # seconds (+ jitter) between retries of one overloaded call
+LLM_USAGE_FILE = STATE_DIR / "llm_usage.json"
+LLM_CACHE_DIR = REPO_CACHE / "llm_cache"
+CACHEABLE_PURPOSES = {"lesson"} # same input, same right answer; never code that may have failed
+HIGH_VALUE = ("heal", "write_tool", "reengineer", "agent:evolver", "agent:planner", "agent:architect",
+              "agent:publisher", "agent:project_lead")
+INFRA_ERROR = re.compile(r"LLM unavailable|LLM overloaded|LLM budget|\b503\b|\b429\b|RESOURCE_EXHAUSTED|"
+                         r"UNAVAILABLE|timed out|deadline", re.I)
+MAX_INFRA_REQUEUES = 5          # a task hit only by outages goes back to the queue, at most this often
+
+class LLMUnavailable(RuntimeError):
+    """Raised instead of calling Gemini when it is overloaded or the budget is used up."""
+
+_LLM = {"run": "unset"}
+
+def _llm_run_state():
+    if _LLM.get("run") != _RUN.get("id"):
+        _LLM.clear()
+        _LLM.update(run=_RUN.get("id"), calls=0, errors={}, cache_hits=0, overloads=0, streak=0, open=False,
+                    seconds=0.0, by_purpose={})
+    return _LLM
+
+def _today_usage():
+    u = _jload(LLM_USAGE_FILE, {})
+    day = u.setdefault(str(datetime.date.today()),
+                       {"calls": 0, "errors": 0, "overloads": 0, "cache_hits": 0, "seconds": 0.0, "by_purpose": {}})
+    return u, day
+
+def _is_infra_error(e):
+    return isinstance(e, LLMUnavailable) or bool(INFRA_ERROR.search(f"{type(e).__name__}: {e}"))
+
+def _purpose():
+    c = _ctx()
+    if c is None:
+        return "other"
+    return "lesson" if c.get("quiet") else c.get("kind", "other")
+
+def llm_allowed(purpose="other"):
+    st = _llm_run_state()
+    if st["open"]:
+        return False
+    _, day = _today_usage()
+    used = day["calls"] / max(LLM_DAILY_CAP, 1)
+    if used >= 1:
+        return False
+    if used >= LLM_HIGH_VALUE_AT:
+        return str(purpose).startswith(HIGH_VALUE)
+    return True
+
+def _account(purpose, t0, sent, got, error=None, cached=False):
+    st = _llm_run_state()
+    u, day = _today_usage()
+    secs = round(time.time() - t0, 2)
+    for rec in (st, day):
+        if cached:
+            rec["cache_hits"] += 1
+            continue
+        rec["calls"] += 1
+        rec["seconds"] = round(rec["seconds"] + secs, 1)
+        rec["by_purpose"][purpose] = rec["by_purpose"].get(purpose, 0) + 1
+        if error == "overload":
+            rec["overloads"] += 1
+        if error:
+            if isinstance(rec["errors"], dict):
+                rec["errors"][error] = rec["errors"].get(error, 0) + 1
+            else:
+                rec["errors"] += 1
+    keep = sorted(u)[-30:]                         # 30 days of history
+    _jsave(LLM_USAGE_FILE, {k: u[k] for k in keep})
+    syslog("debug", "llm", f"{purpose}: {'cache hit' if cached else error or 'ok'}", sent=sent, got=got, seconds=secs)
+
+if "_llm_unbudgeted" not in globals():
+    _llm_unbudgeted = _plain_llm               # Cell 10's llm (Cell 28 wraps above this layer)
+
+def _budgeted_llm(prompt, system="You are an expert software engineer.", model=None, retries=3):
+    st, purpose = _llm_run_state(), _purpose()
+    if not llm_allowed(purpose):
+        raise LLMUnavailable(f"LLM unavailable for {purpose}: " +
+                             ("circuit breaker open" if st["open"] else "daily budget reached"))
+    key = None
+    if purpose in CACHEABLE_PURPOSES:
+        key = hashlib.sha256(f"{model}|{system}|{prompt}".encode()).hexdigest()[:32]
+        f = LLM_CACHE_DIR / f"{key}.txt"
+        if f.exists():
+            _account(purpose, time.time(), len(prompt), 0, cached=True)
+            return f.read_text(encoding="utf-8")
+    for k in range(len(LLM_BACKOFF) + 1):
+        t0 = time.time()
+        try:
+            kw = {"system": system, "retries": 1}
+            if model:
+                kw["model"] = model
+            out = _llm_unbudgeted(prompt, **kw) or ""
+            _account(purpose, t0, len(prompt), len(out))
+            st["streak"] = 0
+            if key:
+                LLM_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+                (LLM_CACHE_DIR / f"{key}.txt").write_text(out, encoding="utf-8")
+            return out
+        except Exception as e:
+            overloaded = _is_infra_error(e)
+            _account(purpose, t0, len(prompt), 0, "overload" if overloaded else type(e).__name__)
+            if not overloaded:
+                raise
+            wait = LLM_BACKOFF[k] if k < len(LLM_BACKOFF) else 0
+            if not wait or time_left() < 300 + wait + 60:
+                break
+            time.sleep(wait + random.uniform(0, wait / 2))
+    st["streak"] += 1
+    if st["streak"] >= LLM_BREAKER_AFTER and not st["open"]:
+        st["open"] = True
+        log(f"llm: circuit breaker open after {LLM_BREAKER_AFTER} overloaded calls in a row; "
+            "no more LLM work this run, non-LLM work continues")
+    raise LLMUnavailable(f"LLM overloaded ({purpose})")
+
+_plain_llm = _budgeted_llm                    # every LLM call in the engine now goes through the budget
+
+# ---- outages never cost a task its retries ---------------------------------------------------------
+if "_queue_before_budget" not in globals():
+    _queue_before_budget = run_task_queue
+def _queue_with_budget(limit=3):
+    result = _queue_before_budget(limit)
+    tasks, back = _jload(TASKS_FILE, []), 0
+    for t in tasks:
+        st = str(t.get("status", ""))
+        if st.startswith("error") and INFRA_ERROR.search(st) and t.get("infra_requeues", 0) < MAX_INFRA_REQUEUES:
+            t["status"] = "todo"
+            t["infra_requeues"] = t.get("infra_requeues", 0) + 1
+            back += 1
+    if back:
+        _jsave(TASKS_FILE, tasks)
+        log(f"llm: {back} task(s) hit by an LLM outage went back to the queue (retries not used up)")
+    return result
+run_task_queue = _queue_with_budget
+
+# ---- agents: skip when the LLM is not available; the maintainer needs no LLM at all ------------------------
+if "_safe_run_before_budget" not in globals():
+    _safe_run_before_budget = _safe_run
+def _safe_run_with_budget(name, task, context=None, resume=None):
+    if name == "maintainer":                  # its whole job is one tool call: do it directly
+        _checkpoints_now = _checkpoints()
+        if _checkpoints_now.pop("maintainer", None) is not None:
+            _jsave(CHECKPOINTS_FILE, _checkpoints_now)
+        run_task_queue(limit=3)
+        log("agent maintainer: ran the task queue directly (no LLM call needed)")
+        return {"success": True, "summary": "task queue processed directly"}
+    if not llm_allowed(f"agent:{name}"):
+        log(f"agent {name}: skipped this run (LLM budget or Gemini overloaded)")
+        return {"success": False, "paused": True, "summary": "skipped: LLM unavailable"}
+    return _safe_run_before_budget(name, task, context, resume)
+_safe_run = _safe_run_with_budget
+
+# ---- report ------------------------------------------------------------------------------------------
+if "_extras_before_budget" not in globals():
+    _extras_before_budget = _run_extras
+def _run_extras_with_llm():
+    d = _extras_before_budget()
+    st = _llm_run_state()
+    _, day = _today_usage()
+    d.update(llm_calls=st["calls"], llm_seconds=st["seconds"], llm_cache_hits=st["cache_hits"],
+             llm_overloads=st["overloads"], llm_breaker_open=st["open"], llm_today=day["calls"],
+             llm_daily_cap=LLM_DAILY_CAP, llm_by_purpose=st["by_purpose"])
+    return d
+_run_extras = _run_extras_with_llm
+
+def llm_usage(days=7):
+    """Calls per day, errors and the biggest users of the budget."""
+    u = _jload(LLM_USAGE_FILE, {})
+    return {d: {k: u[d].get(k) for k in ("calls", "overloads", "cache_hits", "by_purpose")} for d in sorted(u)[-days:]}
+
+TOOLS.register("llm_usage", llm_usage, "Gemini calls per day, overloads, cache hits and what used them.")
