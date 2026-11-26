@@ -30,7 +30,7 @@
       "title": "Algorithmic Integer Factorization & Discrete Log Experiment"
     },
     "source": "agent",
-    "status": "running",
+    "status": "done",
     "ts": "2026-11-26T01:08:25"
   },
   {
@@ -40,7 +40,27 @@
       "slug": "loudness-equalization-dsp-filter"
     },
     "source": "agent",
-    "status": "new",
+    "status": "done",
     "ts": "2026-11-26T01:09:38"
+  },
+  {
+    "id": "83bd0367a0",
+    "type": "experiment.ready",
+    "payload": {
+      "slug": "algorithmic-integer-factorization-discre"
+    },
+    "source": "agent",
+    "status": "done",
+    "ts": "2026-11-26T01:10:56"
+  },
+  {
+    "id": "e86dee0c67",
+    "type": "tasks.pending",
+    "payload": {
+      "count": 1
+    },
+    "source": "system",
+    "status": "running",
+    "ts": "2026-11-26T01:11:00"
   }
 ]

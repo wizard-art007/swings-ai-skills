@@ -15,9 +15,14 @@
   "created_by": "system",
   "history": [],
   "stats": {
-    "runs": 0,
-    "ok": 0,
-    "by_version": {}
+    "runs": 2,
+    "ok": 2,
+    "by_version": {
+      "1": [
+        2,
+        2
+      ]
+    }
   },
-  "last_run": ""
+  "last_run": "2026-11-26T01:11"
 }

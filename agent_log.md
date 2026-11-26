@@ -7,3 +7,6 @@
 - 2026-11-26 01:09 — exp/loudness-equalization-dsp-filter: 'experiment loudness-equalization-dsp-filter' PASSED on attempt 1 (src/loudness_eq.py, tests/test_loudness_eq.py, README.md)
 - 2026-11-26 01:09 — agent builder v1: OK — Built experiment 'loudness-equalization-dsp-filter' successfully and emitted experiment.ready event.
 - 2026-11-26 01:10 — exp/algorithmic-integer-factorization-discre: 'experiment algorithmic-integer-factorization-discre' PASSED on attempt 2 (src/heuristics.py, tests/test_heuristics.py, README.md)
+- 2026-11-26 01:11 — agent builder v1: OK — Built experiment 'algorithmic-integer-factorization-discre' successfully and emitted 'experiment.ready'.
+- 2026-11-26 01:11 — agent publisher v1: OK — Published experiment 'loudness-equalization-dsp-filter' (dry run to private repo 'swings-exp-loudness-equalization-dsp-filter')
+- 2026-11-26 01:11 — agent publisher v1: OK — Published experiment 'algorithmic-integer-factorization-discre' (DRY RUN: would publish to private repo 'swings-exp-algorithmic-integer-factorization-
