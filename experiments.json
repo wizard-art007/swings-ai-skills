@@ -9,7 +9,9 @@
       "README.md",
       "src/loudness_eq.py",
       "tests/test_loudness_eq.py"
-    ]
+    ],
+    "repo_url": "https://github.com/wizard-art007/swings-exp-loudness-equalization-dsp-filter",
+    "published": "2026-11-26T01:26"
   },
   "algorithmic-integer-factorization-discre": {
     "title": "Algorithmic Integer Factorization & Discrete Log Experiment",
