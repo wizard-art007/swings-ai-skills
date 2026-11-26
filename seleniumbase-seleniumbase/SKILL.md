@@ -11,10 +11,39 @@ saved: 2026-11-26
 
 # seleniumbase/SeleniumBase
 
-Use this skill when the task involves: bot-detection, cdp, chrome-devtools-protocol, chromedriver, cloudflare-bypass, e2e-testing, end-to-end-testing, mcp, playwright, pytest.
-
-- Source code: cloned on demand (`ensure_repo(skill)`); licence file(s): see source
-- Original README: `README_source.md`
-
 ## Summary from README
-Reliable browser automation for testing, scraping, and stealth. 🚀 Start | 🏰 Features | 🎛️ Options | 📚 Examples | 💻 Scripts | 🗾 Locales 📗 API | 📘 Stealth API | 🔠 Syntax Formats | 🔴 Recorder | 📊 Dashboard 🎖️ GUI | 📰 Test Page | 👤 UC Mode | 🐙 CDP Mode | 📶 Charts | 🖥️ Farm 👁️ How | 🚝 Migration | 🎭 Stealthy Playwright | 🛂 MasterQA | 🚎 Tours 🤖 MCP | 🟨 JS Tools | 🌏 Translator | 🎞️ Presenter | 🖼️ Visual | 🗂️ CPlans -------- 🐙 CDP Mode bypasses bot-detection with Chromium-based browsers.(Examples: ./examples/cdp_mode/) 🎭 Stealthy Playwright Mode extends CDP Mode's stealth to Playwright.(Examples: ./examples/cdp_mode/playwright) 📚 In addition to stealth modes, SeleniumBase has regular modes for E2E testing. * 🧪 [**Over 200 end-to-end testing examples included**](https://github.com/seleniumbase/SeleniumBase/tree/master/examples).(Many of those run with **`pytest`** instead of **`python`**) -------- 📝 [This example](https://github.com/seleniumbase/SeleniumBase/blob/master/examples/cdp_mode/raw_cdp_mode.py) uses seleniumbase sb_cdp (*[Pure CDP Mode](https://github.com/seleniumbase/SeleniumBase/blob/master/examples/cdp_mode/ReadMe.md#Pure_CDP_Mode)*):(It calls a few basic methods and bypasses a Cloudflare Turnstile) ```python from seleniumbase import sb_cdp sb = sb_cdp.Chrome() # Launch a stealth browser sb.goto("https://www.planetminecraft.com/account") sb.type('[name="email"]', "Test123") sb.type('[name="password"]', "Pass") sb.click("input#autologin") # Uncheck a checkbox [...]
+Reliable browser automation for testing, scraping, and stealth. SeleniumBase provides robust capabilities for end-to-end testing, web scraping, and advanced anti-bot bypass mechanisms using CDP Mode, UC Mode, and Stealthy Playwright.
+
+## When to use
+Use this skill when the task involves:
+- End-to-end (E2E) testing and test automation using `pytest` or Python scripts.
+- Web scraping and browser automation requiring bot-detection bypasses (such as Cloudflare Turnstile or CAPTCHAs).
+- Advanced stealth interactions using Chromium DevTools Protocol (CDP Mode) or Stealthy Playwright Mode.
+- Interacting with web pages, typing, clicking, and extracting DOM data reliably.
+
+## How to use
+
+### Basic CDP Mode Example
+To launch a stealth browser using SeleniumBase CDP mode to bypass bot-detection:
+
+```python
+from seleniumbase import sb_cdp
+
+sb = sb_cdp.Chrome()  # Launch a stealth browser
+sb.goto("https://www.planetminecraft.com/account")
+sb.type('[name="email"]', "Test123")
+sb.type('[name="password"]', "Pass")
+sb.click("input#autologin")
+# Add further actions or scraping logic as needed
+sb.quit()
+```
+
+### Running Tests with Pytest
+SeleniumBase integrates heavily with `pytest`. Run tests using standard pytest commands with SeleniumBase parameters:
+```bash
+pytest my_test_script.py --browser=chrome
+```
+
+## Limitations
+- Stealth modes (CDP / UC Mode) rely on Chromium-based browsers; behavior on non-Chromium browsers may differ or lack specific stealth hooks.
+- Highly aggressive WAFs (Web Application Firewalls) and zero-day anti-bot updates may occasionally require tweaking options, user agents, or proxy settings to maintain successful bypasses.
