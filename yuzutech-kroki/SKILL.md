@@ -13,7 +13,7 @@ saved: 2026-11-26
 
 Use this skill when the task involves: api, blockdiag, bpmn, bytefield, c4, diagrams, ditaa, erd, excalidraw, graphviz.
 
-- Code copy: `repo/` (licence file(s): LICENSE)
+- Source code: cloned on demand (`ensure_repo(skill)`); licence file(s): see source
 - Original README: `README_source.md`
 
 ## Summary from README
