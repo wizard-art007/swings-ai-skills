@@ -627,21 +627,30 @@ def time_left():
 
 def add_task(kind, skill_name, goal="", **kw):
     tasks = json.loads(TASKS_FILE.read_text()) if TASKS_FILE.exists() else []
-    tasks.append({"kind": kind, "skill": skill_name, "goal": goal, "status": "todo", **kw})
+    tasks.append({"kind": kind, "skill": skill_name, "goal": goal, "status": "todo",
+                  "queued": datetime.datetime.now().isoformat(timespec="minutes"), **kw})
     TASKS_FILE.write_text(json.dumps(tasks, indent=2))
 
 def run_task_queue(limit=3):
-    """Process up to `limit` queued tasks: write_tool | improve_doc | reengineer."""
+    """Process up to `limit` queued tasks (write_tool | improve_doc | reengineer), the most valuable
+    per minute first (F4 orders them); a task only starts when its time estimate fits in the run."""
     if not TASKS_FILE.exists():
         return
     tasks, reg, done = json.loads(TASKS_FILE.read_text()), load_registry(), 0
-    for t in tasks:
+    order = globals().get("queue_order", lambda ts: range(len(ts)))(tasks)
+    for i in order:
+        t = tasks[i]
         if t["status"] != "todo" or done >= limit or time_left() < 300 or \
                 not globals().get("llm_allowed", lambda kind: True)(t["kind"]):   # F3: budget / outage
+            continue
+        est = globals().get("estimate_minutes", lambda task: 0)(t)
+        if est and time_left() < 300 + est * 60:                                    # F4: does it fit?
+            t["skipped_for_time"] = t.get("skipped_for_time", 0) + 1
             continue
         skill = reg.get(t["skill"])
         if not skill:
             t["status"] = "skipped: unknown skill"; continue
+        t0 = time.time()
         try:
             if t["kind"] == "write_tool":
                 ok = agent.write_tool(skill, t["goal"])
@@ -658,6 +667,9 @@ def run_task_queue(limit=3):
             where = traceback.format_exc().strip().splitlines()[-3].strip()[:120]
             log(f"task {t['kind']} {t['skill']}: ERROR {type(e).__name__}: {str(e)[:160]} @ {where}")
         t["finished"] = datetime.datetime.now().isoformat(timespec="minutes")
+        t["minutes"] = round((time.time() - t0) / 60, 2)
+        if est:
+            t["estimate"] = est
         done += 1
     TASKS_FILE.write_text(json.dumps(tasks, indent=2))
 
@@ -2802,3 +2814,77 @@ def llm_usage(days=7):
     return {d: {k: u[d].get(k) for k in ("calls", "overloads", "cache_hits", "by_purpose")} for d in sorted(u)[-days:]}
 
 TOOLS.register("llm_usage", llm_usage, "Gemini calls per day, overloads, cache hits and what used them.")
+
+# ===== Cell 30: Smart queue (F4) =====
+# Every queued task gets a value (priority x skill score x waiting bonus) and a time estimate learned
+# from past experiences (F1). Each run works on the most value per minute first and only starts a
+# task when its estimate fits in the time left, keeping 5 minutes for logging and pushing.
+import statistics
+
+KIND_PRIORITY = {"heal": 3, "write_tool": 2, "reengineer": 2, "improve_doc": 1, "experiment": 1}
+DEFAULT_ESTIMATE_MIN = 4.0
+DEFAULT_SKILL_SCORE = 60
+AGE_BONUS_PER_DAY = 0.1
+QUEUE_HISTORY_FILE = STATE_DIR / "queue_history.json"
+
+def estimate_minutes(t):
+    """Median minutes of past tasks of the same kind (same area when there are 2+), else 4."""
+    rows = [e for e in _load_experiences() if e.get("kind") == t.get("kind")
+            and e.get("outcome") in ("done", "failed") and e.get("minutes") is not None]
+    area = _area_of(t.get("skill"))
+    same = [e["minutes"] for e in rows if area and e.get("area") == area]
+    pool = (same if len(same) >= 2 else [e["minutes"] for e in rows])[-30:]
+    if len(pool) < 2:
+        return DEFAULT_ESTIMATE_MIN
+    return round(max(0.5, statistics.median(pool)), 1)
+
+def _age_days(t):
+    try:
+        return max(0.0, (datetime.datetime.now() - datetime.datetime.fromisoformat(t["queued"])).total_seconds() / 86400)
+    except Exception:
+        return 0.0
+
+def task_value(t, reg=None):
+    reg = reg if reg is not None else load_registry()
+    priority = t.get("priority") or KIND_PRIORITY.get(t.get("kind"), 1)
+    score = reg.get(t.get("skill"), {}).get("score") or DEFAULT_SKILL_SCORE
+    return round(priority * (score / 100) * (1 + AGE_BONUS_PER_DAY * _age_days(t)), 3)
+
+def queue_order(tasks):
+    """Indices of the todo tasks, best value per estimated minute first."""
+    now, reg, rows = datetime.datetime.now().isoformat(timespec="minutes"), load_registry(), []
+    for i, t in enumerate(tasks):
+        if t.get("status") != "todo":
+            continue
+        t.setdefault("queued", now)
+        t["value"] = task_value(t, reg)
+        rows.append((t["value"] / max(estimate_minutes(t), 0.5), i))
+    return [i for _, i in sorted(rows, key=lambda r: -r[0])]
+
+def queue_report():
+    tasks = _jload(TASKS_FILE, [])
+    todo = [t for t in tasks if t.get("status") == "todo"]
+    ran = [t for t in tasks if t.get("estimate") and t.get("minutes") is not None][-20:]
+    hist = _jload(QUEUE_HISTORY_FILE, {})
+    hist[str(datetime.date.today())] = len(todo)
+    hist = {k: hist[k] for k in sorted(hist)[-30:]}
+    _jsave(QUEUE_HISTORY_FILE, hist)
+    last = [hist[k] for k in sorted(hist)[-4:]]
+    growing = len(last) == 4 and all(a < b for a, b in zip(last, last[1:]))
+    if growing:
+        log(f"queue: growing for 3 days in a row ({' -> '.join(map(str, last))}); flagged for the health report")
+    return {"queue_todo": len(todo),
+            "queue_oldest_days": round(max((_age_days(t) for t in todo), default=0.0), 1),
+            "queue_estimate_error_min": round(sum(abs(t["estimate"] - t["minutes"]) for t in ran) / len(ran), 2) if ran else None,
+            "queue_skipped_for_time": sum(1 for t in todo if t.get("skipped_for_time")),
+            "queue_growing_3_days": growing}
+
+if "_extras_before_queue" not in globals():
+    _extras_before_queue = _run_extras
+def _run_extras_with_queue():
+    d = _extras_before_queue()
+    d.update(queue_report())
+    return d
+_run_extras = _run_extras_with_queue
+
+TOOLS.register("queue_report", queue_report, "Queue length, oldest task, estimate accuracy and whether the queue is growing.")
