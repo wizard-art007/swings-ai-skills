@@ -3729,6 +3729,9 @@ def _write_tool_for_need(self, skill, goal):
     plain_parse = globals()["parse_files"]
     def parse_with_splice(text):
         files = plain_parse(text)
+        for k in [k for k in files if re.fullmatch(r"(\./)?tests/(test_need_[0-9a-f]{8}|captools)\.py", k)]:
+            files.pop(k)                               # the acceptance test is not the LLM's to edit
+            log(f"need {n['id']}: dropped the LLM's rewrite of {k} (acceptance test is fixed)")
         key = f"scripts/{module}.patch.py"
         if key in files:
             body = files.pop(key)
@@ -3738,7 +3741,7 @@ def _write_tool_for_need(self, skill, goal):
                 files[f"scripts/{module}.py"] = body
                 log(f"need {n['id']}: patch could not be spliced ({type(e).__name__}); sent as is")
         return files
-    globals()["parse_files"] = parse_with_splice if cur.exists() else plain_parse
+    globals()["parse_files"] = parse_with_splice
     try:
         return _write_tool_plain(self, skill, goal)
     finally:
@@ -3779,7 +3782,31 @@ def verify_need(n):
                             "reason": f"added for need {n['id']}, no working tool"}
         _jsave(REGISTRY_FILE, reg); _jsave(ARCHIVE_FILE, arch)
         log(f"need {n['id']}: archived {n['skill']} again (no working tool)")
+    if n["tries"] >= MAX_NEED_TRIES:
+        _remove_acceptance(n)
     return _move(n, "parked" if n["tries"] >= MAX_NEED_TRIES else "open", why)
+
+def _remove_acceptance(n):
+    """A parked need's check must not stay in the skill's test suite (it would fail every later task there)."""
+    f = Path(SKILLS_DIR, n.get("skill") or "-", "tests", f"test_need_{n['id']}.py")
+    if f.exists():
+        f.unlink()
+        log(f"need {n['id']}: acceptance test removed from {n['skill']} (need parked)")
+
+def _reopen_tampered():
+    """Once: a need parked after its acceptance test was rewritten (before that was blocked) gets one honest retry."""
+    needs, changed = _jload(NEEDS_FILE, []), 0
+    for n in needs:
+        f = Path(SKILLS_DIR, n.get("skill") or "-", "tests", f"test_need_{n.get('id')}.py")
+        if n.get("status") == "parked" and not n.get("tamper_retry") and f.exists() and _need_check(n) \
+                and f.read_text(encoding="utf-8").strip() != _need_check(n).strip():
+            n["tamper_retry"], n["tries"] = True, MAX_NEED_TRIES - 1
+            f.write_text(_need_check(n), encoding="utf-8")
+            _move(n, "open", "last try had rewritten its acceptance test; one honest retry")
+            changed += 1
+    if changed:
+        _jsave(NEEDS_FILE, needs)
+    return changed
 
 # ---- 5. other gap types ---------------------------------------------------------------------------------------
 def _route_other(n):
@@ -3806,6 +3833,7 @@ def _close_learned(n):
 
 # ---- the run step ----------------------------------------------------------------------------------------------
 def work_needs(max_new=MAX_NEEDS_PER_RUN):
+    _reopen_tampered()
     needs = _jload(NEEDS_FILE, [])
     if not needs:
         return {}
@@ -3882,5 +3910,5 @@ def autopilot_cycle():
     _NEED_RUN[_RUN.get("id")] = total
 
 HIGH_VALUE = HIGH_VALUE + ("need_scout",)
-HEAL_PROTECTED |= {"_splice", "_patch_view", "_write_tool_for_need", "_skill_context", "_install_acceptance", "work_needs", "verify_need",
+HEAL_PROTECTED |= {"_remove_acceptance", "_reopen_tampered", "_splice", "_patch_view", "_write_tool_for_need", "_skill_context", "_install_acceptance", "work_needs", "verify_need",
                    "_run_extras_with_needs", "score_components", "_details"}
