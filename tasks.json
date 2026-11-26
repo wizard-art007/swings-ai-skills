@@ -404,5 +404,12 @@
     "queued": "2026-11-26T20:07",
     "need": "966f88c3",
     "priority": 2.0
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "drawdb-io-drawdb",
+    "goal": "",
+    "status": "todo",
+    "queued": "2026-11-26T20:07"
   }
 ]
