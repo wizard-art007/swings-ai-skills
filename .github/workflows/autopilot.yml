@@ -1,0 +1,49 @@
+name: Swings AI autopilot
+on:
+  schedule:
+    - cron: "23 */3 * * *"        # every 3 hours (keeps private repos inside the free minutes)
+  workflow_dispatch:
+    inputs:
+      force_refresh:
+        description: "Re-scan GitHub for UML projects now"
+        type: boolean
+        default: false
+permissions:
+  contents: write
+concurrency:
+  group: swings-ai
+  cancel-in-progress: false
+jobs:
+  autopilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11", cache: pip, cache-dependency-path: engine/requirements.txt }
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "17" }
+      - uses: actions/cache@v4
+        with:
+          path: .skill_repos
+          key: skill-repos-${{ hashFiles('registry.json') }}
+          restore-keys: skill-repos-
+      - run: pip install -r engine/requirements.txt
+      - name: Run autopilot
+        run: python engine/run_autopilot.py
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SWINGS_SKILLS_DIR: ${{ github.workspace }}
+          SWINGS_REPO_CACHE: ${{ github.workspace }}/.skill_repos
+          FORCE_REFRESH: ${{ inputs.force_refresh }}
+      - name: Push the agent's work
+        run: |
+          git config user.name "Swings AI"
+          git config user.email "swings-ai@users.noreply.github.com"
+          git add -A
+          git commit -m "autopilot: $(date -u +%Y-%m-%dT%H:%MZ)" || echo "nothing new"
+          git pull --rebase -X ours origin "${GITHUB_REF_NAME}" || true
+          git push origin "HEAD:${GITHUB_REF_NAME}"
