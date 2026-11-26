@@ -11,10 +11,28 @@ saved: 2026-11-26
 
 # plantuml-stdlib/C4-PlantUML
 
-Use this skill when the task involves: architecture, c4, c4model, diagram, graphviz, plantuml, uml.
+## Summary
+C4-PlantUML combines the benefits of PlantUML and the C4 model for providing a simple way of describing and communicating software architectures.
 
-- Source code: cloned on demand (`ensure_repo(skill)`); licence file(s): see source
-- Original README: `README_source.md`
+## When to use
+Use this skill when the task involves:
+- Designing or documenting software architectures using the C4 model (Context, Containers, Component, Code).
+- Creating PlantUML-based architectural diagrams with standardized C4 shapes, containers, systems, and boundaries.
+- Generating, rendering, or validating C4 architecture diagrams via scripts or command-line tools.
 
-## Summary from README
-[![release][Release Badge]][Release Page] [![license MIT][License Badge]][License Page] &nbsp; &nbsp; &nbsp; [![commits since][Commits Since Badge]][Commit Page] [![last commit][Last Commit Badge]][Commit Page] [![build result][Tests Badge]][Tests Page] [Release Badge]: https://img.shields.io/github/v/release/plantuml-stdlib/C4-PlantUML?display_name=tag [Release Page]: https://github.com/plantuml-stdlib/C4-PlantUML/releases/latest [License Badge]: https://img.shields.io/github/license/plantuml-stdlib/C4-PlantUML [License Page]: https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/LICENSE [Commits Since Badge]: https://img.shields.io/github/commits-since/plantuml-stdlib/C4-PlantUML/latest?label=new%20unreleased%20changes [Last Commit Badge]: https://img.shields.io/github/last-commit/plantuml-stdlib/C4-PlantUML?color=yellow [Commit Page]: https://github.com/plantuml-stdlib/C4-PlantUML/commits [Tests Badge]: https://github.com/plantuml-stdlib/C4-PlantUML/actions/workflows/run-percy-tests.yml/badge.svg [Tests Page]: https://github.com/plantuml-stdlib/C4-PlantUML/actions/workflows/run-percy-tests.yml # C4-PlantUML [comment]: # ("image is based on percy/C4_Container Diagram Sample - bigbankplc-styles.puml with NEW_C4_STYLE") [...]
+## How to use
+To generate or process C4 architecture diagrams using the repository and its tooling:
+
+1. Ensure the repository/environment is available (clone or reference the `C4-PlantUML` standard library).
+2. Utilize existing helper scripts such as `c4_plantuml_generator.py` to automate diagram generation or batch processing:
+   ```bash
+   python c4_plantuml_generator.py
+   ```
+3. Include the standard library in your `.puml` files using the appropriate relative or remote include paths:
+   ```plantuml
+   !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+   ```
+
+## Limitations
+- Requires a working PlantUML environment and Graphviz installed to render the diagrams into visual formats (PNG, SVG, etc.).
+- Complex system landscapes with numerous interconnections can result in cluttered or difficult-to-read automatically laid-out diagrams, requiring manual adjustment of layout directions (e.g., `Rel_Down`, `Rel_Left`).
