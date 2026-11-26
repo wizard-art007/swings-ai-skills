@@ -37,7 +37,9 @@
       "README.md",
       "tests/test_attention.py",
       "src/quantized_attention.py"
-    ]
+    ],
+    "repo_url": "https://github.com/wizard-art007/swings-exp-minimal-pure-python-quantized-attention-",
+    "published": "2026-11-26T07:43"
   },
   "thermodynamic-radiator-dynamics-pid-cont": {
     "title": "Thermodynamic Radiator Dynamics & PID Controller Simulator",
