@@ -97,3 +97,4 @@
 - 2026-11-26 16:22 — plan: seleniumbase-seleniumbase (qa_testing) gets a qa_testing tool instead of a diagram helper
 - 2026-11-26 16:22 — affaan-m-ecc: attempt 1 blocked by safety scan (tests/test_ecc_agent.py: syntax error: expected '(' (test_ecc_agent.py, line 25))
 - 2026-11-26 16:23 — affaan-m-ecc: 'a small offline Python helper that captures this project's core technique (for example an agent loop, tool calling, planning, memory or a prompt pattern) and applies it to a toy task; the tests must use a fake LLM function and no network' PASSED on attempt 2 (scripts/ecc_agent_harness.py, tests/test_ecc_harness.py)
+- 2026-11-26 16:25 — microsoft-playwright: 'a small offline Python helper that applies this project's testing approach (for example test-case generation, fluent assertions, retries and waits, page-object or fixture patterns) to a sample function or spec, with pytest tests' PASSED on attempt 1 (scripts/diagram_helper.py, tests/test_diagram_helper.py)
