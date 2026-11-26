@@ -363,5 +363,12 @@
     "queued": "2026-11-26T19:57",
     "need": "b3e3c2b0",
     "priority": 2.0
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "juliusbrussee-caveman",
+    "goal": "",
+    "status": "todo",
+    "queued": "2026-11-26T19:57"
   }
 ]
