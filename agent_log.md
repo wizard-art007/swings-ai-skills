@@ -91,3 +91,8 @@
 - 2026-11-26 14:42 — agent maintainer v1: FAIL — step limit reached
 - 2026-11-26 14:43 — evolver updated publisher to v2: Publisher had failures due to hitting the daily repository creation limit. Updated prompt to handle the daily limit grac
 - 2026-11-26 14:43 — agent evolver v1: FAIL — step limit reached
+- 2026-11-26 16:22 — plan: affaan-m-ecc (ai_agents) gets a ai_agents tool instead of a diagram helper
+- 2026-11-26 16:22 — plan: microsoft-playwright (qa_testing) gets a qa_testing tool instead of a diagram helper
+- 2026-11-26 16:22 — plan: leonxlnx-taste-skill (ai_agents) gets a ai_agents tool instead of a diagram helper
+- 2026-11-26 16:22 — plan: seleniumbase-seleniumbase (qa_testing) gets a qa_testing tool instead of a diagram helper
+- 2026-11-26 16:22 — affaan-m-ecc: attempt 1 blocked by safety scan (tests/test_ecc_agent.py: syntax error: expected '(' (test_ecc_agent.py, line 25))
