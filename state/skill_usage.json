@@ -1,9 +1,17 @@
 {
   "yizhiyanhua-ai-fireworks-tech-graph": {
-    "used": 2,
+    "used": 3,
     "success": 0
   },
   "deepset-ai-haystack": {
+    "used": 1,
+    "success": 1
+  },
+  "juliusbrussee-caveman": {
+    "used": 1,
+    "success": 1
+  },
+  "agents365-ai-drawio-skill": {
     "used": 1,
     "success": 1
   }

@@ -156,3 +156,13 @@
 - 2026-11-26 19:57 — juliusbrussee-caveman: 'close need: Missing LLM Token Budget Estimator [need 8e0b4e27]' PASSED on attempt 1 (scripts/llm_token_budget_estimator.py, tests/test_need_8e0b4e27.py)
 - 2026-11-26 19:57 — yizhiyanhua-ai-fireworks-tech-graph: 'close need: Broken Tech Graph Mermaid Capability [need ef20a2aa]' PASSED on attempt 1 (tests/test_need_ef20a2aa.py, scripts/diagram_helper.py)
 - 2026-11-26 19:57 — agents365-ai-drawio-skill: 'close need: Broken BPMN Process Generation Capability [need b3e3c2b0]' PASSED on attempt 1 (scripts/bpmn_generator.py, tests/test_bpmn_generator.py)
+- 2026-11-26 19:57 — juliusbrussee-caveman: SKILL.md improved
+- 2026-11-26 19:57 — agent maintainer: ran the task queue directly (no LLM call needed)
+- 2026-11-26 19:57 — need ef20a2aa: building -> verifying (tool task done)
+- 2026-11-26 19:57 — need ef20a2aa: verifying -> parked (check fails: FAILED tests/test_cap_diagrams_tech_graph_mermaid.py::test_tech_graph_mermaid)
+- 2026-11-26 19:57 — need 8e0b4e27: building -> verifying (tool task done)
+- 2026-11-26 19:57 — need 8e0b4e27: verifying -> closed (capability check passes)
+- 2026-11-26 19:57 — need b3e3c2b0: building -> verifying (tool task done)
+- 2026-11-26 19:57 — need b3e3c2b0: verifying -> closed (capability check passes)
+- 2026-11-26 19:57 — experience: rule promoted for write_tool: Validate Mermaid syntax and class definition formats against unit test assertion
+- 2026-11-26 19:57 — experience: rule promoted for write_tool: Verify existing test assertions for Mermaid syntax formatting before modifying t

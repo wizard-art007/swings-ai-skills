@@ -34,11 +34,12 @@
     "description": "Convert natural language or arrow-based architecture description into Mermaid flowchart markup.",
     "check": "from captools import load_tool\n\ndef test_tech_graph_mermaid():\n    mod = load_tool('yizhiyanhua-ai-fireworks-tech-graph', 'diagram_helper')\n    graph = mod.parse_text_description(\"Frontend -> Backend -> Database\")\n    mermaid = mod.to_mermaid(graph, style=\"default\", direction=\"TD\")\n    assert isinstance(mermaid, str)\n    assert \"graph TD\" in mermaid\n    assert \"Frontend\" in mermaid\n    assert \"Database\" in mermaid\n",
     "history": [
+      false,
       false
     ],
     "status": "missing",
     "created": "2026-11-26",
-    "checked": "2026-11-26T18:10",
+    "checked": "2026-11-26T19:57",
     "weak_skills": []
   },
   {
@@ -90,11 +91,12 @@
     "description": "Generate BPMN 2.0 XML workflow diagrams from simple business process descriptions.",
     "check": "from captools import load_tool\n\ndef test_bpmn_process_generation():\n    mod = load_tool('*', 'bpmn_generator')\n    res = mod.generate_bpmn(\"Start -> Task -> End\")\n    assert isinstance(res, str)\n    assert \"<definitions\" in res\n    assert \"Task\" in res\n",
     "history": [
-      false
+      false,
+      true
     ],
-    "status": "missing",
+    "status": "strong",
     "created": "2026-11-26",
-    "checked": "2026-11-26T18:10",
+    "checked": "2026-11-26T19:57",
     "weak_skills": []
   },
   {
@@ -189,11 +191,12 @@
     "description": "Estimate the token consumption of a conversation history against model context limits.",
     "check": "from captools import load_tool\n\ndef test_token_budget_estimator():\n    m = load_tool('*', 'llm_token_budget_estimator')\n    messages = [{\"role\": \"user\", \"content\": \"Hello, write a quicksort function in Python.\"}]\n    budget = m.estimate_tokens(messages, model=\"gpt-4\")\n    assert isinstance(budget, int)\n    assert budget > 0\n",
     "history": [
-      false
+      false,
+      true
     ],
-    "status": "missing",
+    "status": "strong",
     "created": "2026-11-26",
-    "checked": "2026-11-26T18:10",
+    "checked": "2026-11-26T19:57",
     "weak_skills": []
   },
   {

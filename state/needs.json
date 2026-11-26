@@ -39,7 +39,7 @@
     ],
     "action": "Fix implementation or test for diagrams-tech-graph-mermaid.",
     "priority": 4.0,
-    "status": "building",
+    "status": "parked",
     "source": "self_review",
     "ts": "2026-11-26T18:11",
     "log": [
@@ -102,15 +102,28 @@
         "from": "searching",
         "to": "building",
         "why": "tool task queued on yizhiyanhua-ai-fireworks-tech-graph"
+      },
+      {
+        "ts": "2026-11-26T19:57",
+        "from": "building",
+        "to": "verifying",
+        "why": "tool task done"
+      },
+      {
+        "ts": "2026-11-26T19:57",
+        "from": "verifying",
+        "to": "parked",
+        "why": "check fails: FAILED tests/test_cap_diagrams_tech_graph_mermaid.py::test_tech_graph_mermaid"
       }
     ],
-    "updated": "2026-11-26T19:52",
+    "updated": "2026-11-26T19:57",
     "skill": "yizhiyanhua-ai-fireworks-tech-graph",
     "module": "diagram_helper",
-    "tries": 2,
+    "tries": 3,
     "failures": [
       "tool task failed",
-      "tool task failed"
+      "tool task failed",
+      "check fails: FAILED tests/test_cap_diagrams_tech_graph_mermaid.py::test_tech_graph_mermaid"
     ]
   },
   {
@@ -127,7 +140,7 @@
     ],
     "action": "Implement the token budget estimator to fix its test failure.",
     "priority": 4.0,
-    "status": "building",
+    "status": "closed",
     "source": "self_review",
     "ts": "2026-11-26T18:11",
     "updated": "2026-11-26T19:57",
@@ -167,6 +180,18 @@
         "from": "searching",
         "to": "building",
         "why": "tool task queued on juliusbrussee-caveman"
+      },
+      {
+        "ts": "2026-11-26T19:57",
+        "from": "building",
+        "to": "verifying",
+        "why": "tool task done"
+      },
+      {
+        "ts": "2026-11-26T19:57",
+        "from": "verifying",
+        "to": "closed",
+        "why": "capability check passes"
       }
     ],
     "tries": 2,
@@ -185,7 +210,9 @@
       "need_fit": 0.057
     },
     "skill": "juliusbrussee-caveman",
-    "module": "llm_token_budget_estimator"
+    "module": "llm_token_budget_estimator",
+    "closed": "2026-11-26T19:57",
+    "closed_by": "capability check passes"
   },
   {
     "id": "b5c81ace",
@@ -227,7 +254,7 @@
     ],
     "action": "Debug and fix BPMN process generation logic in the diagrams module.",
     "priority": 2.0,
-    "status": "building",
+    "status": "closed",
     "source": "self_review",
     "ts": "2026-11-26T18:11",
     "log": [
@@ -254,6 +281,18 @@
         "from": "searching",
         "to": "building",
         "why": "tool task queued on agents365-ai-drawio-skill"
+      },
+      {
+        "ts": "2026-11-26T19:57",
+        "from": "building",
+        "to": "verifying",
+        "why": "tool task done"
+      },
+      {
+        "ts": "2026-11-26T19:57",
+        "from": "verifying",
+        "to": "closed",
+        "why": "capability check passes"
       }
     ],
     "updated": "2026-11-26T19:57",
@@ -273,7 +312,9 @@
       "need_fit": 0.055
     },
     "skill": "agents365-ai-drawio-skill",
-    "module": "bpmn_generator"
+    "module": "bpmn_generator",
+    "closed": "2026-11-26T19:57",
+    "closed_by": "capability check passes"
   },
   {
     "id": "966f88c3",

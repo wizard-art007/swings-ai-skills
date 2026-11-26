@@ -380,8 +380,11 @@
     "kind": "improve_doc",
     "skill": "juliusbrussee-caveman",
     "goal": "",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-26T19:57",
-    "value": 719.647
+    "value": 719.647,
+    "finished": "2026-11-26T19:57",
+    "minutes": 0.03,
+    "estimate": 4.0
   }
 ]
