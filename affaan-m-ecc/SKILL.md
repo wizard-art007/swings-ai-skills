@@ -9,12 +9,54 @@ topics: ai-agents, anthropic, claude, claude-code, developer-tools, llm, mcp, pr
 saved: 2026-11-26
 ---
 
-# affaan-m/ECC
+# Everything Claude Code (ECC)
 
-Use this skill when the task involves: ai-agents, anthropic, claude, claude-code, developer-tools, llm, mcp, productivity.
+ECC (Everything Claude Code) is an agent harness performance optimization system designed to enhance developer productivity, memory management, security, and skill execution across LLM-powered development tools like Claude Code, Codex, OpenCode, Cursor, and related platforms.
 
-- Source code: cloned on demand (`ensure_repo(skill)`); licence file(s): see source
-- Original README: `README_source.md`
+## When to use
 
-## Summary from README
-Language: English | العربية | Português (Brasil) | 简体中文 | 繁體中文 | 日本語 | 한국어 | Türkçe | Русский | Tiếng Việt | ไทย | Deutsch | Español | Українська | Polski | বাংলা | Italiano > [!WARNING] > **Official sources only.** Install ECC only from verified channels: the GitHub repository [github.com/affaan-m/ECC](https://github.com/affaan-m/ECC), the npm packages [`ecc-universal`](https://www.npmjs.com/package/ecc-universal) and [`ecc-agentshield`](https://www.npmjs.com/package/ecc-agentshield), the [GitHub App](https://github.com/apps/ecc-tools), the plugin slug `ecc@ecc`, and the project website [ecc.tools](https://ecc.tools). Third-party re-uploads and unofficial mirrors are not maintained or reviewed by the project and may contain malware. ## Install with Claude Code Use the [guided setup](#install-ecc) or [native plugin commands](#claude-code-details). Both install the same `ecc@ecc` plugin. Choose one and do not stack a full manual Claude install on top. ECC Pro + GitHub App Install free · Private repos from $19/seat/mo Sponsor ECC Fund the open-source project Community Discord · Q&amp;A · Show and Tell **OSS stays free.** This repo is MIT-licensed forever. ECC Pro is the hosted GitHub App for private repos. Sponsors and Pro subscribers fund the work. That's why a single maintainer ships weekly across 7 harnesses. Partners &amp; sponsors &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Past sponsors: Atlas Cloud · Mike Morgan (inactive) Community [...]
+Use this skill when:
+- Building, configuring, or optimizing AI agent workflows and harnesses for Claude Code, OpenCode, Codex, or Cursor.
+- Enhancing agent autonomy with structured skills, instinct systems, persistent memory, and security sandboxing.
+- Setting up Model Context Protocol (MCP) servers, tool integration, or developer security shields (`ecc-agentshield`).
+- Implementing research-first workflows, automated prompt optimization, and agent harness benchmarking.
+
+## How to use
+
+### Installation & Setup
+
+Install official ECC components from verified channels:
+
+```bash
+# Install universal ECC package via npm
+npm install -g ecc-universal
+
+# Install security shield package
+npm install -g ecc-agentshield
+```
+
+In Claude Code, add the official plugin:
+```bash
+/plugin add ecc@ecc
+```
+
+### Script Execution
+
+Use the included diagram generator to visualize architecture and workflow flows:
+
+```bash
+# Run the diagram script
+python3 ecc_diagram.py
+```
+
+### Primary Workflows
+
+1. **Agent Harness Optimization:** Configure context windows, memory persistent layers, and prompt instincts within your target agent configuration.
+2. **Security & Sandboxing:** Deploy `ecc-agentshield` to inspect agent tool calls and enforce permission boundaries before code execution.
+3. **MCP Integration:** Configure custom Model Context Protocol servers to expose repository context and external tooling directly to Claude Code.
+
+## Limitations
+
+- **Official Channel Verification:** Must only be installed via verified npm packages (`ecc-universal`, `ecc-agentshield`) or official plugin slug `ecc@ecc` to avoid malicious forks.
+- **Harness Differences:** Features such as deep memory hooks and custom instinct triggers may behave differently across different platforms (e.g., Claude Code vs. Cursor vs. OpenCode).
+- **Pro Features:** While core OSS features are MIT-licensed, certain private repository enterprise management features require ECC Pro.

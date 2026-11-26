@@ -233,5 +233,50 @@
     "source": "agent",
     "status": "done",
     "ts": "2026-11-26T13:51:34"
+  },
+  {
+    "id": "f3bc9ecbc1",
+    "type": "tasks.pending",
+    "payload": {
+      "count": 9
+    },
+    "source": "system",
+    "status": "running",
+    "ts": "2026-11-26T14:41:37"
+  },
+  {
+    "id": "6b20c3edad",
+    "type": "system.review",
+    "payload": {
+      "recent_failures": [
+        {
+          "agent": "publisher",
+          "version": 1,
+          "task": "Handle event 'experiment.ready'",
+          "success": false,
+          "summary": "Failed to publish experiment 'thermodynamic-radiator-dynamics-pid-cont' because the daily limit of 3 new repos has been reached.",
+          "ts": "2026-11-26T07:43"
+        },
+        {
+          "agent": "publisher",
+          "version": 1,
+          "task": "Handle event 'experiment.ready'",
+          "success": false,
+          "summary": "Failed to publish experiment 'moat-openrouter-replacement' because the daily limit of new repositories has been reached.",
+          "ts": "2026-11-26T14:10"
+        },
+        {
+          "agent": "publisher",
+          "version": 1,
+          "task": "Handle event 'experiment.ready'",
+          "success": false,
+          "summary": "Failed to publish experiment 'iphone-sms-expense-parser': daily limit of 3 new repos reached; will retry tomorrow.",
+          "ts": "2026-11-26T14:10"
+        }
+      ]
+    },
+    "source": "system",
+    "status": "new",
+    "ts": "2026-11-26T14:41:37"
   }
 ]

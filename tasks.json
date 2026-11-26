@@ -178,19 +178,22 @@
     "kind": "write_tool",
     "skill": "tt-a1i-archify",
     "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
-    "status": "todo"
+    "status": "done",
+    "finished": "2026-11-26T14:41"
   },
   {
     "kind": "improve_doc",
     "skill": "tt-a1i-archify",
     "goal": "",
-    "status": "todo"
+    "status": "done",
+    "finished": "2026-11-26T14:41"
   },
   {
     "kind": "write_tool",
     "skill": "affaan-m-ecc",
     "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
-    "status": "todo"
+    "status": "done",
+    "finished": "2026-11-26T14:41"
   },
   {
     "kind": "improve_doc",
