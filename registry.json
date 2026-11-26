@@ -481,5 +481,74 @@
       "usefulness": 0.5
     },
     "added_for_need": "8e0b4e27"
+  },
+  "drawdb-io-drawdb": {
+    "name": "drawdb",
+    "full_name": "drawdb-io/drawdb",
+    "url": "https://github.com/drawdb-io/drawdb",
+    "clone_url": "https://github.com/drawdb-io/drawdb.git",
+    "stars": 40444,
+    "license": "AGPL-3.0",
+    "language": "JavaScript",
+    "topics": [
+      "database",
+      "database-design",
+      "database-diagram",
+      "database-schema",
+      "dbml",
+      "diagram-editor",
+      "editor",
+      "er-diagram",
+      "erd",
+      "erdiagram",
+      "indexeddb",
+      "mariadb",
+      "mcp",
+      "oracle-database",
+      "oracle-db",
+      "postgresql",
+      "schema-design",
+      "sql",
+      "sql-server",
+      "sqlite"
+    ],
+    "description": "Free, simple, and intuitive online database diagram editor and SQL generator.",
+    "default_branch": "main",
+    "skill_name": "drawdb-io-drawdb",
+    "domain": "diagrams",
+    "score": 60.3,
+    "components": {
+      "popularity": 0.921,
+      "activity": 1.0,
+      "health": 0.429,
+      "license": 0.3,
+      "fit": 0.071,
+      "usefulness": 0.5
+    },
+    "added_for_need": "966f88c3"
+  },
+  "sebastianbergmann-php-code-coverage": {
+    "name": "php-code-coverage",
+    "full_name": "sebastianbergmann/php-code-coverage",
+    "url": "https://github.com/sebastianbergmann/php-code-coverage",
+    "clone_url": "https://github.com/sebastianbergmann/php-code-coverage.git",
+    "stars": 8922,
+    "license": "BSD-3-Clause",
+    "language": "PHP",
+    "topics": [],
+    "description": "Library that provides collection, processing, and rendering functionality for PHP code coverage information.",
+    "default_branch": "main",
+    "skill_name": "sebastianbergmann-php-code-coverage",
+    "domain": "qa_testing",
+    "score": 76.9,
+    "components": {
+      "popularity": 0.79,
+      "activity": 1.0,
+      "health": 0.685,
+      "license": 1.0,
+      "fit": 0.297,
+      "usefulness": 0.5
+    },
+    "added_for_need": "57c35597"
   }
 }

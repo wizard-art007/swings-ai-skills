@@ -166,4 +166,29 @@
 - 2026-11-26 19:57 — need b3e3c2b0: verifying -> closed (capability check passes)
 - 2026-11-26 19:57 — experience: rule promoted for write_tool: Validate Mermaid syntax and class definition formats against unit test assertion
 - 2026-11-26 19:57 — experience: rule promoted for write_tool: Verify existing test assertions for Mermaid syntax formatting before modifying t
-- 2026-11-26 23:21 — evolver updated publisher to v3: F7: experiments go to one projects repo, no daily limit
+- 2026-11-26 20:07 — need ef20a2aa: parked -> open (last try had rewritten its acceptance test; one honest retry)
+- 2026-11-26 20:07 — need ef20a2aa: open -> searching (tool scripts/diagram_helper.py)
+- 2026-11-26 20:07 — need ef20a2aa: searching -> building (tool task queued on yizhiyanhua-ai-fireworks-tech-graph)
+- 2026-11-26 20:07 — need 966f88c3: open -> searching (tool scripts/erd_generator.py)
+- 2026-11-26 20:07 — need 966f88c3: searching -> building (tool task queued on drawdb-io-drawdb)
+- 2026-11-26 20:07 — yizhiyanhua-ai-fireworks-tech-graph: 'close need: Broken Tech Graph Mermaid Capability [need ef20a2aa]' PASSED on attempt 2 (scripts/diagram_helper.py)
+- 2026-11-26 20:07 — need 966f88c3: dropped the LLM's rewrite of tests/test_need_966f88c3.py (acceptance test is fixed)
+- 2026-11-26 20:07 — drawdb-io-drawdb: 'close need: Broken ERD Model Generator Capability [need 966f88c3]' PASSED on attempt 1 (scripts/erd_generator.py)
+- 2026-11-26 20:07 — drawdb-io-drawdb: SKILL.md improved
+- 2026-11-26 20:07 — need ef20a2aa: building -> verifying (tool task done)
+- 2026-11-26 20:07 — need ef20a2aa: verifying -> closed (capability check passes)
+- 2026-11-26 20:07 — need 966f88c3: building -> verifying (tool task done)
+- 2026-11-26 20:07 — need 966f88c3: verifying -> closed (capability check passes)
+- 2026-11-26 22:13 — need d3d569f1: open -> searching (tool scripts/agent_memory_summarizer.py)
+- 2026-11-26 22:13 — need d3d569f1: searching -> building (tool task queued on affaan-m-ecc)
+- 2026-11-26 22:13 — need 57c35597: open -> searching (tool scripts/test_coverage_analyzer.py)
+- 2026-11-26 22:14 — need 57c35597: searching -> building (tool task queued on sebastianbergmann-php-code-coverage)
+- 2026-11-26 22:14 — need d3d569f1: dropped the LLM's rewrite of tests/test_need_d3d569f1.py (acceptance test is fixed)
+- 2026-11-26 22:14 — affaan-m-ecc: 'close need: Missing Agent Memory Summarizer [need d3d569f1]' PASSED on attempt 2 (scripts/agent_memory_summarizer.py, tests/test_agent_memory_summarizer.py)
+- 2026-11-26 22:14 — need 57c35597: dropped the LLM's rewrite of tests/test_need_57c35597.py (acceptance test is fixed)
+- 2026-11-26 22:14 — sebastianbergmann-php-code-coverage: 'close need: Missing Test Coverage Analyzer [need 57c35597]' PASSED on attempt 1 (scripts/test_coverage_analyzer.py)
+- 2026-11-26 22:14 — sebastianbergmann-php-code-coverage: SKILL.md improved
+- 2026-11-26 22:14 — need d3d569f1: building -> verifying (tool task done)
+- 2026-11-26 22:14 — need d3d569f1: verifying -> closed (capability check passes)
+- 2026-11-26 22:14 — need 57c35597: building -> verifying (tool task done)
+- 2026-11-26 22:14 — need 57c35597: verifying -> closed (capability check passes)

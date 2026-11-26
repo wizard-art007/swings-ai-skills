@@ -386,5 +386,79 @@
     "finished": "2026-11-26T19:57",
     "minutes": 0.03,
     "estimate": 4.0
+  },
+  {
+    "kind": "write_tool",
+    "skill": "yizhiyanhua-ai-fireworks-tech-graph",
+    "goal": "close need: Broken Tech Graph Mermaid Capability [need ef20a2aa]",
+    "status": "done",
+    "queued": "2026-11-26T20:07",
+    "need": "ef20a2aa",
+    "priority": 2.33,
+    "value": 1627.804,
+    "finished": "2026-11-26T20:07",
+    "minutes": 0.07,
+    "estimate": 0.5
+  },
+  {
+    "kind": "write_tool",
+    "skill": "drawdb-io-drawdb",
+    "goal": "close need: Broken ERD Model Generator Capability [need 966f88c3]",
+    "status": "done",
+    "queued": "2026-11-26T20:07",
+    "need": "966f88c3",
+    "priority": 2.0,
+    "value": 1207.085,
+    "finished": "2026-11-26T20:07",
+    "minutes": 0.03,
+    "estimate": 0.5
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "drawdb-io-drawdb",
+    "goal": "",
+    "status": "done",
+    "queued": "2026-11-26T20:07",
+    "value": 603.543,
+    "finished": "2026-11-26T20:07",
+    "minutes": 0.03,
+    "estimate": 0.5
+  },
+  {
+    "kind": "write_tool",
+    "skill": "affaan-m-ecc",
+    "goal": "close need: Missing Agent Memory Summarizer [need d3d569f1]",
+    "status": "done",
+    "queued": "2026-11-26T22:13",
+    "need": "d3d569f1",
+    "priority": 2.0,
+    "value": 1543.388,
+    "finished": "2026-11-26T22:14",
+    "minutes": 0.07,
+    "estimate": 0.5
+  },
+  {
+    "kind": "write_tool",
+    "skill": "sebastianbergmann-php-code-coverage",
+    "goal": "close need: Missing Test Coverage Analyzer [need 57c35597]",
+    "status": "done",
+    "queued": "2026-11-26T22:14",
+    "need": "57c35597",
+    "priority": 2.0,
+    "value": 1539.384,
+    "finished": "2026-11-26T22:14",
+    "minutes": 0.03,
+    "estimate": 0.5
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "sebastianbergmann-php-code-coverage",
+    "goal": "",
+    "status": "done",
+    "queued": "2026-11-26T22:14",
+    "value": 769.692,
+    "finished": "2026-11-26T22:14",
+    "minutes": 0.03,
+    "estimate": 0.5
   }
 ]
