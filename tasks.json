@@ -395,5 +395,14 @@
     "queued": "2026-11-26T20:07",
     "need": "ef20a2aa",
     "priority": 2.33
+  },
+  {
+    "kind": "write_tool",
+    "skill": "drawdb-io-drawdb",
+    "goal": "close need: Broken ERD Model Generator Capability [need 966f88c3]",
+    "status": "todo",
+    "queued": "2026-11-26T20:07",
+    "need": "966f88c3",
+    "priority": 2.0
   }
 ]

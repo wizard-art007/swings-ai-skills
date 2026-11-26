@@ -347,7 +347,7 @@
     ],
     "action": "Fix ERD model generator test and underlying code.",
     "priority": 2.0,
-    "status": "open",
+    "status": "building",
     "source": "self_review",
     "ts": "2026-11-26T18:11",
     "log": [
@@ -362,15 +362,38 @@
         "from": "searching",
         "to": "open",
         "why": "no repo passes the hard rules for ['dbml generator plantuml erd relational schema', 'entity relationship diagram generator sql dbml', 'database schema to plantuml erd generator']"
+      },
+      {
+        "ts": "2026-11-26T20:07",
+        "from": "open",
+        "to": "searching",
+        "why": "tool scripts/erd_generator.py"
+      },
+      {
+        "ts": "2026-11-26T20:07",
+        "from": "searching",
+        "to": "building",
+        "why": "tool task queued on drawdb-io-drawdb"
       }
     ],
-    "updated": "2026-11-26T19:47",
+    "updated": "2026-11-26T20:07",
     "queries": [
-      "dbml generator plantuml erd relational schema",
-      "entity relationship diagram generator sql dbml",
-      "database schema to plantuml erd generator"
+      "dbml erd generator",
+      "entity relationship diagram",
+      "dbml"
     ],
-    "tries": 1
+    "tries": 1,
+    "tried_repos": [
+      "drawdb-io/drawdb"
+    ],
+    "repo": {
+      "full_name": "drawdb-io/drawdb",
+      "stars": 40444,
+      "score": 60.3,
+      "need_fit": 0.071
+    },
+    "skill": "drawdb-io-drawdb",
+    "module": "erd_generator"
   },
   {
     "id": "e747bf71",
