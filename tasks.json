@@ -31,19 +31,22 @@
     "kind": "improve_doc",
     "skill": "yizhiyanhua-ai-fireworks-tech-graph",
     "goal": "",
-    "status": "todo"
+    "status": "done",
+    "finished": "2026-11-26T01:30"
   },
   {
     "kind": "write_tool",
     "skill": "agents365-ai-drawio-skill",
     "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
-    "status": "todo"
+    "status": "done",
+    "finished": "2026-11-26T01:30"
   },
   {
     "kind": "improve_doc",
     "skill": "agents365-ai-drawio-skill",
     "goal": "",
-    "status": "todo"
+    "status": "done",
+    "finished": "2026-11-26T01:31"
   },
   {
     "kind": "write_tool",

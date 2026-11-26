@@ -6,12 +6,21 @@ import requests
 
 # GitHub token is optional but raises the API limit from 60 to 5,000 requests/hour.
 # In Colab: click the key icon (Secrets) -> add GITHUB_TOKEN -> enable notebook access.
-GITHUB_TOKEN = None
+GITHUB_SECRET_NAMES = ["GITHUB_TOKEN", "Wings"]   # Colab secret names that may hold your GitHub token
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 try:
     from google.colab import userdata
-    GITHUB_TOKEN = userdata.get("GITHUB_TOKEN")
-except Exception:
-    GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
+    for _name in GITHUB_SECRET_NAMES:
+        try:
+            GITHUB_TOKEN = userdata.get(_name)
+            if GITHUB_TOKEN:
+                break
+        except Exception:
+            pass
+except ImportError:
+    pass
+if GITHUB_TOKEN:
+    os.environ["SWINGS_GH_TOKEN"] = GITHUB_TOKEN   # lets the GitHub plugin use it too
 
 HEADERS = {"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"}
 if GITHUB_TOKEN:
@@ -658,7 +667,7 @@ KNOWLEDGE_FILE = SKILLS_DIR / "knowledge.md"
 NEWS_DIR = SKILLS_DIR / "news"; NEWS_DIR.mkdir(exist_ok=True)
 
 # GitHub publishing safety switches
-GITHUB_DRY_RUN = os.environ.get("SWINGS_GITHUB_DRY_RUN", "true").lower() == "true"   # flip to False to publish for real
+GITHUB_DRY_RUN = os.environ.get("SWINGS_GITHUB_DRY_RUN", "false").lower() == "true"   # LIVE in Colab; set True to only simulate
 PUBLISH_PRIVATE = True            # experiment repos are private
 MAX_NEW_REPOS_PER_DAY = 3
 EXPERIMENT_PREFIX = "swings-exp-"
