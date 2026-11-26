@@ -115,18 +115,21 @@
     "kind": "improve_doc",
     "skill": "k1low-tbls",
     "goal": "",
-    "status": "todo"
+    "status": "done",
+    "finished": "2026-11-26T04:24"
   },
   {
     "kind": "write_tool",
     "skill": "skanaar-nomnoml",
     "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
-    "status": "todo"
+    "status": "done",
+    "finished": "2026-11-26T04:27"
   },
   {
     "kind": "improve_doc",
     "skill": "skanaar-nomnoml",
     "goal": "",
-    "status": "todo"
+    "status": "done",
+    "finished": "2026-11-26T04:28"
   }
 ]
