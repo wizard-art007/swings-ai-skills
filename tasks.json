@@ -345,5 +345,23 @@
     "queued": "2026-11-26T19:52",
     "need": "ef20a2aa",
     "priority": 2.33
+  },
+  {
+    "kind": "write_tool",
+    "skill": "juliusbrussee-caveman",
+    "goal": "close need: Missing LLM Token Budget Estimator [need 8e0b4e27]",
+    "status": "todo",
+    "queued": "2026-11-26T19:57",
+    "need": "8e0b4e27",
+    "priority": 2.33
+  },
+  {
+    "kind": "write_tool",
+    "skill": "agents365-ai-drawio-skill",
+    "goal": "close need: Broken BPMN Process Generation Capability [need b3e3c2b0]",
+    "status": "todo",
+    "queued": "2026-11-26T19:57",
+    "need": "b3e3c2b0",
+    "priority": 2.0
   }
 ]

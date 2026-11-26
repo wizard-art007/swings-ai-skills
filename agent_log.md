@@ -150,3 +150,6 @@
 - 2026-11-26 19:52 — need ef20a2aa: open -> searching (tool scripts/diagram_helper.py)
 - 2026-11-26 19:52 — need ef20a2aa: searching -> building (tool task queued on yizhiyanhua-ai-fireworks-tech-graph)
 - 2026-11-26 19:56 — need 8e0b4e27: open -> searching (tool scripts/llm_token_budget_estimator.py)
+- 2026-11-26 19:57 — need 8e0b4e27: searching -> building (tool task queued on juliusbrussee-caveman)
+- 2026-11-26 19:57 — need b3e3c2b0: open -> searching (tool scripts/bpmn_generator.py)
+- 2026-11-26 19:57 — need b3e3c2b0: searching -> building (tool task queued on agents365-ai-drawio-skill)

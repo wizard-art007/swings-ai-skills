@@ -127,10 +127,10 @@
     ],
     "action": "Implement the token budget estimator to fix its test failure.",
     "priority": 4.0,
-    "status": "open",
+    "status": "building",
     "source": "self_review",
     "ts": "2026-11-26T18:11",
-    "updated": "2026-11-26T19:47",
+    "updated": "2026-11-26T19:57",
     "log": [
       {
         "ts": "2026-11-26T19:38",
@@ -155,14 +155,37 @@
         "from": "searching",
         "to": "open",
         "why": "no repo passes the hard rules for ['llm token counter', 'context window token estimator', 'tiktoken conversation budget']"
+      },
+      {
+        "ts": "2026-11-26T19:56",
+        "from": "open",
+        "to": "searching",
+        "why": "tool scripts/llm_token_budget_estimator.py"
+      },
+      {
+        "ts": "2026-11-26T19:57",
+        "from": "searching",
+        "to": "building",
+        "why": "tool task queued on juliusbrussee-caveman"
       }
     ],
     "tries": 2,
     "queries": [
-      "llm token counter",
-      "context window token estimator",
-      "tiktoken conversation budget"
-    ]
+      "token budget estimator",
+      "token counter",
+      "tokenizer"
+    ],
+    "tried_repos": [
+      "JuliusBrussee/caveman"
+    ],
+    "repo": {
+      "full_name": "JuliusBrussee/caveman",
+      "stars": 123057,
+      "score": 71.9,
+      "need_fit": 0.057
+    },
+    "skill": "juliusbrussee-caveman",
+    "module": "llm_token_budget_estimator"
   },
   {
     "id": "b5c81ace",
@@ -204,7 +227,7 @@
     ],
     "action": "Debug and fix BPMN process generation logic in the diagrams module.",
     "priority": 2.0,
-    "status": "open",
+    "status": "building",
     "source": "self_review",
     "ts": "2026-11-26T18:11",
     "log": [
@@ -219,15 +242,38 @@
         "from": "searching",
         "to": "open",
         "why": "no repo passes the hard rules for ['bpmn process generator', 'bpmn 2.0 xml generator', 'business process bpmn generator']"
+      },
+      {
+        "ts": "2026-11-26T19:57",
+        "from": "open",
+        "to": "searching",
+        "why": "tool scripts/bpmn_generator.py"
+      },
+      {
+        "ts": "2026-11-26T19:57",
+        "from": "searching",
+        "to": "building",
+        "why": "tool task queued on agents365-ai-drawio-skill"
       }
     ],
-    "updated": "2026-11-26T19:47",
+    "updated": "2026-11-26T19:57",
     "queries": [
-      "bpmn process generator",
-      "bpmn 2.0 xml generator",
-      "business process bpmn generator"
+      "bpmn generator",
+      "bpmn process",
+      "bpmn"
     ],
-    "tries": 1
+    "tries": 1,
+    "tried_repos": [
+      "Agents365-ai/drawio-skill"
+    ],
+    "repo": {
+      "full_name": "Agents365-ai/drawio-skill",
+      "stars": 10959,
+      "score": 70.2,
+      "need_fit": 0.055
+    },
+    "skill": "agents365-ai-drawio-skill",
+    "module": "bpmn_generator"
   },
   {
     "id": "966f88c3",
