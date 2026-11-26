@@ -9,12 +9,101 @@ topics: agent, chatgpt, deepseek, drawio, editor, electron, gemini, koa2, markdo
 saved: 2026-11-26
 ---
 
-# purocean/yn
+# Yank Note (purocean/yn)
 
-Use this skill when the task involves: agent, chatgpt, deepseek, drawio, editor, electron, gemini, koa2, markdown, markdown-editor.
+Yank Note is an extensible Markdown editor built on Electron, Vue 3, Koa, and Monaco Editor. It combines local-first note-taking with IDE capabilities, including runnable code snippets, embedded diagrams (Draw.io, PlantUML, Mermaid), version history, client-side encryption, and multi-model AI Copilot/Agent integrations.
 
-- Source code: cloned on demand (`ensure_repo(skill)`); licence file(s): see source
-- Original README: `README_source.md`
+## When to use
 
-## Summary from README
-# Yank Note A **highly extensible** Markdown editor, designed for productivity. **[Download](https://github.com/purocean/yn/releases)** | **[Try it Online >>>](https://demo.yank-note.com/)** [](https://apps.apple.com/cn/app/yank-note/id1551528618) [Not recommended](https://github.com/purocean/yn/issues/65#issuecomment-1065799677) English | [中文说明](./README_ZH-CN.md) | [Русский](./README_RU.md) [toc]{level: [2]} ## Highlights - **AI Assistant:** **Supports AI Copilot for text completion, generation, and image generation (compatible with OpenAI, Ollama, Gemini, Kimi, Tongyi Qianwen, Flux.1, etc.); supports OpenCode AI Agent for intelligent coding assistance.** - **Easy to use:** Use *Monaco* kernel, optimize for Markdown editing, and have the same editing experience as VSCode. - **Powerful:** Support version control; Applets, runnable code blocks, tables, PlantUML, Drawio, macro replacements, etc., can be embedded in the document. - **High compatibility:** Data is saved as local Markdown files, and the extension functions are implemented in the original syntax of Markdown as far as possible. - **Plug-in extension:** Support users to write their own plug-ins to expand the functionality of the editor. - **Encryption supported:** Use encryption to save private files such as account number, and the password can be set separately for each file. ## Attention - For more extendable, Yank Note sacrifices security protection (command execution, arbitrary file reading and writing). [...]
+- **Extending Yank Note**: Developing custom plugins, macros, themes, or custom Markdown renderers for Yank Note.
+- **Integrating AI Assistants**: Adding or debugging LLM-assisted workflows (OpenAI, DeepSeek, Gemini, Ollama, OpenCode agent) inside a Monaco-based Markdown editor.
+- **Embedding Interactive Media & Tools**: Building workflows that embed runnable code blocks (Node, Python, Bash), interactive HTML applets, Draw.io diagrams, or PlantUML schemas directly inside Markdown notes.
+- **Investigating Electron + Monaco Architecture**: Studying hybrid desktop architecture using Monaco Editor with a local Koa backend and Vue frontend.
+
+---
+
+## How to use
+
+### 1. Prerequisites and Setup
+
+Clone the repository and install dependencies using Node.js (v18+ recommended):
+
+```bash
+git clone https://github.com/purocean/yn.git
+cd yn
+npm install
+```
+
+### 2. Development Commands
+
+Run Yank Note in development mode:
+
+```bash
+# Run the renderer development server (Vue/Vite)
+npm run dev
+
+# Run the Electron main process in dev mode
+npm run dev:electron
+
+# Build web application bundle
+npm run build
+
+# Package Electron desktop application for the current platform
+npm run package
+```
+
+### 3. Writing Custom Plugins
+
+Yank Note provides an extension system exposed via the global `window.yanknote` object or plugin interface:
+
+```typescript
+// Example: Basic Yank Note Plugin structure
+export default {
+  name: 'my-custom-plugin',
+  register(ctx: any) {
+    // Add command to command palette
+    ctx.commands.registerCommand({
+      id: 'my-plugin.hello',
+      name: 'Hello from Plugin',
+      run: () => {
+        ctx.ui.showToast('Plugin executed successfully!');
+      }
+    });
+
+    // Register Markdown-it hook or Monaco action
+    ctx.editor.registerAction({
+      id: 'insert-timestamp',
+      label: 'Insert Timestamp',
+      run: (editor: any) => {
+        const text = new Date().toISOString();
+        editor.trigger('keyboard', 'type', { text });
+      }
+    });
+  }
+};
+```
+
+### 4. Running Code Snippets Inside Markdown
+
+Yank Note allows executing code blocks directly within documents by annotating code fences:
+
+````markdown
+```bash:run
+echo "Current directory:"
+pwd
+```
+
+```python:run
+import sys
+print(f"Python version: {sys.version}")
+```
+````
+
+---
+
+## Limitations
+
+- **Intentional Security Trade-offs**: Yank Note deliberately permits arbitrary command execution and local file read/write operations to support runnable code blocks, local shell integration, and custom extensions. **Do not run or preview untrusted Markdown files.**
+- **Desktop Dependency**: Advanced system-level features (direct terminal execution, local file synchronization, external tool execution) rely on the Electron environment and local backend services; they may not function fully in web-only builds.
+- **Resource Consumption**: The combination of Electron, Monaco Editor, and multiple embedded rendering engines (Mermaid, PlantUML, Draw.io) can lead to significant memory usage on large workspaces.
+- **Licensing**: Licensed under AGPL-3.0, imposing strict copyleft requirements on derivative works and network-hosted variants.
