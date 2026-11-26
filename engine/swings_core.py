@@ -3305,3 +3305,73 @@ def _tick_with_tidy(*a, **kw):
         syslog("warn", "events", f"tidy skipped: {type(e).__name__}: {e}")
     return _tick_before_tidy(*a, **kw)
 orchestrator_tick = _tick_with_tidy
+
+# ---- verification fix 2 (live run #18): capability gaps are needs, not new agents --------------------------
+def _fix_need_types():
+    """An open need tied to a missing or weak capability is closed by a tool (external), never by tuning agents."""
+    caps = {c["id"]: c.get("status") for c in _jload(CAPABILITIES_FILE, [])}
+    needs, changed = _jload(NEEDS_FILE, []), 0
+    for n in needs:
+        if n.get("status") == "open" and n.get("type") != "external" and caps.get(n.get("capability")) in ("missing", "weak"):
+            n["type"] = "external"; changed += 1
+    if changed:
+        _jsave(NEEDS_FILE, needs)
+        log(f"needs: {changed} need(s) re-typed to external (their capability is missing or weak)")
+    return changed
+
+def _ground_agent_requests():
+    """An agent.needed event that names no real, unhandled event type is a capability gap: it joins the needs
+    (or adds evidence to a matching one) instead of making the architect design an agent for it."""
+    events, needs = _jload(EVENTS_FILE, []), _jload(NEEDS_FILE, [])
+    types = {e.get("type") for e in events if e.get("type") != "agent.needed"}
+    now, moved, added = datetime.datetime.now().isoformat(timespec="minutes"), 0, 0
+    for e in events:
+        if e.get("type") != "agent.needed" or e.get("status") != "new":
+            continue
+        p = e.get("payload") or {}
+        if p.get("event_type") and p["event_type"] != "agent.needed" and p["event_type"] in types:
+            continue                                   # a real event nobody handles: that is the architect's job
+        reason = str(p.get("reason") or p.get("need") or "").strip()[:300]
+        if reason:
+            match = max((n for n in needs if n.get("status") == "open"),
+                        key=lambda n: _similar_text(n.get("need", ""), reason), default=None)
+            if match and _similar_text(match.get("need", ""), reason) >= 0.4:
+                match["evidence"] = (match.get("evidence") or [])[:4] + [f"{e.get('source', 'agent')}: {reason[:150]}"]
+                match["updated"] = now
+            else:
+                needs.append({"id": uuid.uuid4().hex[:8], "need": reason, "domain": "",
+                              "type": "external" if re.search(r"missing|capabilit|tool", reason, re.I) else "knowledge",
+                              "capability": None, "check": None, "evidence": [f"{e.get('source', 'agent')}: {reason[:150]}"],
+                              "action": "find or build what closes this", "priority": 1.0, "status": "open",
+                              "source": e.get("source", "agent"), "ts": now})
+                added += 1
+        e["status"] = "to_need"; moved += 1
+    if moved:
+        _jsave(NEEDS_FILE, needs[-100:]); _jsave(EVENTS_FILE, events)
+        log(f"events: {moved} agent request(s) without a real event type became needs ({added} new)")
+    return moved
+
+if "_tidy_events_base" not in globals():
+    _tidy_events_base = tidy_events
+def tidy_events():
+    n = _tidy_events_base()
+    for step in (_ground_agent_requests, _fix_need_types):
+        try:
+            n += step()
+        except Exception as e:
+            syslog("warn", "events", f"{step.__name__} skipped: {type(e).__name__}: {e}")
+    return n
+
+EVOLVER_NEEDS_RULE = ("Missing capabilities or tools are NOT agent needs: the daily self-review tracks them as needs "
+                      "(see open_needs). Emit 'agent.needed' only with the event_type of a real event no agent handles.")
+def _upgrade_evolver_rule():
+    a = load_agents().get("evolver")
+    if a and EVOLVER_NEEDS_RULE not in a.system_prompt:
+        a.system_prompt = a.system_prompt.rstrip() + " " + EVOLVER_NEEDS_RULE
+        if "open_needs" not in a.tools:
+            a.tools.append("open_needs")
+        save_agent(a)
+        commit_skills("evolver: capability gaps are needs, not agents")
+_upgrade_evolver_rule()
+
+HEAL_PROTECTED |= {"_fix_need_types", "_ground_agent_requests", "_upgrade_evolver_rule"}
