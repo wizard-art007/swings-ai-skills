@@ -153,3 +153,4 @@
 - 2026-11-26 19:57 — need 8e0b4e27: searching -> building (tool task queued on juliusbrussee-caveman)
 - 2026-11-26 19:57 — need b3e3c2b0: open -> searching (tool scripts/bpmn_generator.py)
 - 2026-11-26 19:57 — need b3e3c2b0: searching -> building (tool task queued on agents365-ai-drawio-skill)
+- 2026-11-26 19:57 — juliusbrussee-caveman: 'close need: Missing LLM Token Budget Estimator [need 8e0b4e27]' PASSED on attempt 1 (scripts/llm_token_budget_estimator.py, tests/test_need_8e0b4e27.py)

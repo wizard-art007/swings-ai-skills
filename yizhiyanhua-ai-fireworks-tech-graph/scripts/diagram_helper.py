@@ -228,7 +228,8 @@ def to_mermaid(
     direction: str = "TD",
 ) -> str:
     """Generate Mermaid flowchart markup with applied theme styling."""
-    theme = STYLE_THEMES.get(style, STYLE_THEMES["modern"])
+    theme_key = style if style in STYLE_THEMES else "modern"
+    theme = STYLE_THEMES.get(theme_key, STYLE_THEMES["modern"])
     lines = [f"flowchart {direction}"]
 
     for node in graph_spec.get("nodes", []):
