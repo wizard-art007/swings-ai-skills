@@ -118,3 +118,5 @@
 - 2026-11-26 18:37 — events: tidied 8 duplicate or stuck event(s)
 - 2026-11-26 18:37 — agent maintainer: ran the task queue directly (no LLM call needed)
 - 2026-11-26 18:38 — agent evolver v1: OK — Emitted agent.needed events for missing capabilities and recurring test failures across multiple modules.
+- 2026-11-26 18:50 — events: 5 agent request(s) without a real event type became needs (2 new)
+- 2026-11-26 18:50 — needs: 8 need(s) re-typed to external (their capability is missing or weak)

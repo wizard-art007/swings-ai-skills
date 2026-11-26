@@ -516,7 +516,7 @@
       "reason": "Multiple missing capabilities in diagrams and ai-agents requiring specialized agents"
     },
     "source": "agent",
-    "status": "new",
+    "status": "to_need",
     "ts": "2026-11-26T18:38:03"
   },
   {
@@ -527,7 +527,7 @@
       "reason": "Missing token budget estimator capability"
     },
     "source": "agent",
-    "status": "new",
+    "status": "to_need",
     "ts": "2026-11-26T18:38:07"
   },
   {
@@ -538,7 +538,7 @@
       "reason": "Missing test coverage analyzer and flake hunter capabilities in QA testing module"
     },
     "source": "agent",
-    "status": "new",
+    "status": "to_need",
     "ts": "2026-11-26T18:38:08"
   },
   {
@@ -549,7 +549,7 @@
       "reason": "Missing token budget estimator capability"
     },
     "source": "agent",
-    "status": "new",
+    "status": "to_need",
     "ts": "2026-11-26T18:38:12"
   },
   {
@@ -560,7 +560,7 @@
       "reason": "Recurring test failures across diagrams, ai_agents, and qa_testing modules indicating a need for dedicated capability implementation agents"
     },
     "source": "agent",
-    "status": "new",
+    "status": "to_need",
     "ts": "2026-11-26T18:38:16"
   }
 ]

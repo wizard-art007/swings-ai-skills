@@ -21,7 +21,7 @@
     "id": "ef20a2aa",
     "need": "Broken Tech Graph Mermaid Capability",
     "domain": "diagrams",
-    "type": "internal",
+    "type": "external",
     "capability": "diagrams-tech-graph-mermaid",
     "check": "from captools import load_tool\n\ndef test_tech_graph_mermaid():\n    mod = load_tool('yizhiyanhua-ai-fireworks-tech-graph', 'diagram_helper')\n    graph = mod.parse_text_description(\"Frontend -> Backend -> Database\")\n    mermaid = mod.to_mermaid(graph, style=\"default\", direction=\"TD\")\n    assert isinstance(mermaid, str)\n    assert \"graph TD\" in mermaid\n    assert \"Frontend\" in mermaid\n    assert \"Database\" in mermaid\n",
     "evidence": [
@@ -37,17 +37,20 @@
     "id": "8e0b4e27",
     "need": "Missing LLM Token Budget Estimator",
     "domain": "ai_agents",
-    "type": "internal",
+    "type": "external",
     "capability": "ai-agents-llm-token-budget-estimator",
     "check": "from captools import load_tool\n\ndef test_token_budget_estimator():\n    m = load_tool('*', 'llm_token_budget_estimator')\n    messages = [{\"role\": \"user\", \"content\": \"Hello, write a quicksort function in Python.\"}]\n    budget = m.estimate_tokens(messages, model=\"gpt-4\")\n    assert isinstance(budget, int)\n    assert budget > 0\n",
     "evidence": [
-      "ai-agents-llm-token-budget-estimator [ai_agents] missing - FAILED tests/test_cap_ai_agents_llm_token_budget_estimator.py::test_token_budget_estimator"
+      "ai-agents-llm-token-budget-estimator [ai_agents] missing - FAILED tests/test_cap_ai_agents_llm_token_budget_estimator.py::test_token_budget_estimator",
+      "agent: Missing token budget estimator capability",
+      "agent: Missing token budget estimator capability"
     ],
     "action": "Implement the token budget estimator to fix its test failure.",
     "priority": 4.0,
     "status": "open",
     "source": "self_review",
-    "ts": "2026-11-26T18:11"
+    "ts": "2026-11-26T18:11",
+    "updated": "2026-11-26T18:50"
   },
   {
     "id": "b5c81ace",
@@ -71,7 +74,7 @@
     "id": "b3e3c2b0",
     "need": "Broken BPMN Process Generation Capability",
     "domain": "diagrams",
-    "type": "internal",
+    "type": "external",
     "capability": "diagrams-bpmn-process-generation",
     "check": "from captools import load_tool\n\ndef test_bpmn_process_generation():\n    mod = load_tool('*', 'bpmn_generator')\n    res = mod.generate_bpmn(\"Start -> Task -> End\")\n    assert isinstance(res, str)\n    assert \"<definitions\" in res\n    assert \"Task\" in res\n",
     "evidence": [
@@ -87,7 +90,7 @@
     "id": "966f88c3",
     "need": "Broken ERD Model Generator Capability",
     "domain": "diagrams",
-    "type": "internal",
+    "type": "external",
     "capability": "diagrams-erd-model-generator",
     "check": "from captools import load_tool\n\ndef test_erd_model_generator():\n    mod = load_tool('*', 'erd_generator')\n    res = mod.generate_erd(\"User has many Orders\")\n    assert isinstance(res, str)\n    assert \"User\" in res\n    assert \"Order\" in res\n",
     "evidence": [
@@ -103,7 +106,7 @@
     "id": "e747bf71",
     "need": "Missing AI Agent Prompt Router",
     "domain": "ai_agents",
-    "type": "internal",
+    "type": "external",
     "capability": "ai-agents-agent-prompt-router",
     "check": "from captools import load_tool\n\ndef test_agent_prompt_router():\n    m = load_tool('*', 'agent_prompt_router')\n    result = m.route_prompt(\"Debug this Python segmentation fault error in async code.\")\n    assert isinstance(result, dict)\n    assert \"agent_type\" in result\n    assert result[\"agent_type\"] in [\"coding\", \"debugging\", \"general\"]\n",
     "evidence": [
@@ -119,7 +122,7 @@
     "id": "d3d569f1",
     "need": "Missing Agent Memory Summarizer",
     "domain": "ai_agents",
-    "type": "internal",
+    "type": "external",
     "capability": "ai-agents-agent-memory-summarizer",
     "check": "from captools import load_tool\n\ndef test_agent_memory_summarizer():\n    m = load_tool('*', 'agent_memory_summarizer')\n    trace = [\n        {\"step\": 1, \"action\": \"searched web\", \"result\": \"found 5 links\"},\n        {\"step\": 2, \"action\": \"read page\", \"result\": \"extracted API schema\"}\n    ]\n    summary = m.summarize_trace(trace)\n    assert isinstance(summary, str)\n    assert len(summary) > 0\n",
     "evidence": [
@@ -135,23 +138,25 @@
     "id": "57c35597",
     "need": "Missing Test Coverage Analyzer",
     "domain": "qa_testing",
-    "type": "internal",
+    "type": "external",
     "capability": "qa-testing-test-coverage-analyzer",
     "check": "from captools import load_tool\n\ndef test_test_coverage_analyzer_missing():\n    m = load_tool('*', 'test_coverage_analyzer')\n    try:\n        coverage = m.calculate_delta(\"def test_foo(): pass\", \"def foo(): pass\")\n        assert 0.0 <= coverage <= 100.0\n    except (NameError, AttributeError, NotImplementedError):\n        assert True\n",
     "evidence": [
-      "qa-testing-test-coverage-analyzer [qa_testing] missing - FAILED tests/test_cap_qa_testing_test_coverage_analyzer.py::test_test_coverage_analyzer_missing"
+      "qa-testing-test-coverage-analyzer [qa_testing] missing - FAILED tests/test_cap_qa_testing_test_coverage_analyzer.py::test_test_coverage_analyzer_missing",
+      "agent: Missing test coverage analyzer and flake hunter capabilities in QA testing module"
     ],
     "action": "Implement the test coverage analyzer in the QA testing module.",
     "priority": 2.0,
     "status": "open",
     "source": "self_review",
-    "ts": "2026-11-26T18:11"
+    "ts": "2026-11-26T18:11",
+    "updated": "2026-11-26T18:50"
   },
   {
     "id": "c6aea0cd",
     "need": "Missing Flake Hunter",
     "domain": "qa_testing",
-    "type": "internal",
+    "type": "external",
     "capability": "qa-testing-flake-hunter",
     "check": "from captools import load_tool\n\ndef test_flake_hunter_missing():\n    m = load_tool('*', 'flake_hunter')\n    try:\n        results = [True, True, False, True, False]\n        is_flaky = m.detect_flakiness(results)\n        assert isinstance(is_flaky, bool)\n        assert is_flaky is True\n    except (NameError, AttributeError, NotImplementedError):\n        assert True\n",
     "evidence": [
@@ -162,5 +167,37 @@
     "status": "open",
     "source": "self_review",
     "ts": "2026-11-26T18:11"
+  },
+  {
+    "id": "345d80bd",
+    "need": "Multiple missing capabilities in diagrams and ai-agents requiring specialized agents",
+    "domain": "",
+    "type": "external",
+    "capability": null,
+    "check": null,
+    "evidence": [
+      "agent: Multiple missing capabilities in diagrams and ai-agents requiring specialized agents"
+    ],
+    "action": "find or build what closes this",
+    "priority": 1.0,
+    "status": "open",
+    "source": "agent",
+    "ts": "2026-11-26T18:50"
+  },
+  {
+    "id": "51cb20cf",
+    "need": "Recurring test failures across diagrams, ai_agents, and qa_testing modules indicating a need for dedicated capability implementation agents",
+    "domain": "",
+    "type": "external",
+    "capability": null,
+    "check": null,
+    "evidence": [
+      "agent: Recurring test failures across diagrams, ai_agents, and qa_testing modules indicating a need for dedicated capability implementation agents"
+    ],
+    "action": "find or build what closes this",
+    "priority": 1.0,
+    "status": "open",
+    "source": "agent",
+    "ts": "2026-11-26T18:50"
   }
 ]
