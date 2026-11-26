@@ -66,5 +66,17 @@
       "src/moat/server.py",
       "src/moat/router.py"
     ]
+  },
+  "iphone-sms-expense-parser": {
+    "title": "iPhone SMS Expense Parser",
+    "description": "A script or local parser concept to categorize bank SMS/notification texts for expense tracking.",
+    "source_url": "https://dev.to/appgenie_aedb1276a9658ec2/how-i-log-bank-sms-expenses-on-iphone-when-apps-cant-read-sms-4jgo",
+    "status": "passed",
+    "created": "2026-11-26T13:51",
+    "files": [
+      "README.md",
+      "tests/test_expense_parser.py",
+      "src/expense_parser.py"
+    ]
   }
 }
