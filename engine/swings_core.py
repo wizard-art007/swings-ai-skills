@@ -295,7 +295,7 @@ def llm(prompt, system="You are an expert software engineer.", model=LLM_MODEL, 
             if not key:
                 raise RuntimeError("No LLM: google.colab.ai missing and no GEMINI_API_KEY.")
             from google import genai
-            client = genai.Client(api_key=key)
+            client = genai.Client(api_key=key, http_options={"timeout": 120_000})   # ms: a stuck call can never hang a run
             last_err = None
             for m in ([model] if model else _gemini_models(client)):
                 try:
