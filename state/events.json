@@ -342,5 +342,117 @@
     "source": "system",
     "status": "done",
     "ts": "2026-11-26T17:30:34"
+  },
+  {
+    "id": "836a9aab20",
+    "type": "system.review",
+    "payload": {
+      "gap": "Broken Tech Graph Mermaid Capability",
+      "evidence": [
+        "diagrams-tech-graph-mermaid [diagrams] missing - FAILED tests/test_cap_diagrams_tech_graph_mermaid.py::test_tech_graph_mermaid"
+      ],
+      "action": "Fix implementation or test for diagrams-tech-graph-mermaid."
+    },
+    "source": "self_review",
+    "status": "new",
+    "ts": "2026-11-26T18:11:33"
+  },
+  {
+    "id": "c66cb01741",
+    "type": "system.review",
+    "payload": {
+      "gap": "Missing LLM Token Budget Estimator",
+      "evidence": [
+        "ai-agents-llm-token-budget-estimator [ai_agents] missing - FAILED tests/test_cap_ai_agents_llm_token_budget_estimator.py::test_token_budget_estimator"
+      ],
+      "action": "Implement the token budget estimator to fix its test failure."
+    },
+    "source": "self_review",
+    "status": "new",
+    "ts": "2026-11-26T18:11:33"
+  },
+  {
+    "id": "c3de259e4a",
+    "type": "system.review",
+    "payload": {
+      "gap": "Broken BPMN Process Generation Capability",
+      "evidence": [
+        "diagrams-bpmn-process-generation [diagrams] missing - FAILED tests/test_cap_diagrams_bpmn_process_generation.py::test_bpmn_process_generation"
+      ],
+      "action": "Debug and fix BPMN process generation logic in the diagrams module."
+    },
+    "source": "self_review",
+    "status": "new",
+    "ts": "2026-11-26T18:11:33"
+  },
+  {
+    "id": "d66e18a095",
+    "type": "system.review",
+    "payload": {
+      "gap": "Broken ERD Model Generator Capability",
+      "evidence": [
+        "diagrams-erd-model-generator [diagrams] missing - FAILED tests/test_cap_diagrams_erd_model_generator.py::test_erd_model_generator"
+      ],
+      "action": "Fix ERD model generator test and underlying code."
+    },
+    "source": "self_review",
+    "status": "new",
+    "ts": "2026-11-26T18:11:33"
+  },
+  {
+    "id": "10d9c81eae",
+    "type": "system.review",
+    "payload": {
+      "gap": "Missing AI Agent Prompt Router",
+      "evidence": [
+        "ai-agents-agent-prompt-router [ai_agents] missing - FAILED tests/test_cap_ai_agents_agent_prompt_router.py::test_agent_prompt_router"
+      ],
+      "action": "Implement and verify the agent prompt router capability."
+    },
+    "source": "self_review",
+    "status": "new",
+    "ts": "2026-11-26T18:11:33"
+  },
+  {
+    "id": "c547621d13",
+    "type": "system.review",
+    "payload": {
+      "gap": "Missing Agent Memory Summarizer",
+      "evidence": [
+        "ai-agents-agent-memory-summarizer [ai_agents] missing - FAILED tests/test_cap_ai_agents_agent_memory_summarizer.py::test_agent_memory_summarizer"
+      ],
+      "action": "Implement the agent memory summarizer capability."
+    },
+    "source": "self_review",
+    "status": "new",
+    "ts": "2026-11-26T18:11:33"
+  },
+  {
+    "id": "774587b16d",
+    "type": "system.review",
+    "payload": {
+      "gap": "Missing Test Coverage Analyzer",
+      "evidence": [
+        "qa-testing-test-coverage-analyzer [qa_testing] missing - FAILED tests/test_cap_qa_testing_test_coverage_analyzer.py::test_test_coverage_analyzer_missing"
+      ],
+      "action": "Implement the test coverage analyzer in the QA testing module."
+    },
+    "source": "self_review",
+    "status": "new",
+    "ts": "2026-11-26T18:11:33"
+  },
+  {
+    "id": "337f3e2291",
+    "type": "system.review",
+    "payload": {
+      "gap": "Missing Flake Hunter",
+      "evidence": [
+        "qa-testing-flake-hunter [qa_testing] missing - FAILED tests/test_cap_qa_testing_flake_hunter.py::test_flake_hunter_missing"
+      ],
+      "action": "Implement the flake hunter capability for test stability."
+    },
+    "source": "self_review",
+    "status": "new",
+    "ts": "2026-11-26T18:11:33"
   }
 ]

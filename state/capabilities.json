@@ -5,9 +5,13 @@
     "name": "PlantUML Class Diagram Generator",
     "description": "Parse raw Python source code and return a valid PlantUML class diagram string.",
     "check": "from captools import load_tool\n\ndef test_plantuml_class_generation():\n    mod = load_tool('plantuml-plantuml', 'class_diagram_generator')\n    source = \"class Sample:\\n    def __init__(self):\\n        pass\\n\"\n    res = mod.parse_source(source, include_private=True)\n    assert isinstance(res, str)\n    assert \"class Sample\" in res\n",
-    "history": [],
-    "status": "unknown",
-    "created": "2026-11-26"
+    "history": [
+      true
+    ],
+    "status": "strong",
+    "created": "2026-11-26",
+    "checked": "2026-11-26T18:10",
+    "weak_skills": []
   },
   {
     "id": "diagrams-sequence-diagram-generation",
@@ -15,9 +19,13 @@
     "name": "Sequence Diagram Generation",
     "description": "Generate PlantUML sequence diagram text from actors and messages.",
     "check": "from captools import load_tool\n\ndef test_sequence_diagram_generation():\n    mod = load_tool('plantuml-plantuml', 'sequence_generator')\n    actors = [\"Alice\", \"Bob\"]\n    messages = [(\"Alice\", \"Bob\", \"Hello\")]\n    res = mod.make_sequence(actors, messages, title=\"Test Sequence\", autonumber=True)\n    assert isinstance(res, str)\n    assert \"autonumber\" in res\n    assert \"Alice -> Bob: Hello\" in res\n",
-    "history": [],
-    "status": "unknown",
-    "created": "2026-11-26"
+    "history": [
+      true
+    ],
+    "status": "strong",
+    "created": "2026-11-26",
+    "checked": "2026-11-26T18:10",
+    "weak_skills": []
   },
   {
     "id": "diagrams-tech-graph-mermaid",
@@ -25,9 +33,13 @@
     "name": "Architecture Graph to Mermaid",
     "description": "Convert natural language or arrow-based architecture description into Mermaid flowchart markup.",
     "check": "from captools import load_tool\n\ndef test_tech_graph_mermaid():\n    mod = load_tool('yizhiyanhua-ai-fireworks-tech-graph', 'diagram_helper')\n    graph = mod.parse_text_description(\"Frontend -> Backend -> Database\")\n    mermaid = mod.to_mermaid(graph, style=\"default\", direction=\"TD\")\n    assert isinstance(mermaid, str)\n    assert \"graph TD\" in mermaid\n    assert \"Frontend\" in mermaid\n    assert \"Database\" in mermaid\n",
-    "history": [],
-    "status": "unknown",
-    "created": "2026-11-26"
+    "history": [
+      false
+    ],
+    "status": "missing",
+    "created": "2026-11-26",
+    "checked": "2026-11-26T18:10",
+    "weak_skills": []
   },
   {
     "id": "diagrams-c4-plantuml-generation",
@@ -35,9 +47,13 @@
     "name": "C4 PlantUML Architecture Generation",
     "description": "Turn a short text description into a C4-PlantUML diagram source string.",
     "check": "from captools import load_tool\n\ndef test_c4_plantuml_generation():\n    mod = load_tool('plantuml-stdlib-c4-plantuml', 'c4_generator')\n    res = mod.generate_c4_puml(\"User uses Web App to view Database\")\n    assert isinstance(res, str)\n    assert \"System\" in res or \"Container\" in res or \"Component\" in res\n",
-    "history": [],
-    "status": "unknown",
-    "created": "2026-11-26"
+    "history": [
+      true
+    ],
+    "status": "strong",
+    "created": "2026-11-26",
+    "checked": "2026-11-26T18:10",
+    "weak_skills": []
   },
   {
     "id": "diagrams-archify-text-to-diagram",
@@ -45,9 +61,13 @@
     "name": "Archify Text to Diagram Conversion",
     "description": "Convert text descriptions into Mermaid or PlantUML diagram source code using the archify helper.",
     "check": "from captools import load_tool\n\ndef test_archify_text_to_diagram():\n    mod = load_tool('tt-a1i-archify', 'archify_helper')\n    res = mod.text_to_mermaid(\"Client calls API Gateway\", kind=\"flowchart\")\n    assert isinstance(res, str)\n    assert \"Client\" in res\n    assert \"API Gateway\" in res\n",
-    "history": [],
-    "status": "unknown",
-    "created": "2026-11-26"
+    "history": [
+      true
+    ],
+    "status": "strong",
+    "created": "2026-11-26",
+    "checked": "2026-11-26T18:10",
+    "weak_skills": []
   },
   {
     "id": "diagrams-mermaid-text-parsing",
@@ -55,9 +75,13 @@
     "name": "High-level Mermaid Source Conversion",
     "description": "Convert high-level descriptions to valid Mermaid source code.",
     "check": "from captools import load_tool\n\ndef test_mermaid_text_parsing():\n    mod = load_tool('mermaid-js-mermaid', 'mermaid_helper')\n    res = mod.text_to_mermaid(\"Service A talks to Service B\")\n    assert isinstance(res, str)\n    assert \"Service A\" in res\n    assert \"Service B\" in res\n",
-    "history": [],
-    "status": "unknown",
-    "created": "2026-11-26"
+    "history": [
+      true
+    ],
+    "status": "strong",
+    "created": "2026-11-26",
+    "checked": "2026-11-26T18:10",
+    "weak_skills": []
   },
   {
     "id": "diagrams-bpmn-process-generation",
@@ -65,9 +89,13 @@
     "name": "BPMN Process Diagram Generator",
     "description": "Generate BPMN 2.0 XML workflow diagrams from simple business process descriptions.",
     "check": "from captools import load_tool\n\ndef test_bpmn_process_generation():\n    mod = load_tool('*', 'bpmn_generator')\n    res = mod.generate_bpmn(\"Start -> Task -> End\")\n    assert isinstance(res, str)\n    assert \"<definitions\" in res\n    assert \"Task\" in res\n",
-    "history": [],
-    "status": "unknown",
-    "created": "2026-11-26"
+    "history": [
+      false
+    ],
+    "status": "missing",
+    "created": "2026-11-26",
+    "checked": "2026-11-26T18:10",
+    "weak_skills": []
   },
   {
     "id": "diagrams-erd-model-generator",
@@ -75,9 +103,13 @@
     "name": "Entity Relationship Diagram Generator",
     "description": "Generate DB-ML or PlantUML Entity Relationship diagrams from relational schema descriptions.",
     "check": "from captools import load_tool\n\ndef test_erd_model_generator():\n    mod = load_tool('*', 'erd_generator')\n    res = mod.generate_erd(\"User has many Orders\")\n    assert isinstance(res, str)\n    assert \"User\" in res\n    assert \"Order\" in res\n",
-    "history": [],
-    "status": "unknown",
-    "created": "2026-11-26"
+    "history": [
+      false
+    ],
+    "status": "missing",
+    "created": "2026-11-26",
+    "checked": "2026-11-26T18:10",
+    "weak_skills": []
   },
   {
     "id": "ai-agents-text-to-mermaid-diagram",
@@ -85,9 +117,13 @@
     "name": "Text to Mermaid Diagram Generation",
     "description": "Convert a text description into a valid Mermaid diagram syntax string.",
     "check": "from captools import load_tool\n\ndef test_text_to_mermaid():\n    m = load_tool('affaan-m-ecc', 'ecc_diagram')\n    result = m.text_to_mermaid(\"A client sends a request to the server, and the server returns a response.\")\n    assert isinstance(result, str)\n    assert \"graph\" in result.lower() or \"sequenceDiagram\" in result or \"-->\" in result\n",
-    "history": [],
-    "status": "unknown",
-    "created": "2026-11-26"
+    "history": [
+      true
+    ],
+    "status": "strong",
+    "created": "2026-11-26",
+    "checked": "2026-11-26T18:10",
+    "weak_skills": []
   },
   {
     "id": "ai-agents-taste-diagram-generation",
@@ -95,9 +131,13 @@
     "name": "Taste Diagram Mermaid Generation",
     "description": "Generate a specialized taste diagram in Mermaid format from a textual description.",
     "check": "from captools import load_tool\n\ndef test_taste_diagram():\n    m = load_tool('leonxlnx-taste-skill', 'taste_diagram')\n    result = m.description_to_mermaid(\"User interacts with frontend, frontend calls backend service.\")\n    assert isinstance(result, str)\n    assert len(result) > 0\n",
-    "history": [],
-    "status": "unknown",
-    "created": "2026-11-26"
+    "history": [
+      true
+    ],
+    "status": "strong",
+    "created": "2026-11-26",
+    "checked": "2026-11-26T18:10",
+    "weak_skills": []
   },
   {
     "id": "ai-agents-kroki-diagram-rendering",
@@ -105,9 +145,13 @@
     "name": "Kroki Diagram Rendering",
     "description": "Render a Mermaid diagram source into an image format using the Kroki service.",
     "check": "from captools import load_tool\n\ndef test_render_diagram_kroki():\n    m = load_tool('affaan-m-ecc', 'ecc_diagram')\n    source = \"graph TD; A-->B;\"\n    try:\n        res = m.render_diagram_kroki(source, \"mermaid\", \"svg\")\n        assert res is None or isinstance(res, (str, bytes))\n    except Exception:\n        # Offline/Network limits expected in restricted test environments\n        assert True\n",
-    "history": [],
-    "status": "unknown",
-    "created": "2026-11-26"
+    "history": [
+      true
+    ],
+    "status": "strong",
+    "created": "2026-11-26",
+    "checked": "2026-11-26T18:10",
+    "weak_skills": []
   },
   {
     "id": "ai-agents-taste-kroki-encoding",
@@ -115,9 +159,13 @@
     "name": "Taste Diagram Kroki Encoding and Rendering",
     "description": "Encode and render a taste diagram via Kroki API integration.",
     "check": "from captools import load_tool\n\ndef test_render_via_kroki():\n    m = load_tool('leonxlnx-taste-skill', 'taste_diagram')\n    mermaid_code = \"graph TD; A-->B;\"\n    try:\n        res = m.render_via_kroki(mermaid_code, \"svg\")\n        assert res is None or isinstance(res, (str, bytes))\n    except Exception:\n        assert True\n",
-    "history": [],
-    "status": "unknown",
-    "created": "2026-11-26"
+    "history": [
+      true
+    ],
+    "status": "strong",
+    "created": "2026-11-26",
+    "checked": "2026-11-26T18:10",
+    "weak_skills": []
   },
   {
     "id": "ai-agents-agent-prompt-router",
@@ -125,9 +173,13 @@
     "name": "Intelligent Agent Prompt Router",
     "description": "Classify incoming agent user queries and route them to specialized sub-agent prompts.",
     "check": "from captools import load_tool\n\ndef test_agent_prompt_router():\n    m = load_tool('*', 'agent_prompt_router')\n    result = m.route_prompt(\"Debug this Python segmentation fault error in async code.\")\n    assert isinstance(result, dict)\n    assert \"agent_type\" in result\n    assert result[\"agent_type\"] in [\"coding\", \"debugging\", \"general\"]\n",
-    "history": [],
-    "status": "unknown",
-    "created": "2026-11-26"
+    "history": [
+      false
+    ],
+    "status": "missing",
+    "created": "2026-11-26",
+    "checked": "2026-11-26T18:10",
+    "weak_skills": []
   },
   {
     "id": "ai-agents-llm-token-budget-estimator",
@@ -135,9 +187,13 @@
     "name": "LLM Token Budget Estimator",
     "description": "Estimate the token consumption of a conversation history against model context limits.",
     "check": "from captools import load_tool\n\ndef test_token_budget_estimator():\n    m = load_tool('*', 'llm_token_budget_estimator')\n    messages = [{\"role\": \"user\", \"content\": \"Hello, write a quicksort function in Python.\"}]\n    budget = m.estimate_tokens(messages, model=\"gpt-4\")\n    assert isinstance(budget, int)\n    assert budget > 0\n",
-    "history": [],
-    "status": "unknown",
-    "created": "2026-11-26"
+    "history": [
+      false
+    ],
+    "status": "missing",
+    "created": "2026-11-26",
+    "checked": "2026-11-26T18:10",
+    "weak_skills": []
   },
   {
     "id": "ai-agents-agent-memory-summarizer",
@@ -145,9 +201,13 @@
     "name": "Agent Episodic Memory Summarizer",
     "description": "Condense long agent execution traces into concise episodic memory summaries.",
     "check": "from captools import load_tool\n\ndef test_agent_memory_summarizer():\n    m = load_tool('*', 'agent_memory_summarizer')\n    trace = [\n        {\"step\": 1, \"action\": \"searched web\", \"result\": \"found 5 links\"},\n        {\"step\": 2, \"action\": \"read page\", \"result\": \"extracted API schema\"}\n    ]\n    summary = m.summarize_trace(trace)\n    assert isinstance(summary, str)\n    assert len(summary) > 0\n",
-    "history": [],
-    "status": "unknown",
-    "created": "2026-11-26"
+    "history": [
+      false
+    ],
+    "status": "missing",
+    "created": "2026-11-26",
+    "checked": "2026-11-26T18:10",
+    "weak_skills": []
   },
   {
     "id": "qa-testing-text-to-diagram",
@@ -155,9 +215,13 @@
     "name": "Text to Mermaid Diagram Generation",
     "description": "Converts a natural language description of a test flow into a Mermaid diagram source string.",
     "check": "from captools import load_tool\n\ndef test_text_to_diagram_generation():\n    m = load_tool('seleniumbase-seleniumbase', 'skill_diagram')\n    desc = \"User logs in, runs automated tests, and views the QA dashboard.\"\n    result = m.text_to_diagram(desc)\n    assert isinstance(result, str)\n    assert \"graph\" in result.lower() or \"sequenceDiagram\" in result or \"flowchart\" in result\n",
-    "history": [],
-    "status": "unknown",
-    "created": "2026-11-26"
+    "history": [
+      true
+    ],
+    "status": "strong",
+    "created": "2026-11-26",
+    "checked": "2026-11-26T18:10",
+    "weak_skills": []
   },
   {
     "id": "qa-testing-kroki-api-rendering",
@@ -165,9 +229,13 @@
     "name": "Remote Diagram Rendering via Kroki",
     "description": "Encodes a Mermaid diagram source string using zlib and base64, then retrieves its rendered form from the public Kroki API.",
     "check": "from captools import load_tool\n\ndef test_render_via_kroki_encoding():\n    m = load_tool('seleniumbase-seleniumbase', 'skill_diagram')\n    diagram_source = \"graph TD;\\nStart --> Stop;\"\n    try:\n        url = m.render_via_kroki(diagram_source, \"mermaid\", \"svg\", timeout=5)\n        assert isinstance(url, str)\n        assert \"kroki.io\" in url or len(url) > 0\n    except Exception:\n        # Gracefully handle network unavailability in offline test environments\n        assert True\n",
-    "history": [],
-    "status": "unknown",
-    "created": "2026-11-26"
+    "history": [
+      true
+    ],
+    "status": "strong",
+    "created": "2026-11-26",
+    "checked": "2026-11-26T18:10",
+    "weak_skills": []
   },
   {
     "id": "qa-testing-test-coverage-analyzer",
@@ -175,9 +243,13 @@
     "name": "Code Coverage Delta Analyzer",
     "description": "Parses execution coverage reports to verify that newly added tests cover specific modified code paths.",
     "check": "from captools import load_tool\n\ndef test_test_coverage_analyzer_missing():\n    m = load_tool('*', 'test_coverage_analyzer')\n    try:\n        coverage = m.calculate_delta(\"def test_foo(): pass\", \"def foo(): pass\")\n        assert 0.0 <= coverage <= 100.0\n    except (NameError, AttributeError, NotImplementedError):\n        assert True\n",
-    "history": [],
-    "status": "unknown",
-    "created": "2026-11-26"
+    "history": [
+      false
+    ],
+    "status": "missing",
+    "created": "2026-11-26",
+    "checked": "2026-11-26T18:10",
+    "weak_skills": []
   },
   {
     "id": "qa-testing-flake-hunter",
@@ -185,8 +257,12 @@
     "name": "Flaky Test Pattern Detector",
     "description": "Analyzes historical test execution logs to flag tests with intermittent pass/fail patterns.",
     "check": "from captools import load_tool\n\ndef test_flake_hunter_missing():\n    m = load_tool('*', 'flake_hunter')\n    try:\n        results = [True, True, False, True, False]\n        is_flaky = m.detect_flakiness(results)\n        assert isinstance(is_flaky, bool)\n        assert is_flaky is True\n    except (NameError, AttributeError, NotImplementedError):\n        assert True\n",
-    "history": [],
-    "status": "unknown",
-    "created": "2026-11-26"
+    "history": [
+      false
+    ],
+    "status": "missing",
+    "created": "2026-11-26",
+    "checked": "2026-11-26T18:10",
+    "weak_skills": []
   }
 ]

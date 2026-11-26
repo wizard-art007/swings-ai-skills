@@ -1,0 +1,166 @@
+[
+  {
+    "id": "f1c410f5",
+    "need": "LLM Model Availability and Overload Errors",
+    "domain": "",
+    "type": "external",
+    "capability": null,
+    "check": null,
+    "evidence": [
+      "maintainer: error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'This model models/gemini-2.0-flash is no longer available.",
+      "maintainer: error: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand.'}",
+      "llm_today.2026-11-26.overloads: 1"
+    ],
+    "action": "Update maintainer model configurations away from deprecated or overloaded endpoints.",
+    "priority": 4.5,
+    "status": "open",
+    "source": "self_review",
+    "ts": "2026-11-26T18:11"
+  },
+  {
+    "id": "ef20a2aa",
+    "need": "Broken Tech Graph Mermaid Capability",
+    "domain": "diagrams",
+    "type": "internal",
+    "capability": "diagrams-tech-graph-mermaid",
+    "check": "from captools import load_tool\n\ndef test_tech_graph_mermaid():\n    mod = load_tool('yizhiyanhua-ai-fireworks-tech-graph', 'diagram_helper')\n    graph = mod.parse_text_description(\"Frontend -> Backend -> Database\")\n    mermaid = mod.to_mermaid(graph, style=\"default\", direction=\"TD\")\n    assert isinstance(mermaid, str)\n    assert \"graph TD\" in mermaid\n    assert \"Frontend\" in mermaid\n    assert \"Database\" in mermaid\n",
+    "evidence": [
+      "diagrams-tech-graph-mermaid [diagrams] missing - FAILED tests/test_cap_diagrams_tech_graph_mermaid.py::test_tech_graph_mermaid"
+    ],
+    "action": "Fix implementation or test for diagrams-tech-graph-mermaid.",
+    "priority": 4.0,
+    "status": "open",
+    "source": "self_review",
+    "ts": "2026-11-26T18:11"
+  },
+  {
+    "id": "8e0b4e27",
+    "need": "Missing LLM Token Budget Estimator",
+    "domain": "ai_agents",
+    "type": "internal",
+    "capability": "ai-agents-llm-token-budget-estimator",
+    "check": "from captools import load_tool\n\ndef test_token_budget_estimator():\n    m = load_tool('*', 'llm_token_budget_estimator')\n    messages = [{\"role\": \"user\", \"content\": \"Hello, write a quicksort function in Python.\"}]\n    budget = m.estimate_tokens(messages, model=\"gpt-4\")\n    assert isinstance(budget, int)\n    assert budget > 0\n",
+    "evidence": [
+      "ai-agents-llm-token-budget-estimator [ai_agents] missing - FAILED tests/test_cap_ai_agents_llm_token_budget_estimator.py::test_token_budget_estimator"
+    ],
+    "action": "Implement the token budget estimator to fix its test failure.",
+    "priority": 4.0,
+    "status": "open",
+    "source": "self_review",
+    "ts": "2026-11-26T18:11"
+  },
+  {
+    "id": "b5c81ace",
+    "need": "Publisher Daily Repository Limit Reached",
+    "domain": "",
+    "type": "external",
+    "capability": null,
+    "check": null,
+    "evidence": [
+      "publisher: Failed to publish experiment 'thermodynamic-radiator-dynamics-pid-cont' because the daily limit of 3 new repos has been ",
+      "publisher: Failed to publish experiment 'moat-openrouter-replacement' because the daily limit of new repositories has been reached.",
+      "publisher: Failed to publish experiment 'iphone-sms-expense-parser': daily limit of 3 new repos reached; will retry tomorrow."
+    ],
+    "action": "Adjust publisher daily repository limit or queue publications across multiple days.",
+    "priority": 4.0,
+    "status": "open",
+    "source": "self_review",
+    "ts": "2026-11-26T18:11"
+  },
+  {
+    "id": "b3e3c2b0",
+    "need": "Broken BPMN Process Generation Capability",
+    "domain": "diagrams",
+    "type": "internal",
+    "capability": "diagrams-bpmn-process-generation",
+    "check": "from captools import load_tool\n\ndef test_bpmn_process_generation():\n    mod = load_tool('*', 'bpmn_generator')\n    res = mod.generate_bpmn(\"Start -> Task -> End\")\n    assert isinstance(res, str)\n    assert \"<definitions\" in res\n    assert \"Task\" in res\n",
+    "evidence": [
+      "diagrams-bpmn-process-generation [diagrams] missing - FAILED tests/test_cap_diagrams_bpmn_process_generation.py::test_bpmn_process_generation"
+    ],
+    "action": "Debug and fix BPMN process generation logic in the diagrams module.",
+    "priority": 2.0,
+    "status": "open",
+    "source": "self_review",
+    "ts": "2026-11-26T18:11"
+  },
+  {
+    "id": "966f88c3",
+    "need": "Broken ERD Model Generator Capability",
+    "domain": "diagrams",
+    "type": "internal",
+    "capability": "diagrams-erd-model-generator",
+    "check": "from captools import load_tool\n\ndef test_erd_model_generator():\n    mod = load_tool('*', 'erd_generator')\n    res = mod.generate_erd(\"User has many Orders\")\n    assert isinstance(res, str)\n    assert \"User\" in res\n    assert \"Order\" in res\n",
+    "evidence": [
+      "diagrams-erd-model-generator [diagrams] missing - FAILED tests/test_cap_diagrams_erd_model_generator.py::test_erd_model_generator"
+    ],
+    "action": "Fix ERD model generator test and underlying code.",
+    "priority": 2.0,
+    "status": "open",
+    "source": "self_review",
+    "ts": "2026-11-26T18:11"
+  },
+  {
+    "id": "e747bf71",
+    "need": "Missing AI Agent Prompt Router",
+    "domain": "ai_agents",
+    "type": "internal",
+    "capability": "ai-agents-agent-prompt-router",
+    "check": "from captools import load_tool\n\ndef test_agent_prompt_router():\n    m = load_tool('*', 'agent_prompt_router')\n    result = m.route_prompt(\"Debug this Python segmentation fault error in async code.\")\n    assert isinstance(result, dict)\n    assert \"agent_type\" in result\n    assert result[\"agent_type\"] in [\"coding\", \"debugging\", \"general\"]\n",
+    "evidence": [
+      "ai-agents-agent-prompt-router [ai_agents] missing - FAILED tests/test_cap_ai_agents_agent_prompt_router.py::test_agent_prompt_router"
+    ],
+    "action": "Implement and verify the agent prompt router capability.",
+    "priority": 2.0,
+    "status": "open",
+    "source": "self_review",
+    "ts": "2026-11-26T18:11"
+  },
+  {
+    "id": "d3d569f1",
+    "need": "Missing Agent Memory Summarizer",
+    "domain": "ai_agents",
+    "type": "internal",
+    "capability": "ai-agents-agent-memory-summarizer",
+    "check": "from captools import load_tool\n\ndef test_agent_memory_summarizer():\n    m = load_tool('*', 'agent_memory_summarizer')\n    trace = [\n        {\"step\": 1, \"action\": \"searched web\", \"result\": \"found 5 links\"},\n        {\"step\": 2, \"action\": \"read page\", \"result\": \"extracted API schema\"}\n    ]\n    summary = m.summarize_trace(trace)\n    assert isinstance(summary, str)\n    assert len(summary) > 0\n",
+    "evidence": [
+      "ai-agents-agent-memory-summarizer [ai_agents] missing - FAILED tests/test_cap_ai_agents_agent_memory_summarizer.py::test_agent_memory_summarizer"
+    ],
+    "action": "Implement the agent memory summarizer capability.",
+    "priority": 2.0,
+    "status": "open",
+    "source": "self_review",
+    "ts": "2026-11-26T18:11"
+  },
+  {
+    "id": "57c35597",
+    "need": "Missing Test Coverage Analyzer",
+    "domain": "qa_testing",
+    "type": "internal",
+    "capability": "qa-testing-test-coverage-analyzer",
+    "check": "from captools import load_tool\n\ndef test_test_coverage_analyzer_missing():\n    m = load_tool('*', 'test_coverage_analyzer')\n    try:\n        coverage = m.calculate_delta(\"def test_foo(): pass\", \"def foo(): pass\")\n        assert 0.0 <= coverage <= 100.0\n    except (NameError, AttributeError, NotImplementedError):\n        assert True\n",
+    "evidence": [
+      "qa-testing-test-coverage-analyzer [qa_testing] missing - FAILED tests/test_cap_qa_testing_test_coverage_analyzer.py::test_test_coverage_analyzer_missing"
+    ],
+    "action": "Implement the test coverage analyzer in the QA testing module.",
+    "priority": 2.0,
+    "status": "open",
+    "source": "self_review",
+    "ts": "2026-11-26T18:11"
+  },
+  {
+    "id": "c6aea0cd",
+    "need": "Missing Flake Hunter",
+    "domain": "qa_testing",
+    "type": "internal",
+    "capability": "qa-testing-flake-hunter",
+    "check": "from captools import load_tool\n\ndef test_flake_hunter_missing():\n    m = load_tool('*', 'flake_hunter')\n    try:\n        results = [True, True, False, True, False]\n        is_flaky = m.detect_flakiness(results)\n        assert isinstance(is_flaky, bool)\n        assert is_flaky is True\n    except (NameError, AttributeError, NotImplementedError):\n        assert True\n",
+    "evidence": [
+      "qa-testing-flake-hunter [qa_testing] missing - FAILED tests/test_cap_qa_testing_flake_hunter.py::test_flake_hunter_missing"
+    ],
+    "action": "Implement the flake hunter capability for test stability.",
+    "priority": 2.0,
+    "status": "open",
+    "source": "self_review",
+    "ts": "2026-11-26T18:11"
+  }
+]
