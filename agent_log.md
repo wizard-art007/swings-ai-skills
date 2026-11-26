@@ -62,3 +62,16 @@
 - 2026-11-26 13:52 — agent maintainer v1: OK — Processed 3 pending skill tasks successfully using the task queue.
 - 2026-11-26 14:10 — agent publisher v1: FAIL — Failed to publish experiment 'moat-openrouter-replacement' because the daily limit of new repositories has been reached.
 - 2026-11-26 14:10 — agent publisher v1: FAIL — Failed to publish experiment 'iphone-sms-expense-parser': daily limit of 3 new repos reached; will retry tomorrow.
+- 2026-11-26 14:38 — refresh: scouting GitHub (mission domains, learned scoring)
+- 2026-11-26 14:38 — scout: searching GitHub across diagrams, ai_agents, qa_testing
+- 2026-11-26 14:39 — scout: archived ashishps1-awesome-low-level-design (score 50.8 < cut-off 66.0)
+- 2026-11-26 14:39 — scout: archived purocean-yn (score 60.1 < cut-off 66.0)
+- 2026-11-26 14:39 — scout: archived yuzutech-kroki (4416 stars < 5000)
+- 2026-11-26 14:39 — scout: archived k1low-tbls (4407 stars < 5000)
+- 2026-11-26 14:39 — scout: archived skanaar-nomnoml (2842 stars < 5000)
+- 2026-11-26 14:39 — scout: new skill tt-a1i-archify (diagrams, score 81.6)
+- 2026-11-26 14:39 — scout: new skill affaan-m-ecc (ai_agents, score 77.1)
+- 2026-11-26 14:39 — scout: new skill microsoft-playwright (qa_testing, score 82.6)
+- 2026-11-26 14:39 — scout: new skill mermaid-js-mermaid (diagrams, score 78.6)
+- 2026-11-26 14:39 — scout: new skill leonxlnx-taste-skill (ai_agents, score 76.9)
+- 2026-11-26 14:39 — scout: new skill seleniumbase-seleniumbase (qa_testing, score 75.5)
