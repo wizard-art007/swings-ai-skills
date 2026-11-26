@@ -29,3 +29,5 @@
 - 2026-11-26 02:52 — task write_tool yuzutech-kroki: ERROR PermissionError: [Errno 1] Operation not permitted: 8
 - 2026-11-26 02:53 — yuzutech-kroki: SKILL.md improved
 - 2026-11-26 02:55 — task write_tool k1low-tbls: ERROR PermissionError: [Errno 1] Operation not permitted: 8
+- 2026-11-26 02:59 — k1low-tbls: SKILL.md improved
+- 2026-11-26 02:59 — task write_tool skanaar-nomnoml: ERROR PermissionError: [Errno 1] Operation not permitted: 10
