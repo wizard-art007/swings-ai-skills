@@ -80,8 +80,8 @@
     "kind": "write_tool",
     "skill": "ahmadhassan-bted-openheart",
     "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
-    "status": "todo",
-    "finished": "2026-11-26T02:35",
+    "status": "done",
+    "finished": "2026-11-26T17:30",
     "infra_requeues": 1
   },
   {

@@ -109,3 +109,5 @@
 - 2026-11-26 17:07 — agent publisher v2: OK — Daily limit of new repositories reached for publishing 'langgraph-planner-executor-stopping-loop'; will retry tomorrow as instructed.
 - 2026-11-26 17:07 — agent publisher v2: OK — Daily limit of new repositories reached for publishing 'net-race-condition-detector-simulator'; will retry tomorrow.
 - 2026-11-26 17:30 — llm: 1 task(s) hit by an LLM outage went back to the queue (retries not used up)
+- 2026-11-26 17:30 — ahmadhassan-bted-openheart: 'a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki' PASSED on attempt 1 (scripts/openheart_helper.py, tests/test_openheart_helper.py)
+- 2026-11-26 17:30 — agent maintainer: ran the task queue directly (no LLM call needed)
