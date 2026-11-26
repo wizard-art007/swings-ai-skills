@@ -18,7 +18,7 @@
       "source_url": "https://github.com/xoxorwr/pw-loudness-eq"
     },
     "source": "agent",
-    "status": "running",
+    "status": "done",
     "ts": "2026-11-26T01:08:15"
   },
   {
@@ -30,7 +30,17 @@
       "title": "Algorithmic Integer Factorization & Discrete Log Experiment"
     },
     "source": "agent",
-    "status": "new",
+    "status": "running",
     "ts": "2026-11-26T01:08:25"
+  },
+  {
+    "id": "f901c883ba",
+    "type": "experiment.ready",
+    "payload": {
+      "slug": "loudness-equalization-dsp-filter"
+    },
+    "source": "agent",
+    "status": "new",
+    "ts": "2026-11-26T01:09:38"
   }
 ]
