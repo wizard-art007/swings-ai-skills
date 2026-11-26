@@ -126,3 +126,8 @@
 - 2026-11-26 19:38 — need 8e0b4e27: open -> searching (tool scripts/llm_token_budget_estimator.py)
 - 2026-11-26 19:38 — need 8e0b4e27: searching -> open (no repo passes the hard rules)
 - 2026-11-26 19:38 — need b5c81ace: open -> parked (not a tool)
+- 2026-11-26 19:38 — yizhiyanhua-ai-fireworks-tech-graph: 'close need: Broken Tech Graph Mermaid Capability [need ef20a2aa]' FAILED after 3 attempts — nothing changed
+- 2026-11-26 19:38 — need ef20a2aa: building -> verifying (tool task failed)
+- 2026-11-26 19:38 — need ef20a2aa: verifying -> open (tool task failed)
+- 2026-11-26 19:38 — need ef20a2aa: open -> searching (tool scripts/diagram_helper.py)
+- 2026-11-26 19:38 — need ef20a2aa: searching -> building (tool task queued on yizhiyanhua-ai-fireworks-tech-graph)
