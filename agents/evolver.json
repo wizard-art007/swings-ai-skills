@@ -9,7 +9,8 @@
     "update_agent_prompt",
     "emit_event",
     "tune_score_weights",
-    "top_repos"
+    "top_repos",
+    "capability_status"
   ],
   "triggers": [
     "system.review"
