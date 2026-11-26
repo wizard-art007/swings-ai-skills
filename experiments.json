@@ -86,5 +86,17 @@
     "status": "failed",
     "created": "2026-11-26T13:58",
     "files": []
+  },
+  "langgraph-planner-executor-stopping-loop": {
+    "title": "LangGraph Planner/Executor Stopping Loop Simulator",
+    "description": "A lightweight Python experiment implementing a simple planner/executor agent loop with a stopping condition checker.",
+    "source_url": "https://dev.to/aqibnawab/how-a-langgraph-plannerexecutor-agent-knows-when-to-stop-2ikg",
+    "status": "passed",
+    "created": "2026-11-26T16:50",
+    "files": [
+      "README.md",
+      "tests/test_agent_loop.py",
+      "src/agent_loop.py"
+    ]
   }
 }
