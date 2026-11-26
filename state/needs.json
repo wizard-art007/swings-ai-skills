@@ -253,9 +253,40 @@
     ],
     "action": "Implement and verify the agent prompt router capability.",
     "priority": 2.0,
-    "status": "open",
+    "status": "building",
     "source": "self_review",
-    "ts": "2026-11-26T18:11"
+    "ts": "2026-11-26T18:11",
+    "log": [
+      {
+        "ts": "2026-11-26T19:47",
+        "from": "open",
+        "to": "searching",
+        "why": "tool scripts/agent_prompt_router.py"
+      },
+      {
+        "ts": "2026-11-26T19:47",
+        "from": "searching",
+        "to": "building",
+        "why": "tool task queued on deepset-ai-haystack"
+      }
+    ],
+    "updated": "2026-11-26T19:47",
+    "queries": [
+      "ai agent prompt router",
+      "llm router semantic routing agent",
+      "prompt routing agent classifier"
+    ],
+    "tried_repos": [
+      "deepset-ai/haystack"
+    ],
+    "repo": {
+      "full_name": "deepset-ai/haystack",
+      "stars": 27118,
+      "score": 65.3,
+      "need_fit": 0.048
+    },
+    "skill": "deepset-ai-haystack",
+    "module": "agent_prompt_router"
   },
   {
     "id": "d3d569f1",

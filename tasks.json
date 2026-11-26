@@ -308,5 +308,14 @@
     "queued": "2026-11-26T19:38",
     "need": "ef20a2aa",
     "priority": 2.33
+  },
+  {
+    "kind": "write_tool",
+    "skill": "deepset-ai-haystack",
+    "goal": "close need: Missing AI Agent Prompt Router [need e747bf71]",
+    "status": "todo",
+    "queued": "2026-11-26T19:47",
+    "need": "e747bf71",
+    "priority": 2.0
   }
 ]
