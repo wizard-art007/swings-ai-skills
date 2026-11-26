@@ -39,7 +39,7 @@
     ],
     "action": "Fix implementation or test for diagrams-tech-graph-mermaid.",
     "priority": 4.0,
-    "status": "parked",
+    "status": "building",
     "source": "self_review",
     "ts": "2026-11-26T18:11",
     "log": [
@@ -114,17 +114,36 @@
         "from": "verifying",
         "to": "parked",
         "why": "check fails: FAILED tests/test_cap_diagrams_tech_graph_mermaid.py::test_tech_graph_mermaid"
+      },
+      {
+        "ts": "2026-11-26T20:07",
+        "from": "parked",
+        "to": "open",
+        "why": "last try had rewritten its acceptance test; one honest retry"
+      },
+      {
+        "ts": "2026-11-26T20:07",
+        "from": "open",
+        "to": "searching",
+        "why": "tool scripts/diagram_helper.py"
+      },
+      {
+        "ts": "2026-11-26T20:07",
+        "from": "searching",
+        "to": "building",
+        "why": "tool task queued on yizhiyanhua-ai-fireworks-tech-graph"
       }
     ],
-    "updated": "2026-11-26T19:57",
+    "updated": "2026-11-26T20:07",
     "skill": "yizhiyanhua-ai-fireworks-tech-graph",
     "module": "diagram_helper",
-    "tries": 3,
+    "tries": 2,
     "failures": [
       "tool task failed",
       "tool task failed",
       "check fails: FAILED tests/test_cap_diagrams_tech_graph_mermaid.py::test_tech_graph_mermaid"
-    ]
+    ],
+    "tamper_retry": true
   },
   {
     "id": "8e0b4e27",

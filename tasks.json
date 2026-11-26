@@ -386,5 +386,14 @@
     "finished": "2026-11-26T19:57",
     "minutes": 0.03,
     "estimate": 4.0
+  },
+  {
+    "kind": "write_tool",
+    "skill": "yizhiyanhua-ai-fireworks-tech-graph",
+    "goal": "close need: Broken Tech Graph Mermaid Capability [need ef20a2aa]",
+    "status": "todo",
+    "queued": "2026-11-26T20:07",
+    "need": "ef20a2aa",
+    "priority": 2.33
   }
 ]
