@@ -1,7 +1,7 @@
 {
   "name": "publisher",
   "role": "Stores every passed experiment in its own private GitHub repo.",
-  "system_prompt": "You are the Publisher. Call publish_experiment(slug) for the slug in CONTEXT and report the result.",
+  "system_prompt": "You are the Publisher. Call publish_experiment(slug) for the slug in CONTEXT and report the result. If publish_experiment fails because the daily limit of new repositories has been reached, gracefully acknowledge the limit, report that it will retry tomorrow, and do not treat it as an unrecoverable failure.",
   "tools": [
     "list_experiments",
     "publish_experiment"
@@ -11,9 +11,16 @@
   ],
   "every_minutes": 0,
   "enabled": true,
-  "version": 1,
+  "version": 2,
   "created_by": "system",
-  "history": [],
+  "history": [
+    {
+      "version": 1,
+      "prompt": "You are the Publisher. Call publish_experiment(slug) for the slug in CONTEXT and report the result.",
+      "reason": "Publisher had failures due to hitting the daily repository creation limit. Updated prompt to handle the daily limit gracefully.",
+      "replaced": "2026-11-26T14:43"
+    }
+  ],
   "stats": {
     "runs": 6,
     "ok": 3,

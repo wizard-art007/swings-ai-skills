@@ -241,7 +241,7 @@
       "count": 9
     },
     "source": "system",
-    "status": "running",
+    "status": "done",
     "ts": "2026-11-26T14:41:37"
   },
   {
@@ -276,7 +276,7 @@
       ]
     },
     "source": "system",
-    "status": "new",
+    "status": "running",
     "ts": "2026-11-26T14:41:37"
   }
 ]
