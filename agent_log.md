@@ -115,3 +115,6 @@
 - 2026-11-26 18:10 — self-review: capability map for ai_agents: 7 capabilities
 - 2026-11-26 18:10 — self-review: capability map for qa_testing: 4 capabilities
 - 2026-11-26 18:11 — self-review: capability score 58% (11/19 strong), 10 gap(s), 10 new need(s)
+- 2026-11-26 18:37 — events: tidied 8 duplicate or stuck event(s)
+- 2026-11-26 18:37 — agent maintainer: ran the task queue directly (no LLM call needed)
+- 2026-11-26 18:38 — agent evolver v1: OK — Emitted agent.needed events for missing capabilities and recurring test failures across multiple modules.
