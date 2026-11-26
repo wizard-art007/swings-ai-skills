@@ -1,0 +1,1 @@
+- 2026-11-26: Trend: Audio DSP algorithms and OS-level features (like loudness equalization) continue to see active reverse-engineering and open-source porting to modern Linux audio stacks (PipeWire).

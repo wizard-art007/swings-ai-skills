@@ -1,0 +1,36 @@
+[
+  {
+    "id": "06873956c7",
+    "type": "goal.new",
+    "payload": {
+      "goal": "Create a small tool that converts a Python class definition into a PlantUML class diagram"
+    },
+    "source": "user",
+    "status": "done",
+    "ts": "2026-11-26T01:07:42"
+  },
+  {
+    "id": "ce6dd91cfb",
+    "type": "idea.found",
+    "payload": {
+      "title": "Loudness Equalization DSP Filter",
+      "description": "Implement an offline dynamic range compressor / loudness equalization DSP pipeline in Python with numpy/scipy based on reverse-engineered loudness equalization techniques.",
+      "source_url": "https://github.com/xoxorwr/pw-loudness-eq"
+    },
+    "source": "agent",
+    "status": "running",
+    "ts": "2026-11-26T01:08:15"
+  },
+  {
+    "id": "b5f47723ef",
+    "type": "idea.found",
+    "payload": {
+      "description": "A lightweight Python experiment implementing classical discrete logarithm and integer factorization heuristics (e.g. Pollard rho, Baby-step Giant-step) inspired by recent algebraic computation research.",
+      "source_url": "https://github.com/google-research/google-research/tree/master/cogentic_research_papers",
+      "title": "Algorithmic Integer Factorization & Discrete Log Experiment"
+    },
+    "source": "agent",
+    "status": "new",
+    "ts": "2026-11-26T01:08:25"
+  }
+]
