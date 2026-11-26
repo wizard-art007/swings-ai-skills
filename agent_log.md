@@ -166,3 +166,4 @@
 - 2026-11-26 19:57 — need b3e3c2b0: verifying -> closed (capability check passes)
 - 2026-11-26 19:57 — experience: rule promoted for write_tool: Validate Mermaid syntax and class definition formats against unit test assertion
 - 2026-11-26 19:57 — experience: rule promoted for write_tool: Verify existing test assertions for Mermaid syntax formatting before modifying t
+- 2026-11-26 23:21 — evolver updated publisher to v3: F7: experiments go to one projects repo, no daily limit
