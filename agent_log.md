@@ -76,3 +76,4 @@
 - 2026-11-26 14:39 — scout: new skill leonxlnx-taste-skill (ai_agents, score 76.9)
 - 2026-11-26 14:39 — scout: new skill seleniumbase-seleniumbase (qa_testing, score 75.5)
 - 2026-11-26 14:39 — scout: {'added': ['tt-a1i-archify', 'affaan-m-ecc', 'microsoft-playwright', 'mermaid-js-mermaid', 'leonxlnx-taste-skill', 'seleniumbase-seleniumbase'], 'archived': ['ashishps1-awesome-low-level-design', 'purocean-yn', 'yuzutech-kroki', 'k1low-tbls', 'skanaar-nomnoml'], 'cutoff': 66.0, 'active': 11}
+- 2026-11-26 14:41 — tt-a1i-archify: 'a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki' PASSED on attempt 1 (scripts/archify_helper.py, tests/test_archify_helper.py)

@@ -11,10 +11,28 @@ saved: 2026-11-26
 
 # tt-a1i/archify
 
-Use this skill when the task involves: agent-skills, ai-agents, architecture-diagram, claude-code, claude-skills, code-analysis, codex, coding-agents, deepseek-harness, developer-tools.
+Turn any idea, plan, or codebase into an interactive visual, one-page answer, architecture diagnosis, or video walkthrough.
 
-- Source code: cloned on demand (`ensure_repo(skill)`); licence file(s): see source
-- Original README: `README_source.md`
+## When to use
+- Mapping an entire codebase or repository to understand its structure.
+- Generating interactive architecture diagrams or flowcharts from a plan, idea, or text description.
+- Conducting an Architecture Diagnosis on a project.
+- Creating story or Pull Request (PR/MR) walkthroughs and exporting them as 1080p videos.
+- Working within AI agent environments like Claude Code, Cursor, Codex, or OpenCode when visualization is required.
 
-## Summary from README
-Turn anything you want to understand, plan, or share into an interactive visual. Official channels： archify.si · GitHubArchify is free and open source. Third-party online services and paid plans are operated by their respective providers and do not represent Archify. Service details → Start with an idea, a question, or a plan. Describe it to your AI agent, and Archify turns it into an interactive HTML you can explore, customize, and share. From travel itineraries and learning maps to complex systems—make it your own. 10 diagram types · One-page answers in 4 styles · Architecture Diagnosis · Story walkthroughs with 1080p video · PR/MR walkthroughs See what the community is creating—and imagine what you could make next. Live demos &nbsp;·&nbsp; Get started &nbsp;·&nbsp; Scenario guide &nbsp;·&nbsp; Community &nbsp;·&nbsp; 简体中文 &nbsp;·&nbsp; 日本語 &nbsp;·&nbsp; 한국어 ❤️ Partners & sponsors: Kimi Work · Supercode · OpenLux ## See Archify in action https://github.com/user-attachments/assets/6a0d6637-e3af-43af-a733-4b4b53da0542 **One sentence. Your repo, mapped.** Watch the 60-second tour: map a whole repository, put the findings on your architecture diagram, walk through a real PR, and export it as video. [Try the interactive examples ↗](https://archify.si/gallery.html) ### Install, then describe your idea Works with Cursor, Claude Code, Codex CLI, and OpenCode. See installation options below for additional integrations. **With an AI agent.** Paste this: ```text Install Archify [...]
+## How to use
+Archify integrates with your AI coding agent. Ensure the repository/skill is installed, then invoke it via natural language descriptions or through available helper scripts.
+
+1. **Via AI Agent Prompting:**
+   Describe your idea, plan, or point the agent to your codebase and ask it to generate an Archify interactive visual or diagram.
+   
+2. **Using the Helper Script:**
+   If working directly with the repository scripts:
+   ```bash
+   python archify_helper.py --target <path-to-codebase-or-idea> --type <diagram-type>
+   ```
+
+## Limitations
+- Relies on third-party rendering or local execution contexts; complex codebases may require manual scoping for optimal diagram clarity.
+- Online services, advanced video rendering features, and paid tiers depend on external providers (`archify.si`).
+- Generated diagrams depend on LLM analysis quality of the underlying source code or input prompt.
