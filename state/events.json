@@ -582,7 +582,7 @@
       "source_url": "https://github.com/alesha-pro/llm.asm"
     },
     "source": "agent",
-    "status": "running",
+    "status": "done",
     "ts": "2026-11-26T23:27:24"
   },
   {
@@ -594,7 +594,17 @@
       "source_url": "https://github.com/antonpictures/youtube-punisher"
     },
     "source": "agent",
-    "status": "new",
+    "status": "running",
     "ts": "2026-11-26T23:27:25"
+  },
+  {
+    "id": "407e0b86d0",
+    "type": "experiment.ready",
+    "payload": {
+      "slug": "llm-in-assembly"
+    },
+    "source": "agent",
+    "status": "new",
+    "ts": "2026-11-26T23:27:34"
   }
 ]

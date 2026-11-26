@@ -1,10 +1,10 @@
 {
   "2026-11-26": {
-    "calls": 64,
+    "calls": 69,
     "errors": 3,
     "overloads": 3,
     "cache_hits": 0,
-    "seconds": 746.7,
+    "seconds": 753.2,
     "by_purpose": {
       "write_tool": 19,
       "self_review": 5,
@@ -13,8 +13,8 @@
       "lesson": 4,
       "improve_doc": 4,
       "agent:news_scout": 8,
-      "agent:builder": 1,
-      "experiment": 1
+      "agent:builder": 4,
+      "experiment": 3
     }
   }
 }
