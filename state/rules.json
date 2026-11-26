@@ -4,16 +4,16 @@
       "text": "Validate Mermaid syntax and class definition formats against unit test assertions before running tests.",
       "from": "1c7996a8e8",
       "status": "active",
-      "uses": 3,
-      "ok": 1,
+      "uses": 4,
+      "ok": 2,
       "created": "2026-11-26T19:57"
     },
     {
       "text": "Verify existing test assertions for Mermaid syntax formatting before modifying the diagram generator implementation.",
       "from": "99f9e7c168",
       "status": "active",
-      "uses": 3,
-      "ok": 1,
+      "uses": 4,
+      "ok": 2,
       "created": "2026-11-26T19:57"
     }
   ]
