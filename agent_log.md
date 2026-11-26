@@ -60,3 +60,5 @@
 - 2026-11-26 13:51 — exp/iphone-sms-expense-parser: 'experiment iphone-sms-expense-parser' PASSED on attempt 2 (README.md, src/expense_parser.py, tests/test_expense_parser.py)
 - 2026-11-26 13:52 — agent builder v1: OK — Experiment 'iphone-sms-expense-parser' built and ready.
 - 2026-11-26 13:52 — agent maintainer v1: OK — Processed 3 pending skill tasks successfully using the task queue.
+- 2026-11-26 14:10 — agent publisher v1: FAIL — Failed to publish experiment 'moat-openrouter-replacement' because the daily limit of new repositories has been reached.
+- 2026-11-26 14:10 — agent publisher v1: FAIL — Failed to publish experiment 'iphone-sms-expense-parser': daily limit of 3 new repos reached; will retry tomorrow.

@@ -221,7 +221,7 @@
       "slug": "moat-openrouter-replacement"
     },
     "source": "agent",
-    "status": "new",
+    "status": "done",
     "ts": "2026-11-26T13:50:29"
   },
   {
@@ -231,7 +231,7 @@
       "slug": "iphone-sms-expense-parser"
     },
     "source": "agent",
-    "status": "new",
+    "status": "done",
     "ts": "2026-11-26T13:51:34"
   }
 ]

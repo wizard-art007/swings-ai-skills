@@ -20,3 +20,5 @@
 {"agent": "builder", "version": 1, "task": "Handle event 'idea.found'", "success": true, "summary": "Successfully built the Moat experiment and emitted the ready event.", "ts": "2026-11-26T13:50"}
 {"agent": "builder", "version": 1, "task": "Handle event 'idea.found'", "success": true, "summary": "Experiment 'iphone-sms-expense-parser' built and ready.", "ts": "2026-11-26T13:52"}
 {"agent": "maintainer", "version": 1, "task": "Handle event 'tasks.pending'", "success": true, "summary": "Processed 3 pending skill tasks successfully using the task queue.", "ts": "2026-11-26T13:52"}
+{"agent": "publisher", "version": 1, "task": "Handle event 'experiment.ready'", "success": false, "summary": "Failed to publish experiment 'moat-openrouter-replacement' because the daily limit of new repositories has been reached.", "ts": "2026-11-26T14:10"}
+{"agent": "publisher", "version": 1, "task": "Handle event 'experiment.ready'", "success": false, "summary": "Failed to publish experiment 'iphone-sms-expense-parser': daily limit of 3 new repos reached; will retry tomorrow.", "ts": "2026-11-26T14:10"}
