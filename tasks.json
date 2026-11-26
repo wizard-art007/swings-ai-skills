@@ -10,19 +10,22 @@
     "kind": "write_tool",
     "skill": "ashishps1-awesome-low-level-design",
     "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
-    "status": "todo"
+    "status": "done",
+    "finished": "2026-11-26T01:28"
   },
   {
     "kind": "improve_doc",
     "skill": "ashishps1-awesome-low-level-design",
     "goal": "",
-    "status": "todo"
+    "status": "done",
+    "finished": "2026-11-26T01:28"
   },
   {
     "kind": "write_tool",
     "skill": "yizhiyanhua-ai-fireworks-tech-graph",
     "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
-    "status": "todo"
+    "status": "done",
+    "finished": "2026-11-26T01:29"
   },
   {
     "kind": "improve_doc",
