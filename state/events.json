@@ -298,7 +298,7 @@
       "source_url": "https://dev.to/aqibnawab/how-a-langgraph-plannerexecutor-agent-knows-when-to-stop-2ikg"
     },
     "source": "agent",
-    "status": "running",
+    "status": "done",
     "ts": "2026-11-26T16:48:47"
   },
   {
@@ -310,7 +310,17 @@
       "source_url": "https://dev.to/kirandeepjassalcrypto/7-race-conditions-that-shipped-to-net-production-lost-updates-toctou-dbcontext-threading--3l7e"
     },
     "source": "agent",
-    "status": "new",
+    "status": "running",
     "ts": "2026-11-26T16:50:14"
+  },
+  {
+    "id": "d2975a2051",
+    "type": "experiment.ready",
+    "payload": {
+      "slug": "langgraph-planner-executor-stopping-loop"
+    },
+    "source": "agent",
+    "status": "new",
+    "ts": "2026-11-26T16:50:29"
   }
 ]
