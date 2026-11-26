@@ -84,3 +84,4 @@
 - 2026-11-26 14:41 — microsoft-playwright: SKILL.md improved
 - 2026-11-26 14:42 — mermaid-js-mermaid: 'a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki' PASSED on attempt 1 (scripts/mermaid_helper.py, tests/test_mermaid_helper.py)
 - 2026-11-26 14:42 — mermaid-js-mermaid: SKILL.md improved
+- 2026-11-26 14:42 — leonxlnx-taste-skill: 'a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki' PASSED on attempt 1 (scripts/taste_diagram.py, tests/test_taste_diagram.py)

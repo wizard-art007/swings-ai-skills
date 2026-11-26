@@ -220,19 +220,22 @@
     "kind": "write_tool",
     "skill": "mermaid-js-mermaid",
     "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
-    "status": "todo"
+    "status": "done",
+    "finished": "2026-11-26T14:42"
   },
   {
     "kind": "improve_doc",
     "skill": "mermaid-js-mermaid",
     "goal": "",
-    "status": "todo"
+    "status": "done",
+    "finished": "2026-11-26T14:42"
   },
   {
     "kind": "write_tool",
     "skill": "leonxlnx-taste-skill",
     "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
-    "status": "todo"
+    "status": "done",
+    "finished": "2026-11-26T14:42"
   },
   {
     "kind": "improve_doc",
