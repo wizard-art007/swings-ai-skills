@@ -149,3 +149,4 @@
 - 2026-11-26 19:52 — need e747bf71: verifying -> closed (capability check passes)
 - 2026-11-26 19:52 — need ef20a2aa: open -> searching (tool scripts/diagram_helper.py)
 - 2026-11-26 19:52 — need ef20a2aa: searching -> building (tool task queued on yizhiyanhua-ai-fireworks-tech-graph)
+- 2026-11-26 19:56 — need 8e0b4e27: open -> searching (tool scripts/llm_token_budget_estimator.py)

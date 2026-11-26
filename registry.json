@@ -446,5 +446,40 @@
       "usefulness": 0.5
     },
     "added_for_need": "e747bf71"
+  },
+  "juliusbrussee-caveman": {
+    "name": "caveman",
+    "full_name": "JuliusBrussee/caveman",
+    "url": "https://github.com/JuliusBrussee/caveman",
+    "clone_url": "https://github.com/JuliusBrussee/caveman.git",
+    "stars": 123057,
+    "license": "Apache-2.0",
+    "language": "Go",
+    "topics": [
+      "ai",
+      "anthropic",
+      "caveman",
+      "claude",
+      "claude-code",
+      "llm",
+      "meme",
+      "prompt-engineering",
+      "skill",
+      "tokens"
+    ],
+    "description": "why use many token when few token do trick. Skill + local proxy for coding agents: shorter answers, smaller tool output, every original recoverable.",
+    "default_branch": "main",
+    "skill_name": "juliusbrussee-caveman",
+    "domain": "ai_agents",
+    "score": 71.9,
+    "components": {
+      "popularity": 1.0,
+      "activity": 1.0,
+      "health": 0.641,
+      "license": 1.0,
+      "fit": 0.057,
+      "usefulness": 0.5
+    },
+    "added_for_need": "8e0b4e27"
   }
 }
