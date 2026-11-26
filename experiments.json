@@ -122,5 +122,18 @@
       "tests/test_qwen_asm.py",
       "src/qwen_asm.py"
     ]
+  },
+  "youtube-ad-punisher": {
+    "title": "YouTube Ad Punisher",
+    "description": "Auto-reloads YouTube pages when an ad plays via a lightweight userscript/extension concept.",
+    "source_url": "https://github.com/antonpictures/youtube-punisher",
+    "status": "passed",
+    "created": "2026-11-26T23:27",
+    "files": [
+      "README.md",
+      "tests/test_punisher.py",
+      "src/yt_punisher/__init__.py",
+      "src/yt_punisher/core.py"
+    ]
   }
 }
