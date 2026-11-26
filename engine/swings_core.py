@@ -1494,6 +1494,8 @@ def log(event):
     _plain_log(event)
     s = str(event)
     level = "error" if "ERROR" in s or " FAILED" in s else "warn" if "FAIL" in s or "failed" in s else "info"
+    if level == "error" and globals().get("INFRA_ERROR") is not None and INFRA_ERROR.search(s):
+        level = "warn"                                # an LLM outage line is a warning, not a code error
     syslog(level, "log", s)
 
 class _Tee(io.TextIOBase):
@@ -1746,6 +1748,8 @@ def _heal_one(fp, issue):
     if not new.startswith(indent) or (indent and new.startswith(indent + " ")):
         new = textwrap.indent(textwrap.dedent(new), indent)
     new = new if new.endswith("\n") else new + "\n"
+    if new.strip() == old.strip():
+        return "fail", "the reply did not change the function"
     defs = [n for n in ast.parse(textwrap.dedent(new)).body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))]
     if len(defs) != 1 or defs[0].name != name:
         return "fail", "reply must contain exactly the same one function"
@@ -2815,6 +2819,22 @@ def llm_usage(days=7):
 
 TOOLS.register("llm_usage", llm_usage, "Gemini calls per day, overloads, cache hits and what used them.")
 
+
+# ---- verification fix: an outage is not a code bug, and the guard layers are off-limits to the healer --------
+HEAL_PROTECTED |= {
+    "_budgeted_llm", "llm_allowed", "_account", "_llm_run_state", "_today_usage", "_is_infra_error",
+    "_queue_with_budget", "_safe_run_with_budget", "_run_extras_with_llm", "llm_usage",
+    "_llm_with_experience", "_log_with_experience", "_sandbox_with_experience", "_experienced", "inner",
+    "_write_lesson", "_update_lesson_stats", "promote_and_demote_rules", "_finish_with_experience",
+    "_trace", "_plan_with_retool", "_tick_with_tidy", "tidy_events", "_redact", "syslog_exception",
+}
+if "_syslog_exception_raw" not in globals():
+    _syslog_exception_raw = syslog_exception
+def syslog_exception(component, exc, **data):
+    if _is_infra_error(exc):                      # Gemini overloaded / budget used up: a warning, never an issue
+        return syslog("warn", component, f"LLM unavailable: {type(exc).__name__}: {str(exc)[:200]}")
+    return _syslog_exception_raw(component, exc, **data)
+
 # ===== Cell 30: Smart queue (F4) =====
 # Every queued task gets a value (priority x skill score x waiting bonus) and a time estimate learned
 # from past experiences (F1). Each run works on the most value per minute first and only starts a
@@ -3066,7 +3086,8 @@ def _evidence(caps, notes):
           "open_issues": [f"{i.get('function')}: {i.get('msg', '')[:120]} (x{i.get('count')})"
                           for i in sorted(_load_issues().values(), key=lambda i: -i.get("count", 0))
                           if i.get("status") in ("open", "regressed")][:5],
-          "agent_failures": [f"{r.get('agent')}: {str(r.get('summary'))[:120]}" for r in recent_failures(8)],
+          "agent_failures": [f"{r.get('agent')}: {str(r.get('summary'))[:120]}" for r in recent_failures(20)
+                             if r.get("ts", "") >= (datetime.datetime.now() - datetime.timedelta(days=3)).isoformat()][-8:],
           "agents": {n: {k: a.get(k) for k in ("success_rate", "runs", "step_limit")} for n, a in agent_stats().items()},
           "unused_skills": [n for n in load_registry() if usefulness(n)[1] == 0],
           "queue": queue_report(), "llm_today": llm_usage(1),
@@ -3088,10 +3109,15 @@ def _gap_analysis(caps, ev):
               '"effort": 1-3, "action": "one line"}], "proposals": ["decisions only the owner can make, e.g. a new area"]}')
     with _as_purpose("self_review"):
         reply = _extract_json(llm(prompt, system="You are a rigorous engineering reviewer. Cite evidence for every claim."))
-    gaps = []
+    gaps, cap_status = [], {c["id"]: c["status"] for c in caps}
     for g in (reply or {}).get("gaps", [])[:12]:
         if g.get("type") in ("external", "internal", "knowledge") and g.get("evidence"):
-            gaps.append({k: g.get(k) for k in ("title", "type", "capability", "evidence", "blocking", "relevance", "effort", "action")})
+            g = {k: g.get(k) for k in ("title", "type", "capability", "evidence", "blocking", "relevance", "effort", "action")}
+            if cap_status.get(g.get("capability")) in ("missing", "weak"):
+                g["type"] = "external"            # a missing capability is closed by a tool, not by tuning agents
+            elif g.get("capability") not in cap_status:
+                g["capability"] = None            # never link a gap to a capability that does not exist
+            gaps.append(g)
     return _with_capability_gaps(gaps, caps), (reply or {}).get("proposals", [])[:5]
 
 def _with_capability_gaps(gaps, caps):
@@ -3126,7 +3152,7 @@ def _sync_needs(gaps, caps):
             (g.get("capability") and n.get("capability") == g["capability"]) or
             _similar_text(n.get("need", ""), g["title"]) > 0.6)), None)
         if match:
-            match.update(priority=g["priority"], evidence=g["evidence"][:5], updated=now)
+            match.update(priority=g["priority"], evidence=g["evidence"][:5], type=g["type"], updated=now)
             continue
         need = {"id": uuid.uuid4().hex[:8], "need": g["title"][:300], "domain": (cap or {}).get("area", ""),
                 "type": g["type"], "capability": g.get("capability"), "check": (cap or {}).get("check"),
@@ -3134,9 +3160,10 @@ def _sync_needs(gaps, caps):
                 "status": "open", "source": "self_review", "ts": now}
         needs.append(need)
         created.append(need)
-        if g["type"] == "internal":
-            emit("system.review", {"gap": g["title"], "evidence": g["evidence"][:5], "action": g.get("action")},
-                 source="self_review")
+    internal = [n for n in created if n["type"] == "internal"]
+    if internal:                                   # ONE review event for all new internal gaps
+        emit("system.review", {"gaps": [{"gap": n["need"], "evidence": n["evidence"][:3], "action": n.get("action")}
+                                        for n in internal[:6]]}, source="self_review")
     _jsave(NEEDS_FILE, needs[-100:])
     return created
 
@@ -3240,3 +3267,41 @@ def autopilot_cycle():
             self_review()
     except Exception as e:
         syslog_exception("self_review", e)
+
+# ---- event hygiene (found in verification): no duplicate reviews, no events stuck forever -----------------
+COALESCE_EVENTS = {"system.review", "tasks.pending"}   # one pending event of these types is enough
+STUCK_EVENT_HOURS = 3
+
+def tidy_events():
+    events, changed = _jload(EVENTS_FILE, []), 0
+    cutoff = (datetime.datetime.now() - datetime.timedelta(hours=STUCK_EVENT_HOURS)).isoformat(timespec="seconds")
+    for e in events:                                   # a run that stopped mid-dispatch left it 'running'
+        if e.get("status") == "running" and e.get("ts", "") < cutoff:
+            e["status"] = "new"; changed += 1
+    for etype in COALESCE_EVENTS:
+        same = [e for e in events if e.get("type") == etype and e.get("status") == "new"]
+        if len(same) > 1:
+            keep = same[-1]
+            if etype == "system.review":
+                merged = []
+                for e in same:
+                    p = e.get("payload") or {}
+                    merged += p.get("gaps") or ([{k: p.get(k) for k in ("gap", "evidence", "action")}] if p.get("gap") else [])
+                    merged += [{"recent_failures": p["recent_failures"][:3]}] if p.get("recent_failures") else []
+                keep["payload"] = {"gaps": merged[:8]}
+            for e in same[:-1]:
+                e["status"] = "merged"; changed += 1
+    if changed:
+        _jsave(EVENTS_FILE, events)
+        log(f"events: tidied {changed} duplicate or stuck event(s)")
+    return changed
+
+if "_tick_before_tidy" not in globals():
+    _tick_before_tidy = orchestrator_tick
+def _tick_with_tidy(*a, **kw):
+    try:
+        tidy_events()
+    except Exception as e:
+        syslog("warn", "events", f"tidy skipped: {type(e).__name__}: {e}")
+    return _tick_before_tidy(*a, **kw)
+orchestrator_tick = _tick_with_tidy
