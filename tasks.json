@@ -317,5 +317,12 @@
     "queued": "2026-11-26T19:47",
     "need": "e747bf71",
     "priority": 2.0
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "deepset-ai-haystack",
+    "goal": "",
+    "status": "todo",
+    "queued": "2026-11-26T19:47"
   }
 ]

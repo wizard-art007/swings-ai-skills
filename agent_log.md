@@ -139,3 +139,4 @@
 - 2026-11-26 19:47 — need 966f88c3: searching -> open (no repo passes the hard rules for ['dbml generator plantuml erd relational schema', 'entity relationship diagram generat)
 - 2026-11-26 19:47 — need e747bf71: open -> searching (tool scripts/agent_prompt_router.py)
 - 2026-11-26 19:47 — need e747bf71: searching -> building (tool task queued on deepset-ai-haystack)
+- 2026-11-26 19:52 — yizhiyanhua-ai-fireworks-tech-graph: 'close need: Broken Tech Graph Mermaid Capability [need ef20a2aa]' FAILED after 3 attempts — nothing changed
