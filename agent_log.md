@@ -171,3 +171,5 @@
 - 2026-11-26 20:07 — need ef20a2aa: searching -> building (tool task queued on yizhiyanhua-ai-fireworks-tech-graph)
 - 2026-11-26 20:07 — need 966f88c3: open -> searching (tool scripts/erd_generator.py)
 - 2026-11-26 20:07 — need 966f88c3: searching -> building (tool task queued on drawdb-io-drawdb)
+- 2026-11-26 20:07 — yizhiyanhua-ai-fireworks-tech-graph: 'close need: Broken Tech Graph Mermaid Capability [need ef20a2aa]' PASSED on attempt 2 (scripts/diagram_helper.py)
+- 2026-11-26 20:07 — need 966f88c3: dropped the LLM's rewrite of tests/test_need_966f88c3.py (acceptance test is fixed)
