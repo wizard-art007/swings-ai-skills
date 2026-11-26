@@ -341,34 +341,47 @@
     "kind": "write_tool",
     "skill": "yizhiyanhua-ai-fireworks-tech-graph",
     "goal": "close need: Broken Tech Graph Mermaid Capability [need ef20a2aa]",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-26T19:52",
     "need": "ef20a2aa",
-    "priority": 2.33
+    "priority": 2.33,
+    "value": 1627.804,
+    "finished": "2026-11-26T19:57",
+    "minutes": 0.04,
+    "estimate": 0.5
   },
   {
     "kind": "write_tool",
     "skill": "juliusbrussee-caveman",
     "goal": "close need: Missing LLM Token Budget Estimator [need 8e0b4e27]",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-26T19:57",
     "need": "8e0b4e27",
-    "priority": 2.33
+    "priority": 2.33,
+    "value": 1676.778,
+    "finished": "2026-11-26T19:57",
+    "minutes": 0.08,
+    "estimate": 0.5
   },
   {
     "kind": "write_tool",
     "skill": "agents365-ai-drawio-skill",
     "goal": "close need: Broken BPMN Process Generation Capability [need b3e3c2b0]",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-26T19:57",
     "need": "b3e3c2b0",
-    "priority": 2.0
+    "priority": 2.0,
+    "value": 1601.44,
+    "finished": "2026-11-26T19:57",
+    "minutes": 0.06,
+    "estimate": 0.5
   },
   {
     "kind": "improve_doc",
     "skill": "juliusbrussee-caveman",
     "goal": "",
     "status": "todo",
-    "queued": "2026-11-26T19:57"
+    "queued": "2026-11-26T19:57",
+    "value": 719.647
   }
 ]

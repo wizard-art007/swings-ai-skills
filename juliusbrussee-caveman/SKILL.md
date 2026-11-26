@@ -17,4 +17,20 @@ Use this skill when the task involves: ai, anthropic, caveman, claude, claude-co
 - Original README: `README_source.md`
 
 ## Summary from README
-## New: Caveman Code. Free. **21% less than Codex per solved task on Terminal-Bench 4.** Same model on both sides. 21% cheaperthan CodexTerminal-Bench 4, per solved task, GPT-6.1 Sol: $1.21 vs $1.52, 90 of 192 runs solved both Levelwith Claude Code within noiseTerminal-Bench 4, Opus 5.5: 97 of 180 runs solved vs 83 of 177; $5.19 vs $6.04 per solved task, 95% interval 0.70x to 1.02x Measured build, benchmark settings on, not the shipped app: the app ships the same harness with three benchmark-only settings turned off. Same model on both sides: GPT-6.1 Sol against Codex, Opus 5.5 against Claude Code. Our own runs, November 2026, at list prices. How we measured Every coding agent in one window. Free on the subscriptions and keys you already have. **[Download Caveman Code for Mac](https://caveman.so/download) · [Read the launch post](https://caveman.so/news/introducing-caveman-code)** --- # why many token when few do trick **Caveman make your AI agent say less and read less. Code stay exact. Brain still big.** 33.2% fewerinput tokens, whole sessions6 synthetic large-tool-output tasks, 18 pairs, Aug 2026 engine, 18 of 18 answers right 0.46×the cost of Opus at xhigh, with Auto85 coding tasks, interim, score gap ±7 points, unresolved 397 → 76tokens for one test runBlocks vs | tail -20 1.4 to 2.4× cheaperwith caveman-style outputAdobe Research, eight models Cited by **[Adobe Research](https://arxiv.org/abs/2606.24083)** · A/B tested by [...]
+Caveman Code reduces token usage for AI coding agents (such as Claude Code and Codex) by making them say less and read less while keeping code exact. It achieves 21% lower cost per solved task on Terminal-Bench 4, 33.2% fewer input tokens across whole sessions, and 1.4x to 2.4x cheaper outputs through caveman-style formatting and local proxy management.
+
+## When to use
+- You want to reduce token consumption and lower API costs when running LLM coding agents.
+- You need concise AI responses and compressed tool outputs without losing fidelity or recoverability.
+- You are working with token-heavy environments like Claude Code or Terminal-Bench.
+
+## How to use
+- Run token budget estimations using the provided helper script:
+  ```bash
+  python llm_token_budget_estimator.py
+  ```
+- Integrate the Caveman local proxy with your coding agents to compress tool outputs and agent responses automatically.
+
+## Limitations
+- Compressed "caveman-style" output may occasionally lack conversational nuance or verbosity desired for high-level explanatory tasks.
+- Requires local proxy setup alongside your coding agent workflow.
