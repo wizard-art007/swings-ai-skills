@@ -78,5 +78,13 @@
       "tests/test_expense_parser.py",
       "src/expense_parser.py"
     ]
+  },
+  "snaptrap-fake-server": {
+    "title": "SNAPTRAP Fake Server",
+    "description": "Build a tiny offline Python honeypot/fake server script that logs incoming request headers and payload attempts.",
+    "source_url": "https://dev.to/aidulapuram_sushmitha_add/snaptrap-building-a-fake-server-to-catch-real-attackers",
+    "status": "failed",
+    "created": "2026-11-26T13:58",
+    "files": []
   }
 }
