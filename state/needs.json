@@ -39,7 +39,7 @@
     ],
     "action": "Fix implementation or test for diagrams-tech-graph-mermaid.",
     "priority": 4.0,
-    "status": "building",
+    "status": "closed",
     "source": "self_review",
     "ts": "2026-11-26T18:11",
     "log": [
@@ -132,6 +132,18 @@
         "from": "searching",
         "to": "building",
         "why": "tool task queued on yizhiyanhua-ai-fireworks-tech-graph"
+      },
+      {
+        "ts": "2026-11-26T20:07",
+        "from": "building",
+        "to": "verifying",
+        "why": "tool task done"
+      },
+      {
+        "ts": "2026-11-26T20:07",
+        "from": "verifying",
+        "to": "closed",
+        "why": "capability check passes"
       }
     ],
     "updated": "2026-11-26T20:07",
@@ -143,7 +155,9 @@
       "tool task failed",
       "check fails: FAILED tests/test_cap_diagrams_tech_graph_mermaid.py::test_tech_graph_mermaid"
     ],
-    "tamper_retry": true
+    "tamper_retry": true,
+    "closed": "2026-11-26T20:07",
+    "closed_by": "capability check passes"
   },
   {
     "id": "8e0b4e27",
@@ -347,7 +361,7 @@
     ],
     "action": "Fix ERD model generator test and underlying code.",
     "priority": 2.0,
-    "status": "building",
+    "status": "closed",
     "source": "self_review",
     "ts": "2026-11-26T18:11",
     "log": [
@@ -374,6 +388,18 @@
         "from": "searching",
         "to": "building",
         "why": "tool task queued on drawdb-io-drawdb"
+      },
+      {
+        "ts": "2026-11-26T20:07",
+        "from": "building",
+        "to": "verifying",
+        "why": "tool task done"
+      },
+      {
+        "ts": "2026-11-26T20:07",
+        "from": "verifying",
+        "to": "closed",
+        "why": "capability check passes"
       }
     ],
     "updated": "2026-11-26T20:07",
@@ -393,7 +419,9 @@
       "need_fit": 0.071
     },
     "skill": "drawdb-io-drawdb",
-    "module": "erd_generator"
+    "module": "erd_generator",
+    "closed": "2026-11-26T20:07",
+    "closed_by": "capability check passes"
   },
   {
     "id": "e747bf71",

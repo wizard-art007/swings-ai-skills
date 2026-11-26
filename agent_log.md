@@ -174,3 +174,8 @@
 - 2026-11-26 20:07 — yizhiyanhua-ai-fireworks-tech-graph: 'close need: Broken Tech Graph Mermaid Capability [need ef20a2aa]' PASSED on attempt 2 (scripts/diagram_helper.py)
 - 2026-11-26 20:07 — need 966f88c3: dropped the LLM's rewrite of tests/test_need_966f88c3.py (acceptance test is fixed)
 - 2026-11-26 20:07 — drawdb-io-drawdb: 'close need: Broken ERD Model Generator Capability [need 966f88c3]' PASSED on attempt 1 (scripts/erd_generator.py)
+- 2026-11-26 20:07 — drawdb-io-drawdb: SKILL.md improved
+- 2026-11-26 20:07 — need ef20a2aa: building -> verifying (tool task done)
+- 2026-11-26 20:07 — need ef20a2aa: verifying -> closed (capability check passes)
+- 2026-11-26 20:07 — need 966f88c3: building -> verifying (tool task done)
+- 2026-11-26 20:07 — need 966f88c3: verifying -> closed (capability check passes)

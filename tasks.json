@@ -391,25 +391,37 @@
     "kind": "write_tool",
     "skill": "yizhiyanhua-ai-fireworks-tech-graph",
     "goal": "close need: Broken Tech Graph Mermaid Capability [need ef20a2aa]",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-26T20:07",
     "need": "ef20a2aa",
-    "priority": 2.33
+    "priority": 2.33,
+    "value": 1627.804,
+    "finished": "2026-11-26T20:07",
+    "minutes": 0.07,
+    "estimate": 0.5
   },
   {
     "kind": "write_tool",
     "skill": "drawdb-io-drawdb",
     "goal": "close need: Broken ERD Model Generator Capability [need 966f88c3]",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-26T20:07",
     "need": "966f88c3",
-    "priority": 2.0
+    "priority": 2.0,
+    "value": 1207.085,
+    "finished": "2026-11-26T20:07",
+    "minutes": 0.03,
+    "estimate": 0.5
   },
   {
     "kind": "improve_doc",
     "skill": "drawdb-io-drawdb",
     "goal": "",
-    "status": "todo",
-    "queued": "2026-11-26T20:07"
+    "status": "done",
+    "queued": "2026-11-26T20:07",
+    "value": 603.543,
+    "finished": "2026-11-26T20:07",
+    "minutes": 0.03,
+    "estimate": 0.5
   }
 ]

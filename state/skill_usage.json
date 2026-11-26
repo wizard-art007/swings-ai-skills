@@ -1,7 +1,7 @@
 {
   "yizhiyanhua-ai-fireworks-tech-graph": {
-    "used": 3,
-    "success": 0
+    "used": 4,
+    "success": 1
   },
   "deepset-ai-haystack": {
     "used": 1,
@@ -12,6 +12,10 @@
     "success": 1
   },
   "agents365-ai-drawio-skill": {
+    "used": 1,
+    "success": 1
+  },
+  "drawdb-io-drawdb": {
     "used": 1,
     "success": 1
   }

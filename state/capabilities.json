@@ -35,11 +35,12 @@
     "check": "from captools import load_tool\n\ndef test_tech_graph_mermaid():\n    mod = load_tool('yizhiyanhua-ai-fireworks-tech-graph', 'diagram_helper')\n    graph = mod.parse_text_description(\"Frontend -> Backend -> Database\")\n    mermaid = mod.to_mermaid(graph, style=\"default\", direction=\"TD\")\n    assert isinstance(mermaid, str)\n    assert \"graph TD\" in mermaid\n    assert \"Frontend\" in mermaid\n    assert \"Database\" in mermaid\n",
     "history": [
       false,
-      false
+      false,
+      true
     ],
-    "status": "missing",
+    "status": "strong",
     "created": "2026-11-26",
-    "checked": "2026-11-26T19:57",
+    "checked": "2026-11-26T20:07",
     "weak_skills": []
   },
   {
@@ -106,11 +107,12 @@
     "description": "Generate DB-ML or PlantUML Entity Relationship diagrams from relational schema descriptions.",
     "check": "from captools import load_tool\n\ndef test_erd_model_generator():\n    mod = load_tool('*', 'erd_generator')\n    res = mod.generate_erd(\"User has many Orders\")\n    assert isinstance(res, str)\n    assert \"User\" in res\n    assert \"Order\" in res\n",
     "history": [
-      false
+      false,
+      true
     ],
-    "status": "missing",
+    "status": "strong",
     "created": "2026-11-26",
-    "checked": "2026-11-26T18:10",
+    "checked": "2026-11-26T20:07",
     "weak_skills": []
   },
   {
