@@ -22,3 +22,4 @@
 - 2026-11-26 01:31 — agents365-ai-drawio-skill: SKILL.md improved
 - 2026-11-26 01:31 — agent maintainer v1: OK — Ran the task queue successfully (processed queued skill tasks).
 - 2026-11-26 02:16 — refresh: searching GitHub for new/updated UML projects
+- 2026-11-26 02:20 — agent maintainer: ERROR ClientError: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.8-flash for the latest features and improve
