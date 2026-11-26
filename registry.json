@@ -401,5 +401,50 @@
       "fit": 0.285,
       "usefulness": 0.5
     }
+  },
+  "deepset-ai-haystack": {
+    "name": "haystack",
+    "full_name": "deepset-ai/haystack",
+    "url": "https://github.com/deepset-ai/haystack",
+    "clone_url": "https://github.com/deepset-ai/haystack.git",
+    "stars": 27118,
+    "license": "Apache-2.0",
+    "language": "Python",
+    "topics": [
+      "agent-framework",
+      "agentic-ai",
+      "agentic-rag",
+      "agents",
+      "ai",
+      "ai-agents",
+      "context-engineering",
+      "framework",
+      "genai",
+      "generative-ai",
+      "information-retrieval",
+      "large-language-models",
+      "llm",
+      "mcp",
+      "multi-agent",
+      "orchestration",
+      "python",
+      "rag",
+      "retrieval-augmented-generation",
+      "semantic-search"
+    ],
+    "description": "Open-source AI orchestration framework for building context-engineered, production-ready LLM applications. Design modular pipelines and agent workflows with explicit control over retrieval, routing, memory, and generation. Built for scalable agents, RAG, multimodal applications, semantic search, and conversational systems.",
+    "default_branch": "main",
+    "skill_name": "deepset-ai-haystack",
+    "domain": "ai_agents",
+    "score": 65.3,
+    "components": {
+      "popularity": 0.887,
+      "activity": 1.0,
+      "health": 0.417,
+      "license": 1.0,
+      "fit": 0.048,
+      "usefulness": 0.5
+    },
+    "added_for_need": "e747bf71"
   }
 }

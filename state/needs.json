@@ -105,7 +105,7 @@
     "status": "open",
     "source": "self_review",
     "ts": "2026-11-26T18:11",
-    "updated": "2026-11-26T19:38",
+    "updated": "2026-11-26T19:47",
     "log": [
       {
         "ts": "2026-11-26T19:38",
@@ -118,9 +118,26 @@
         "from": "searching",
         "to": "open",
         "why": "no repo passes the hard rules"
+      },
+      {
+        "ts": "2026-11-26T19:47",
+        "from": "open",
+        "to": "searching",
+        "why": "tool scripts/llm_token_budget_estimator.py"
+      },
+      {
+        "ts": "2026-11-26T19:47",
+        "from": "searching",
+        "to": "open",
+        "why": "no repo passes the hard rules for ['llm token counter', 'context window token estimator', 'tiktoken conversation budget']"
       }
     ],
-    "tries": 1
+    "tries": 2,
+    "queries": [
+      "llm token counter",
+      "context window token estimator",
+      "tiktoken conversation budget"
+    ]
   },
   {
     "id": "b5c81ace",
@@ -164,7 +181,28 @@
     "priority": 2.0,
     "status": "open",
     "source": "self_review",
-    "ts": "2026-11-26T18:11"
+    "ts": "2026-11-26T18:11",
+    "log": [
+      {
+        "ts": "2026-11-26T19:47",
+        "from": "open",
+        "to": "searching",
+        "why": "tool scripts/bpmn_generator.py"
+      },
+      {
+        "ts": "2026-11-26T19:47",
+        "from": "searching",
+        "to": "open",
+        "why": "no repo passes the hard rules for ['bpmn process generator', 'bpmn 2.0 xml generator', 'business process bpmn generator']"
+      }
+    ],
+    "updated": "2026-11-26T19:47",
+    "queries": [
+      "bpmn process generator",
+      "bpmn 2.0 xml generator",
+      "business process bpmn generator"
+    ],
+    "tries": 1
   },
   {
     "id": "966f88c3",
@@ -180,7 +218,28 @@
     "priority": 2.0,
     "status": "open",
     "source": "self_review",
-    "ts": "2026-11-26T18:11"
+    "ts": "2026-11-26T18:11",
+    "log": [
+      {
+        "ts": "2026-11-26T19:47",
+        "from": "open",
+        "to": "searching",
+        "why": "tool scripts/erd_generator.py"
+      },
+      {
+        "ts": "2026-11-26T19:47",
+        "from": "searching",
+        "to": "open",
+        "why": "no repo passes the hard rules for ['dbml generator plantuml erd relational schema', 'entity relationship diagram generator sql dbml', 'database schema to plantuml erd generator']"
+      }
+    ],
+    "updated": "2026-11-26T19:47",
+    "queries": [
+      "dbml generator plantuml erd relational schema",
+      "entity relationship diagram generator sql dbml",
+      "database schema to plantuml erd generator"
+    ],
+    "tries": 1
   },
   {
     "id": "e747bf71",
