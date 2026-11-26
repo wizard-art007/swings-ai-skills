@@ -124,7 +124,7 @@
       "title": "Thermodynamic Radiator Dynamics & PID Controller Simulator"
     },
     "source": "agent",
-    "status": "running",
+    "status": "done",
     "ts": "2026-11-26T04:33:07"
   },
   {
@@ -157,7 +157,7 @@
       ]
     },
     "source": "system",
-    "status": "new",
+    "status": "done",
     "ts": "2026-11-26T04:37:45"
   },
   {
@@ -169,5 +169,15 @@
     "source": "agent",
     "status": "new",
     "ts": "2026-11-26T04:41:53"
+  },
+  {
+    "id": "d55c835ac4",
+    "type": "experiment.ready",
+    "payload": {
+      "slug": "thermodynamic-radiator-dynamics-pid-cont"
+    },
+    "source": "agent",
+    "status": "new",
+    "ts": "2026-11-26T04:45:22"
   }
 ]
