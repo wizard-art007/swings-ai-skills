@@ -268,3 +268,6 @@
 - 2026-11-27 19:16 — self-review: capability score 95% (18/19 strong), 4 gap(s), 4 new need(s)
 - 2026-11-27 19:16 — need 2ebc0572: internal gap routed to the evolver
 - 2026-11-27 19:16 — need 881bdbc1: internal gap routed to the evolver
+- 2026-11-27 19:16 — events: tidied 2 duplicate or stuck event(s)
+- 2026-11-27 19:16 — agent news_scout v1: OK — Fetched tech news, saved trend notes, and successfully recorded observations without duplicating existing experiments.
+- 2026-11-27 19:16 — agent evolver v1: OK — All evaluated agents with >=3 runs meet the success rate threshold (>= 0.6). No prompt updates or weight changes required at this time.
