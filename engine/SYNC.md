@@ -34,3 +34,7 @@
   + # ===== Cell 41: Phase 5 - one explicit run pipeline =====
   + # Step 5: until now a run was nine autopilot_cycle wrappers stacked by Cells 13-40, each adding work before or after
   ```
+
+## After the export
+
+- IDENTICAL
