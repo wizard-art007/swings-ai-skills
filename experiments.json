@@ -204,5 +204,17 @@
     "published": "2026-11-27T04:27",
     "pushed": "2026-11-27T07:41",
     "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/anchor-security-linter-heuristic"
+  },
+  "normalscript-interpreter": {
+    "title": "NormalScript Interpreter",
+    "description": "A small Python interpreter or parser for a toy scripting language inspired by esoteric/unusual syntax.",
+    "source_url": "https://psychoscript.com/",
+    "status": "passed",
+    "created": "2026-11-27T07:41",
+    "files": [
+      "README.md",
+      "tests/test_normalscript.py",
+      "src/normalscript.py"
+    ]
   }
 }

@@ -225,3 +225,4 @@
 - 2026-11-27 07:41 — agent publisher v3: FAIL — stopped: repeated the same call to list_experiments
 - 2026-11-27 07:41 — projects: nothing to push 1 folder(s) to swings-ai-projects: anchor-security-linter-heuristic
 - 2026-11-27 07:41 — agent publisher v3: OK — Published experiment 'anchor-security-linter-heuristic' to the private projects repo.
+- 2026-11-27 07:41 — exp/normalscript-interpreter: 'experiment normalscript-interpreter' PASSED on attempt 3 (README.md, src/normalscript.py, tests/test_normalscript.py)
