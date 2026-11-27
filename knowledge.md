@@ -6,3 +6,4 @@
 - 2026-11-26: Trend: Bare-metal and minimalist AI inference (e.g. LLMs in assembly) and browser automation utilities for ad-handling are gaining traction.
 - 2026-11-27: Rising tech trends emphasize lightweight developer utilities like Markdown-based spaced repetition tools and heuristic security linters for smart contracts that can be prototyped cleanly in offline Python.
 - 2026-11-27: Trend: Toy/esoteric scripting languages (e.g. NormalScript) and specialized offline developer productivity tools/trainers (e.g. Vim manuals) generate high engagement on HN and make great small Python experiments.
+- 2026-11-27: Noted rising interest in formal verification for mainstream programming languages and exact-cent financial ledger reconciliation algorithms.
