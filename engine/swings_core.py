@@ -6006,3 +6006,66 @@ HEAL_PROTECTED |= {"_metered_generate", "_genai_generate_metered", "llm_allowed"
                    "_gh_after", "_held_back", "allowed", "scout_repos", "search_for_need", "_safe_run",
                    "limits_snapshot", "size_guard", "prune_old_logs", "weekly_report", "build_health_report",
                    "sustainability_step", "_run_extras_with_f9", "_write_self_report", "_apply_learned_cap"}
+
+# ===== Cell 37: Notebook sync (F10), engine side =====
+# The notebook (Cell 15) records every export in engine/export.json and writes engine/SYNC.md. The engine reads that
+# record so the weekly health report shows the sync state: last export, last IDENTICAL check, self-fixes ready to
+# fold into their cells, drift copies waiting for a decision, and evolved prompts.
+EXPORT_RECORD = SKILLS_DIR / "engine" / "export.json"
+DRIFT_DIR = SKILLS_DIR / "engine" / "drift"
+FOLD_AFTER_DAYS = 7              # a fix kept this long and not folded into its cell becomes a decision for you
+EXPORT_STALE_DAYS = 14
+
+def _heal_cell(h):
+    """The notebook cell a fix lives in, read from the engine's own cell headers."""
+    src = ENGINE_FILE.read_text(encoding="utf-8") if ENGINE_FILE.exists() else ""
+    i = src.rfind(h.get("new_source") or "\0")
+    if i < 0:
+        return "?"
+    heads = list(re.finditer(r"^# =+ Cell (\w+):", src[:i], re.M))
+    return heads[-1].group(1) if heads else "?"
+
+def sync_status():
+    rec = _jload(EXPORT_RECORD, {})
+    heals = _jload(HEALS_FILE, [])
+    checks = rec.get("checks", [])
+    return {"last_export": rec.get("ts"), "last_check": checks[-1] if checks else None,
+            "checks_14d": [c["identical"] for c in checks if _days_ago(c.get("ts", "")) <= 14],
+            "fixes": dict(collections.Counter(h.get("status") for h in heals)),
+            "ready_to_fold": [{"id": h["id"], "function": h["function"], "cell": _heal_cell(h),
+                               "days": round(_days_ago(h.get("ts", "")), 1)} for h in heals if h.get("status") == "kept"],
+            "drift_copies": sorted(p.name for p in DRIFT_DIR.glob("*.py")) if DRIFT_DIR.exists() else [],
+            "evolved_agents": {n: a.version for n, a in load_agents().items() if a.version > 1}}
+
+TOOLS.register("sync_status", sync_status,
+               "Notebook sync: last export, IDENTICAL checks, self-fixes ready to fold, drift copies, evolved prompts.")
+
+if "_health_report_before_f10" not in globals():
+    _health_report_before_f10 = build_health_report
+def build_health_report(days=7):
+    text, verdict = _health_report_before_f10(days)
+    s = sync_status()
+    c = s["last_check"]
+    lines = ["## Notebook sync", "",
+             f"- Last export from the notebook: {s['last_export'] or 'not recorded yet'}; last check: "
+             + ("IDENTICAL" if c and c.get("identical") else f"different in cells {c.get('cells')}" if c else "none yet"),
+             f"- IDENTICAL checks in the last 14 days: {sum(s['checks_14d'])} of {len(s['checks_14d'])}",
+             f"- Self-fixes: {', '.join(f'{v} {k}' for k, v in s['fixes'].items()) or 'none'}",
+             f"- Evolved prompts: {', '.join(f'{n} v{v}' for n, v in sorted(s['evolved_agents'].items())) or 'none'}", ""]
+    decisions = []
+    for f in s["ready_to_fold"]:
+        if f["days"] >= FOLD_AFTER_DAYS:
+            decisions.append(f"Self-fix #{f['id']} in `{f['function']}()` has been kept for {f['days']:.0f} days: fold it "
+                             f"into Cell {f['cell']} (engine/SYNC.md has the code), so the notebook shows what runs.")
+    for d in s["drift_copies"]:
+        decisions.append(f"The engine on GitHub changed outside the notebook (copy in engine/drift/{d}): fold the change "
+                         "into its cell or export with force=True.")
+    if s["last_export"] and _days_ago(s["last_export"]) > EXPORT_STALE_DAYS and s["fixes"].get("kept"):
+        decisions.append(f"The notebook has not been exported for over {EXPORT_STALE_DAYS} days while fixes are kept.")
+    head, sep, tail = text.partition("## Decisions waiting for you\n\n")
+    if not sep:
+        return text + "\n" + "\n".join(lines), verdict
+    tail = tail.replace("- None this week.\n", "") if decisions else tail
+    return head + "\n".join(lines) + "\n" + sep + "".join(f"- {d}\n" for d in decisions) + tail, verdict
+
+HEAL_PROTECTED |= {"sync_status", "build_health_report", "_heal_cell"}
