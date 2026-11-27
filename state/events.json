@@ -616,5 +616,29 @@
     "source": "agent",
     "status": "done",
     "ts": "2026-11-26T23:28:15"
+  },
+  {
+    "id": "1c0838f66a",
+    "type": "idea.found",
+    "payload": {
+      "title": "Olumino Markdown Spaced Repetition",
+      "description": "A lightweight Markdown notes and spaced repetition app concept that can be modeled in a small offline Python CLI tool parsing markdown files with frontmatter for flashcard scheduling.",
+      "source_url": "https://olumino.app"
+    },
+    "source": "agent",
+    "status": "running",
+    "ts": "2026-11-27T04:26:28"
+  },
+  {
+    "id": "eed2374682",
+    "type": "idea.found",
+    "payload": {
+      "title": "Anchor Security Linter Heuristic",
+      "description": "A heuristic security linter for checking missing owner/signer checks in smart contract instruction accounts, implementable as a simple Python AST or regex-based pattern matcher for Solana/Anchor IDLs or source code.",
+      "source_url": "https://dev.to/abdeldjalilchougui/anchor-sec-lint-a-heuristic-security-linter-for-anchor-programs-3afp"
+    },
+    "source": "agent",
+    "status": "new",
+    "ts": "2026-11-27T04:26:29"
   }
 ]
