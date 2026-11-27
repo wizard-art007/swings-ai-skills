@@ -6350,3 +6350,476 @@ def build_health_report(days=7):
 
 HEAL_PROTECTED |= {"ci_status", "build_experiment_skilled", "_vendor_imports", "_no_vendor_writes", "more_work_pass",
                    "record_useful_run", "_cycle_with_phase5", "_run_extras_with_p5", "build_health_report"}
+
+# ===== Cell 39: Phase 5 - tool quality =====
+# Step 3: every tool is graded on REAL inputs from its skill's source repo (not the tiny inputs its own tests use);
+# weak tools get repair tasks; usefulness counts tool quality and real use by projects; scouting prefers repos in the
+# tools' language. No LLM calls except the repair tasks, which go through the normal queue and budget.
+GRADES_FILE = STATE_DIR / "tool_grades.json"
+GRADE_EVERY_DAYS = 14
+GRADE_SKILLS_PER_RUN = 3
+GRADE_INPUTS_PER_FN = 3
+GRADE_JOBS_PER_SKILL = 24
+GRADE_MIN_TIME_LEFT = 600
+FIX_GRADE_BELOW = 0.5
+FIX_TASKS_PER_DAY = 1
+FIX_MAX_TRIES = 3
+INPUT_MIN_BYTES, INPUT_MAX_BYTES = 40, 20_000
+LANGUAGE_SCORE = {"Python": 1.0, **{l: 0.6 for l in LANG_GLOBS if l != "Python"}}
+DEFAULT_WEIGHTS["language"] = 8                  # read by score_weights() at call time; learned like the others
+
+# file type -> words that say a tool works with it
+INPUT_KINDS = {
+    ".puml": "plantuml puml uml c4 sequence component class", ".plantuml": "plantuml puml uml",
+    ".iuml": "plantuml puml uml c4", ".mmd": "mermaid flowchart graph", ".mermaid": "mermaid flowchart",
+    ".dbml": "dbml erd schema table database", ".sql": "sql erd schema table database ddl",
+    ".json": "json spec schema config", ".yaml": "yaml yml spec config openapi", ".yml": "yaml yml spec config",
+    ".xml": "xml drawio mxgraph bpmn", ".drawio": "drawio mxgraph xml diagram", ".bpmn": "bpmn process workflow",
+    ".dot": "dot graphviz graph digraph", ".gv": "dot graphviz graph", ".feature": "gherkin feature scenario test",
+    ".csv": "csv table rows data", ".md": "markdown text description prompt doc readme",
+    ".txt": "text description prompt", ".py": "python code pytest",
+}
+FENCE_EXT = {"plantuml": ".puml", "puml": ".puml", "mermaid": ".mmd", "sql": ".sql", "json": ".json", "yaml": ".yaml",
+             "yml": ".yaml", "xml": ".xml", "dot": ".dot", "graphviz": ".dot", "dbml": ".dbml", "gherkin": ".feature",
+             "python": ".py", "py": ".py", "text": ".txt", "": ".txt"}
+TEXT_PARAMS = {"text", "prompt", "description", "desc", "content", "source", "src", "spec", "input", "s", "doc",
+               "markdown", "md", "query", "task", "code", "data", "raw", "puml", "dsl", "xml", "sql", "yaml", "json",
+               "definition", "diagram", "schema", "lines", "body", "string", "value"}
+UNIT_PARAMS = {"line", "name", "id", "word", "char", "key", "label", "url", "path", "filename", "file", "color",
+               "colour", "token", "identifier", "ident", "title", "pattern", "style", "theme", "lang", "language", "fmt",
+               "format", "kind", "type", "mode", "level", "node", "edge", "uid", "slug"}   # one short value, not a document
+_EXAMPLE_DIR = re.compile(r"(^|/)(examples?|samples?|tests?|fixtures?|demos?|docs?|testdata|test_data|spec)(/|$)", re.I)
+_SKIP_DIR = {".git", "node_modules", "vendor", "dist", "build", "target", ".venv", "venv", "__pycache__", ".github"}
+
+GRADE_HARNESS = r'''
+import json, sys, os, io, importlib, signal, contextlib, xml.dom.minidom
+sys.path.insert(0, "scripts")
+jobs = json.load(open("jobs.json"))
+import re
+NET = re.compile(r"ConnectionError|ConnectTimeout|ReadTimeout|SSLError|ProxyError|gaierror|MaxRetryError|"
+                 r"NewConnectionError|HTTPSConnectionPool|HTTPConnectionPool|Name or service not known|name resolution|"
+                 r"Connection refused|Network is unreachable|CA certificate|urlopen error|Operation not permitted")
+def _alarm(*a):
+    raise TimeoutError("took over 10 s")
+signal.signal(signal.SIGALRM, _alarm)
+def check(v, raw):
+    if v is None:
+        return False, "returned None"
+    if isinstance(v, (bytes, bytearray)):
+        v = v.decode("utf-8", "replace")
+    if isinstance(v, (dict, list, tuple, set)):
+        return (True, "") if v else (False, "empty result")
+    if isinstance(v, (bool, int, float)):
+        return True, ""
+    if not isinstance(v, str):
+        return True, ""
+    s = v.strip()
+    if not s:
+        return False, "empty output"
+    if s == raw.strip():
+        return False, "returned its input unchanged"
+    if s.startswith("<"):
+        try:
+            xml.dom.minidom.parseString(s)
+        except Exception as e:
+            return False, "invalid XML: " + str(e)[:60]
+    elif s[0] in "{[":
+        try:
+            json.loads(s)
+        except Exception as e:
+            if not s.startswith("{{"):
+                return False, "invalid JSON: " + str(e)[:60]
+    if "@startuml" in s and "@enduml" not in s.split("@startuml", 1)[1]:
+        return False, "@startuml without @enduml"
+    first = s.split(None, 1)[0].lower()
+    if first in ("digraph", "graph", "strict") and s.count("{") != s.count("}"):
+        return False, "unbalanced braces in DOT"
+    return True, ""
+out = []
+for j in jobs:
+    r = {"k": j["module"] + "." + j["fn"], "i": j["input"]}
+    raw = open(os.path.join("inputs", j["input"]), encoding="utf-8", errors="replace").read()
+    try:
+        signal.alarm(10)
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            fn = getattr(importlib.import_module(j["module"]), j["fn"])
+            try:
+                v = fn(raw)
+            except (AttributeError, TypeError) as e:     # it wants the parsed structure (a dict spec), not text
+                if "'str' object" not in str(e) or raw.lstrip()[:1] not in "{[":
+                    raise
+                v = fn(json.loads(raw))
+        signal.alarm(0)
+        ok, why = check(v, raw)
+    except BaseException as e:
+        signal.alarm(0)
+        ok, why = False, (type(e).__name__ + ": " + str(e))[:110]
+        if NET.search(type(e).__name__ + " " + str(e)):
+            r["n"] = 1                                   # needs the network, which the sandbox blocks: not graded
+    r["ok"] = ok
+    if why:
+        r["w"] = why
+    out.append(r)
+print("GRADES " + json.dumps(out, separators=(",", ":")))
+'''
+
+# =========================================== real inputs ===========================================
+def _text_functions(skill):
+    """(module, function, words) for public functions that take one text input (others are not graded)."""
+    out = []
+    for p in sorted(Path(skill["path"], "scripts").glob("*.py")):
+        try:
+            tree = ast.parse(p.read_text(encoding="utf-8", errors="ignore"))
+        except SyntaxError:
+            continue
+        for n in tree.body:
+            if not isinstance(n, ast.FunctionDef) or n.name.startswith("_") or n.name == "main" or not n.args.args:
+                continue
+            required = len(n.args.args) - len(n.args.defaults)
+            first = n.args.args[0]
+            ann = ast.unparse(first.annotation) if first.annotation is not None else ""
+            textual = ann in ("str", "Text", "Optional[str]") or first.arg.lower() in TEXT_PARAMS or \
+                      any(w in first.arg.lower() for w in ("text", "prompt", "desc", "source", "content", "spec"))
+            if required == 1 and textual and first.arg.lower() not in UNIT_PARAMS and not first.arg.lower().endswith(("_name", "_id", "_line", "_url", "_path")):
+                doc = (ast.get_docstring(n) or "")[:300]
+                out.append((p.stem, n.name, _words(f"{p.stem} {n.name} {first.arg} {doc}")))
+    return out
+
+def _repo_inputs(skill):
+    """Small text files from the skill's source repo (examples first), plus README code blocks."""
+    repo = Path(skill.get("repo_path") or repo_dir(skill["skill_name"]))
+    files = []
+    if repo.exists():
+        for d, dirs, names in os.walk(repo):
+            dirs[:] = [x for x in dirs if x not in _SKIP_DIR]
+            rel = os.path.relpath(d, repo).replace(os.sep, "/")
+            for nm in names:
+                ext = os.path.splitext(nm)[1].lower()
+                if ext not in INPUT_KINDS:
+                    continue
+                f = Path(d, nm)
+                try:
+                    size = f.stat().st_size
+                except OSError:
+                    continue
+                if INPUT_MIN_BYTES <= size <= INPUT_MAX_BYTES:
+                    files.append({"name": f"{rel}/{nm}".lstrip("./"), "ext": ext, "path": str(f),
+                                  "example": bool(_EXAMPLE_DIR.search(rel + "/")) or nm.lower().startswith(("example", "sample"))})
+            if len(files) > 400:
+                break
+        readme = next((p for p in repo.glob("README*") if p.is_file()), None)
+        if readme:
+            body = readme.read_text(encoding="utf-8", errors="ignore")
+            for i, m in enumerate(re.finditer(r"```([\w+-]*)\n(.*?)```", body, re.S)):
+                ext = FENCE_EXT.get(m.group(1).lower())
+                if ext and INPUT_MIN_BYTES <= len(m.group(2)) <= INPUT_MAX_BYTES:
+                    files.append({"name": f"README block {i + 1} ({m.group(1) or 'text'})", "ext": ext,
+                                  "text": m.group(2), "example": True})
+                if i > 40:
+                    break
+    return files
+
+def _inputs_for(fn_words, files, k=GRADE_INPUTS_PER_FN):
+    scored = []
+    for f in files:
+        kind = set(INPUT_KINDS[f["ext"]].split())
+        s = len(fn_words & kind)
+        if s or f["ext"] in (".md", ".txt"):
+            scored.append((-(2 * s + f["example"]), f["name"], f))
+    scored.sort(key=lambda x: (x[0], x[1]))
+    return [f for *_, f in scored[:k]]
+
+def _tools_hash(skill):
+    h = hashlib.sha256()
+    for p in sorted(Path(skill["path"], "scripts").glob("*.py")):
+        h.update(p.name.encode()); h.update(p.read_bytes())
+    return h.hexdigest()[:12]
+
+# =========================================== grading ===========================================
+def grade_skill(skill):
+    """Run each text tool on up to 3 real inputs in the sandbox; the grade is the share that gives valid output."""
+    name = skill["skill_name"]
+    fns = _text_functions(skill)
+    entry = {"ts": _now_min(), "hash": _tools_hash(skill), "language": skill.get("language"), "tools": {}}
+    if fns and not Path(skill.get("repo_path") or repo_dir(name)).exists() and not os.environ.get("SWINGS_TESTING") \
+            and time_left() > 2 * GRADE_MIN_TIME_LEFT:
+        try:
+            ensure_repo(skill)                          # shallow clone; kept in the runner's cache afterwards
+        except Exception as e:
+            syslog("warn", "grades", f"could not clone {name}: {type(e).__name__}")
+    files = _repo_inputs(skill) if fns else []
+    jobs, staged = [], {}
+    for mod, fn, words in fns:
+        for f in _inputs_for(words, files):
+            if len(jobs) >= GRADE_JOBS_PER_SKILL:
+                break
+            key = staged.setdefault(f["name"], f"in{len(staged)}{f['ext']}")
+            jobs.append({"module": mod, "fn": fn, "input": key, "_name": f["name"], "_f": f})
+    if not jobs:
+        entry["status"] = "no text tools" if not fns else "no real inputs found"
+        return entry
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        work = Path(tmp) / "g"
+        shutil.copytree(Path(skill["path"], "scripts"), work / "scripts")
+        (work / "inputs").mkdir()
+        for j in jobs:
+            dst = work / "inputs" / j["input"]
+            if not dst.exists():
+                f = j["_f"]
+                dst.write_text(f["text"] if "text" in f else Path(f["path"]).read_text(encoding="utf-8", errors="replace"),
+                               encoding="utf-8")
+        (work / "jobs.json").write_text(json.dumps([{k: v for k, v in j.items() if not k.startswith("_")} for j in jobs]))
+        (work / "harness.py").write_text(GRADE_HARNESS, encoding="utf-8")
+        ok, out = _plain_run_sandboxed(work, [sys.executable, "harness.py"],
+                                       timeout=min(300, 20 + 12 * len(jobs)), memory_mb=1024)
+    line = next((l for l in reversed(out.splitlines()) if l.startswith("GRADES ")), None)
+    if not line:
+        entry["status"] = "harness failed: " + (out.strip().splitlines() or ["no output"])[-1][:160]
+        return entry
+    names = {j["input"]: j["_name"] for j in jobs}
+    results = json.loads(line[7:])
+    net = {r["k"] for r in results if r.get("n")}
+    entry["network_only"] = sorted(k for k in net if all(x.get("n") for x in results if x["k"] == k))
+    results = [r for r in results if not r.get("n")]   # a blocked network call says nothing about the tool
+    echo_only = {k for k in {r["k"] for r in results}                 # an identity function, not a normalizer
+                 if all(r.get("w") == "returned its input unchanged" for r in results if r["k"] == k)}
+    for r in results:
+        if r.get("w") == "returned its input unchanged" and r["k"] not in echo_only:
+            r["ok"] = True; r.pop("w")                                 # already-tidy input may come back as it was
+        t = entry["tools"].setdefault(r["k"], {"tried": 0, "ok": 0, "fails": []})
+        t["tried"] += 1; t["ok"] += bool(r["ok"])
+        if not r["ok"] and len(t["fails"]) < 3:
+            t["fails"].append({"input": names.get(r["i"], r["i"]), "why": r.get("w", "")})
+    for t in entry["tools"].values():
+        t["grade"] = round(t["ok"] / t["tried"], 2)
+    if not entry["tools"]:
+        entry["status"] = "needs the network (not graded)"
+        return entry
+    entry["grade"] = round(sum(t["grade"] for t in entry["tools"].values()) / len(entry["tools"]), 2)
+    entry["status"] = "graded"
+    entry["inputs"] = sorted(staged)[:12]
+    return entry
+
+def load_grades():
+    return _jload(GRADES_FILE, {})
+
+def skill_grade(name):
+    g = load_grades().get(name, {})
+    return g.get("grade") if g.get("status") == "graded" else None
+
+def _due_for_grading(reg):
+    grades = load_grades()
+    due = []
+    for n, s in reg.items():
+        g = grades.get(n)
+        if not g or g.get("hash") != _tools_hash(s) or _days_ago(g.get("ts", "")) >= GRADE_EVERY_DAYS:
+            due.append((0 if not g else 1, g.get("ts", "") if g else "", n))
+    return [n for *_, n in sorted(due)]
+
+def grade_tools(names=None, limit=GRADE_SKILLS_PER_RUN):
+    """Grade the skills whose tools are new, changed or 14 days old (up to `limit` a run)."""
+    reg = load_registry()
+    todo = names or _due_for_grading(reg)[:limit]
+    grades = load_grades()
+    done = []
+    for n in todo:
+        if n not in reg or (not names and time_left() < GRADE_MIN_TIME_LEFT):
+            continue
+        try:
+            grades[n] = grade_skill(reg[n])
+        except Exception as e:
+            grades[n] = {"ts": _now_min(), "hash": _tools_hash(reg[n]), "status": f"error: {type(e).__name__}: {str(e)[:120]}"}
+            syslog("warn", "grades", f"grading {n} failed: {type(e).__name__}: {e}")
+        done.append(n)
+        log(f"quality: {n} {grades[n].get('status')}" + (f", grade {grades[n]['grade']}" if "grade" in grades[n] else ""))
+    for gone in [n for n in grades if n not in reg]:
+        grades.pop(gone)
+    _jsave(GRADES_FILE, grades)
+    _quality_run()["graded"] += len(done)
+    return {n: {k: grades[n].get(k) for k in ("status", "grade")} for n in done}
+
+TOOLS.register("grade_tools", grade_tools, "Grade skill tools on real inputs from their source repos (no LLM).")
+TOOLS.register("tool_grades", lambda: {n: {k: g.get(k) for k in ("status", "grade", "ts")} for n, g in load_grades().items()},
+               "Latest real-input grade of every skill's tools.")
+
+_QR = {"run": "unset"}
+def _quality_run():
+    if _QR.get("run") != _RUN.get("id"):
+        _QR.clear(); _QR.update(run=_RUN.get("id"), graded=0, fix_tasks=0)
+    return _QR
+
+# =========================================== weak tools get fixed ===========================================
+def _fix_prompt(skill, t):
+    src = Path(skill["path"], "scripts", f"{t['module']}.py").read_text(encoding="utf-8", errors="replace")
+    return (f"{_skill_context(skill)}\n\nThe tool scripts/{t['module']}.py fails on REAL input from the skill's "
+            f"source repo.\nFUNCTION: {t['fn']}()\nREAL INPUT ({t['input_name']}):\n```\n{t['input_text'][:3000]}\n```\n"
+            f"WHAT HAPPENED: {t['why']}\n\nCURRENT CODE:\n```python\n{src[:8000]}\n```\n\n"
+            f"Fix {t['fn']}() so it returns correct, non-empty output for input like this (valid XML/JSON/PlantUML/DOT "
+            "if that is what it produces), keeping its name and signature. Add tests/test_real_" + t["module"] +
+            ".py that embeds this input as a string and asserts on the result. Keep the existing tests passing. "
+            "Standard library + requests only; no subprocess/eval/exec/file deletion.\n" + FILE_FORMAT)
+
+def _fix_tool(skill, t):
+    ok = agent._attempt(Path(skill["path"]), _fix_prompt(skill, t), t["goal"],
+                        test_cmd=[sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider", "tests"],
+                        label=skill["skill_name"], memory_mb=2048)
+    if ok:
+        grades = load_grades(); grades[skill["skill_name"]] = grade_skill(skill); _jsave(GRADES_FILE, grades)
+        g = grades[skill["skill_name"]].get("tools", {}).get(f"{t['module']}.{t['fn']}", {}).get("grade")
+        log(f"quality: {skill['skill_name']} {t['module']}.{t['fn']} repaired; grade now {g}")
+    return ok
+
+TASK_HANDLERS["fix_tool"] = _experienced(lambda skill, t: "fix_tool", lambda skill, t: t.get("goal", ""),
+                                         lambda skill, t: skill.get("skill_name"))(_fix_tool)
+
+def plan_tool_fixes():
+    """At most FIX_TASKS_PER_DAY repair tasks a day, for the weakest tool graded on 3+ real inputs."""
+    tasks = _jload(TASKS_FILE, [])
+    today = str(datetime.date.today())
+    if sum(1 for t in tasks if t.get("kind") == "fix_tool" and str(t.get("queued", "")).startswith(today)) >= FIX_TASKS_PER_DAY:
+        return None
+    if any(t.get("kind") == "fix_tool" and t.get("status") == "todo" for t in tasks):
+        return None
+    reg, weak = load_registry(), []
+    for n, g in load_grades().items():
+        if n not in reg or g.get("status") != "graded":
+            continue
+        for k, t in g["tools"].items():
+            tries = sum(1 for x in tasks if x.get("kind") == "fix_tool" and x.get("tool") == f"{n}/{k}")
+            if t["tried"] >= 3 and t["grade"] < FIX_GRADE_BELOW and tries < FIX_MAX_TRIES and t["fails"]:
+                weak.append((t["grade"], tries, n, k, t))
+    if not weak:
+        return None
+    grade, tries, n, k, t = sorted(weak, key=lambda x: (x[0], x[1], x[2], x[3]))[0]
+    f0 = t["fails"][0]
+    src = next((f for f in _repo_inputs(reg[n]) if f["name"] == f0["input"]), None)
+    text = (src.get("text") if src and "text" in src else Path(src["path"]).read_text(encoding="utf-8", errors="replace")) if src else ""
+    mod, fn = k.split(".", 1)
+    goal = f"repair {k}() on real input {f0['input']} (grade {grade}): {f0['why'][:100]}"
+    add_task("fix_tool", n, goal, tool=f"{n}/{k}", module=mod, fn=fn, input_name=f0["input"], input_text=text[:3000],
+             why=f0["why"])
+    _quality_run()["fix_tasks"] += 1
+    log(f"quality: queued a repair of {n}/{k} (grade {grade}, {tries} earlier tries)")
+    return goal
+
+# =========================================== scouting: quality, use, language ===========================================
+def project_use(name):
+    """How many finished projects and passing experiments import this skill's tools."""
+    n = sum(1 for p in load_projects() if p.get("status") == "finished" and name in p.get("skills_used", []))
+    return n + sum(1 for e in load_experiments().values() if e.get("status") == "passed" and name in e.get("skills", []))
+
+if "_usefulness_before_p5" not in globals():
+    _usefulness_before_p5 = usefulness
+def usefulness(skill_name):
+    """Half task success, 30% real-input tool grade (0.5 until graded), 20% use by finished projects/experiments."""
+    base, att = _usefulness_before_p5(skill_name)
+    g = skill_grade(skill_name)
+    return round(0.5 * base + 0.3 * (0.5 if g is None else g) + 0.2 * min(1.0, project_use(skill_name) / 2), 3), att
+
+if "_score_components_before_p5" not in globals():
+    _score_components_before_p5 = score_components
+def score_components(cands):
+    """Adds the language component: repos in the tools' own language (Python) can be reused, not just imitated."""
+    cands = _score_components_before_p5(cands)
+    for c in cands.values():
+        c["components"]["language"] = LANGUAGE_SCORE.get(c.get("language"), 0.3 if c.get("language") else 0.2)
+    return cands
+
+if "_total_score_before_p5" not in globals():
+    _total_score_before_p5 = total_score
+def total_score(c, w=None):
+    for k in (w or score_weights()):
+        c["components"].setdefault(k, 0.5)        # older stored components lack the newest key
+    return _total_score_before_p5(c, w)
+
+if "_leaderboard_before_p5" not in globals():
+    _leaderboard_before_p5 = write_leaderboard
+def write_leaderboard(cands, cutoff):
+    """Same leaderboard plus a Lang column (the language component), so its effect on scores is visible."""
+    _leaderboard_before_p5(cands, cutoff)
+    rows = sorted(cands.values(), key=lambda c: -c["score"])[:60]
+    lines, i = LEADERBOARD.read_text(encoding="utf-8").splitlines(), 0
+    for n, l in enumerate(lines):
+        if l.startswith("| # | Repo |"):
+            lines[n] = l.replace("| Useful | Status |", "| Useful | Lang | Status |")
+        elif l.startswith("|---|") and "Lang" in lines[n - 1]:
+            lines[n] = l + "---|"
+        elif l.startswith(f"| {i + 1} | [") and i < len(rows):
+            head, _, status = l.rpartition(" | ")
+            lang = rows[i]["components"].get("language", 0.5)
+            lines[n] = f"{head} | {lang:.1f} {rows[i].get('language') or '-'} | {status}"
+            i += 1
+    LEADERBOARD.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+# =========================================== in every run + report ===========================================
+def quality_step():
+    if IN_COLAB or time_left() < GRADE_MIN_TIME_LEFT:
+        return
+    grade_tools()
+    plan_tool_fixes()
+
+if "_cycle_before_p5q" not in globals():
+    _cycle_before_p5q = _cycle_before_f9
+def _cycle_with_quality():
+    try:
+        quality_step()                          # before the work, so a repair task can run in this same run
+    except Exception as e:
+        syslog_exception("quality", e)
+    _cycle_before_p5q()
+_cycle_before_f9 = _cycle_with_quality
+
+if "_extras_before_p5q" not in globals():
+    _extras_before_p5q = _run_extras
+def _run_extras_with_quality():
+    d = _extras_before_p5q()
+    q = _quality_run()
+    d["quality"] = {"graded": q["graded"], "fix_tasks": q["fix_tasks"]}
+    return d
+_run_extras = _run_extras_with_quality
+
+def quality_stats():
+    reg, grades = load_registry(), load_grades()
+    graded = {n: g for n, g in grades.items() if n in reg and g.get("status") == "graded"}
+    tools = [(g2["grade"], n, k, g2) for n, g in graded.items() for k, g2 in g["tools"].items()]
+    langs = {}
+    for s in reg.values():
+        langs[s.get("language") or "none"] = langs.get(s.get("language") or "none", 0) + 1
+    fixes = [t for t in _jload(TASKS_FILE, []) if t.get("kind") == "fix_tool"]
+    stuck = sorted({t["tool"] for t in fixes if sum(1 for x in fixes if x.get("tool") == t["tool"]
+                                                     and x.get("status") != "todo") >= FIX_MAX_TRIES
+                    and any(gr < FIX_GRADE_BELOW for gr, n, k, _ in tools if f"{n}/{k}" == t["tool"])})
+    return {"skills": len(reg), "graded": len(graded), "tools": len(tools),
+            "avg_grade": round(sum(t[0] for t in tools) / len(tools), 2) if tools else None,
+            "weakest": [{"tool": f"{n}/{k}", "grade": gr, "why": (g2["fails"][0]["why"] if g2["fails"] else "")}
+                        for gr, n, k, g2 in sorted(tools, key=lambda x: (x[0], x[1], x[2]))[:3] if gr < 1],
+            "ungraded": sorted((n, grades.get(n, {}).get("status", "not yet")) for n in reg if n not in graded),
+            "languages": dict(sorted(langs.items(), key=lambda x: -x[1])),
+            "fixes": {"queued": sum(t.get("status") == "todo" for t in fixes), "done": sum(t.get("status") == "done" for t in fixes),
+                      "failed": sum(str(t.get("status", "")).startswith(("failed", "error")) for t in fixes)},
+            "stuck": stuck}
+
+TOOLS.register("quality_stats", quality_stats, "Tool quality: grades from real inputs, weakest tools, repairs, languages.")
+
+if "_health_report_before_p5q" not in globals():
+    _health_report_before_p5q = build_health_report
+def build_health_report(days=7):
+    text, verdict = _health_report_before_p5q(days)
+    q = quality_stats()
+    lines = ["## Quality (Phase 5)", "",
+             f"- Skills graded on real inputs: {q['graded']} of {q['skills']}; {q['tools']} tool functions"
+             + (f", average grade {q['avg_grade']:.2f}" if q["avg_grade"] is not None else ""),
+             "- Weakest: " + ("; ".join(f"{w['tool']} {w['grade']:.2f} ({w['why'][:70]})" for w in q["weakest"]) or "none below 1.0"),
+             f"- Not graded: " + (", ".join(f"{n} ({s})" for n, s in q["ungraded"][:6]) or "none"),
+             f"- Repairs: {q['fixes']['done']} done, {q['fixes']['failed']} failed, {q['fixes']['queued']} queued",
+             "- Skills by language: " + ", ".join(f"{k} {v}" for k, v in q["languages"].items()), ""]
+    decisions = [f"The tool {t} still fails on real inputs after {FIX_MAX_TRIES} repair attempts: retire it or "
+                 "write it by hand." for t in q["stuck"]]
+    head, sep, tail = text.partition("## Decisions waiting for you\n\n")
+    if not sep:
+        return text + "\n" + "\n".join(lines), verdict
+    tail = tail.replace("- None this week.\n", "") if decisions else tail
+    return head + "\n".join(lines) + "\n" + sep + "".join(f"- {d}\n" for d in decisions) + tail, verdict
+
+HEAL_PROTECTED |= {"grade_skill", "grade_tools", "plan_tool_fixes", "_fix_tool", "usefulness", "score_components",
+                   "total_score", "quality_step", "_cycle_with_quality", "_run_extras_with_quality", "build_health_report"}
+HIGH_VALUE = HIGH_VALUE + ("fix_tool",)          # a repair keeps its LLM budget when the day's quota runs low

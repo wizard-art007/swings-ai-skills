@@ -1,4 +1,4 @@
-# Notebook sync report (2026-11-27 19:33)
+# Notebook sync report (2026-11-27 20:00)
 
 ## Self-fixes
 
@@ -28,13 +28,9 @@
 
 ## GitHub engine vs this notebook
 
-- Cell 38: 0 line(s) on GitHub vs 281 in the notebook; you edited this cell (will be exported)
+- Cell 39: 0 line(s) on GitHub vs 473 in the notebook; you edited this cell (will be exported)
   ```diff
   + 
-  + # ===== Cell 38: Phase 5 - output and proof =====
-  + # Step 1 (engine side): every run reads the latest result of the tests workflow (tests.yml).
+  + # ===== Cell 39: Phase 5 - tool quality =====
+  + # Step 3: every tool is graded on REAL inputs from its skill's source repo (not the tiny inputs its own tests use);
   ```
-
-## After the export
-
-- IDENTICAL
