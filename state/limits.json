@@ -1,6 +1,6 @@
 {
-  "ts": "2026-11-27T16:22:28",
-  "run": "20261127-162224-actions",
+  "ts": "2026-11-27T19:16:41",
+  "run": "20261127-191631-actions",
   "gemini": {
     "pacific_day": "2026-11-27",
     "models": {
@@ -11,7 +11,7 @@
         "minute_429": 0,
         "overload": 0,
         "other": 0,
-        "skipped": 3,
+        "skipped": 12,
         "used_up": true
       },
       "gemini-3.7-flash": {
@@ -21,7 +21,7 @@
         "minute_429": 0,
         "overload": 0,
         "other": 0,
-        "skipped": 3,
+        "skipped": 12,
         "used_up": true
       },
       "gemini-3.6-flash": {
@@ -31,7 +31,7 @@
         "minute_429": 0,
         "overload": 0,
         "other": 0,
-        "skipped": 3,
+        "skipped": 12,
         "used_up": true
       },
       "gemini-3.5-flash": {
@@ -41,12 +41,12 @@
         "minute_429": 0,
         "overload": 0,
         "other": 0,
-        "skipped": 3,
+        "skipped": 12,
         "used_up": true
       },
       "gemini-3.5-flash-lite": {
-        "calls": 4,
-        "ok": 4,
+        "calls": 13,
+        "ok": 13,
         "quota_429": 0,
         "minute_429": 0,
         "overload": 0,
@@ -78,7 +78,7 @@
       }
     },
     "cap_in_use": 300,
-    "calls_today": 94,
+    "calls_today": 103,
     "quota_known_for_all": false,
     "learned_total": null,
     "overloads_today": 10,
@@ -92,7 +92,7 @@
         "limit": 5000,
         "remaining": 4993,
         "min_remaining": 4993,
-        "reset_in_min": 59.9
+        "reset_in_min": 59.8
       },
       "search": {
         "calls": 0,
@@ -104,6 +104,14 @@
       }
     },
     "actions": {
+      "search": {
+        "calls": 1,
+        "writes": 0,
+        "limit": 30,
+        "remaining": 29,
+        "min_remaining": 29,
+        "reset_in_min": 0.9
+      },
       "core": {
         "calls": 1,
         "writes": 0,
@@ -111,20 +119,12 @@
         "remaining": 4998,
         "min_remaining": 4998,
         "reset_in_min": 59.5
-      },
-      "search": {
-        "calls": 0,
-        "writes": 0,
-        "limit": 30,
-        "remaining": 30,
-        "min_remaining": 30,
-        "reset_in_min": 1.0
       }
     }
   },
   "writes_last_hour": 0,
   "runtime": {
-    "minutes": 0.1,
+    "minutes": 0.2,
     "budget": 30.0,
     "near_budget": false
   },
@@ -134,7 +134,7 @@
     "graduated_today": 1
   },
   "sizes": {
-    "skills_git_mb": 0.7,
+    "skills_git_mb": 0.76,
     "big_files": [],
     "daily": {
       "checked": "2026-11-27",

@@ -263,3 +263,11 @@
 - 2026-11-27 13:50 — limits: health report 2026-W48 written (within free limits: yes), issue #1
 - 2026-11-27 13:57 — agent news_scout: loop detected (fetch_news), run stopped early
 - 2026-11-27 13:57 — agent news_scout v1: FAIL — stopped: repeated the same call to fetch_news
+- 2026-11-27 19:16 — guard: blocked need.reopened b5c81ace: same gap again with no new evidence
+- 2026-11-27 19:16 — guard: blocked need.reopened c6aea0cd: same gap again with no new evidence
+- 2026-11-27 19:16 — self-review: capability score 95% (18/19 strong), 4 gap(s), 4 new need(s)
+- 2026-11-27 19:16 — need 2ebc0572: internal gap routed to the evolver
+- 2026-11-27 19:16 — need 881bdbc1: internal gap routed to the evolver
+- 2026-11-27 19:16 — events: tidied 2 duplicate or stuck event(s)
+- 2026-11-27 19:16 — agent news_scout v1: OK — Fetched tech news, saved trend notes, and successfully recorded observations without duplicating existing experiments.
+- 2026-11-27 19:16 — agent evolver v1: OK — All evaluated agents with >=3 runs meet the success rate threshold (>= 0.6). No prompt updates or weight changes required at this time.
