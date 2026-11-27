@@ -5358,3 +5358,636 @@ _upgrade_agents_for_projects()
 HEAL_PROTECTED |= {"_parse_files_robust", "_milestone_task", "advance_projects", "propose_project", "_validate_proposal", "_tests_fail_empty",
                    "setup_project_dir", "_skills_imported", "_finish", "_drop", "projects_step", "_run_extras_with_f8",
                    "_write_self_report"}
+
+# ===== Cell 36: Sustainability monitor (F9) =====
+# Phase 4: the system watches every free limit it depends on, slows down before it hits one, and writes a weekly
+# health report. The meters only WATCH: if a meter fails, the request goes through and the failure is logged.
+#   Gemini: per-model daily quota learned from Gemini's own 429 replies (resets at midnight Pacific)
+#   GitHub: x-ratelimit headers on every api.github.com reply, per token; writes counted per minute and hour
+#   allowed(kind): the one gate the scout, news and need steps (and F3) ask before they start
+import gzip, collections
+from zoneinfo import ZoneInfo
+
+LIMITS_FILE = STATE_DIR / "limits.json"
+LIMITS_HISTORY_FILE = STATE_DIR / "limits_history.jsonl"
+GEMINI_QUOTA_FILE = STATE_DIR / "gemini_quota.json"
+REPORTS_FILE = STATE_DIR / "health_reports.json"       # week -> issue number + verdict (no report content: public repo)
+PACIFIC = ZoneInfo("America/Los_Angeles")
+GH_SOFT_RESERVE = 0.20          # below 20% left on a token: no scouting, news or need searches until the reset
+GH_HARD_RESERVE = 0.05          # below 5% left: no GitHub calls on that token at all (seen as an outage)
+GH_WRITES_PER_MIN = 70          # GitHub allows about 80 a minute ...
+GH_WRITES_PER_HOUR = 450        # ... and 500 an hour
+SEARCH_WAIT_MAX = 60            # seconds worth waiting for the search limit to reset
+LEARNED_CAP_SHARE = 0.9         # F3's daily cap = 90% of the daily quotas Gemini has told us about
+BIG_FILE_MB = 50                # GitHub refuses files over 100 MB; keep anything this big out of git
+REPO_DECISION_MB = 1024         # a repo over 1 GB becomes a decision for the owner
+LOG_KEEP_DAYS = 30              # private run logs older than this are packed into one gzip file per month
+HISTORY_KEEP_DAYS = 60
+if "_CAP_DEFAULT" not in globals():
+    _CAP_DEFAULT = LLM_DAILY_CAP
+
+class GeminiQuotaUsed(Exception):
+    """A model's daily quota is used up: skipped until midnight Pacific (the text keeps '429' so llm() moves on)."""
+
+_F9 = {"run": "unset"}
+def _f9_run():
+    if _F9.get("run") != _RUN.get("id"):
+        _F9.clear()
+        _F9.update(run=_RUN.get("id"), gh={}, writes=collections.deque(), slowdowns=[], hits=[], meter_errors=0)
+    return _F9
+
+def _slowdown(limit, skipped, **data):
+    rec = {"ts": datetime.datetime.now().isoformat(timespec="seconds"), "limit": limit, "skipped": skipped, **data}
+    st = _f9_run()
+    if not any(s["limit"] == limit and s["skipped"] == skipped for s in st["slowdowns"]):
+        log(f"limits: {limit} -> {skipped}")
+    st["slowdowns"].append(rec)
+    return rec
+
+def _hit(limit, detail):
+    _f9_run()["hits"].append({"ts": datetime.datetime.now().isoformat(timespec="seconds"), "limit": limit,
+                              "detail": str(detail)[:200]})
+    syslog("warn", "limits", f"limit hit: {limit}: {str(detail)[:200]}")
+
+# =========================================== Gemini meter ===========================================
+def _pacific_day(now=None):
+    return (now or datetime.datetime.now(datetime.timezone.utc)).astimezone(PACIFIC).date().isoformat()
+
+def _gemini_state():
+    g = _jload(GEMINI_QUOTA_FILE, {"quota": {}, "days": {}})
+    g.setdefault("quota", {}); g.setdefault("days", {})
+    return g
+
+def _gemini_rec(g, model, day=None):
+    return g["days"].setdefault(day or _pacific_day(), {}).setdefault(
+        model, {"calls": 0, "ok": 0, "quota_429": 0, "minute_429": 0, "overload": 0, "other": 0, "skipped": 0,
+                "used_up": False})
+
+QUOTA_ID = re.compile(r"quotaId['\"]?\s*[:=]\s*['\"]?([A-Za-z0-9_-]+)")
+QUOTA_VALUE = re.compile(r"quotaValue['\"]?\s*[:=]\s*['\"]?(\d+)")
+
+def _parse_quota(text):
+    """(quota id, value) from a Gemini 429 reply; best effort, (None, None) when the format is unknown."""
+    i, v = QUOTA_ID.search(text or ""), QUOTA_VALUE.search(text or "")
+    return (i.group(1) if i else None), (int(v.group(1)) if v else None)
+
+def _apply_learned_cap(g=None):
+    """F3's daily cap follows what Gemini told us: 90% of the known daily quotas (never above the default)."""
+    known = [q["per_day"] for q in (g or _gemini_state())["quota"].values() if q.get("per_day")]
+    cap = min(_CAP_DEFAULT, max(20, int(LEARNED_CAP_SHARE * sum(known)))) if known else _CAP_DEFAULT
+    globals()["LLM_DAILY_CAP"] = cap
+    return cap
+
+def _metered_generate(inner, client_models, *a, **kw):
+    model = kw.get("model") or (a[0] if a else "?")
+    try:
+        g = _gemini_state(); rec = _gemini_rec(g, model)
+        if rec["used_up"]:
+            rec["skipped"] += 1; _jsave(GEMINI_QUOTA_FILE, g)
+            raise GeminiQuotaUsed(f"429 RESOURCE_EXHAUSTED: {model} daily quota used; skipped until midnight Pacific")
+    except GeminiQuotaUsed:
+        raise
+    except Exception as e:                                      # a meter error never blocks the call
+        _f9_run()["meter_errors"] += 1; syslog("warn", "limits", f"gemini meter: {type(e).__name__}: {e}")
+        return inner(client_models, *a, **kw)
+    try:
+        out = inner(client_models, *a, **kw)
+        rec["calls"] += 1; rec["ok"] += 1
+        return out
+    except Exception as e:
+        s = f"{type(e).__name__}: {e}"
+        rec["calls"] += 1
+        if "429" in s or "RESOURCE_EXHAUSTED" in s.upper():
+            qid, qval = _parse_quota(s)
+            if qid and "perday" in qid.lower():
+                rec["quota_429"] += 1; rec["used_up"] = True
+                q = g["quota"].setdefault(model, {})
+                q.update(id=qid, learned=_pacific_day())
+                if qval:
+                    q["per_day"] = qval
+                _apply_learned_cap(g)
+                _slowdown("gemini daily quota", f"{model} skipped until midnight Pacific", quota=qval)
+            else:
+                rec["minute_429"] += 1
+        elif "503" in s or "UNAVAILABLE" in s.upper() or "overloaded" in s.lower():
+            rec["overload"] += 1
+        else:
+            rec["other"] += 1
+        raise
+    finally:
+        try:
+            g["days"] = {d: g["days"][d] for d in sorted(g["days"])[-14:]}
+            _jsave(GEMINI_QUOTA_FILE, g)
+        except Exception:
+            pass
+
+try:
+    from google.genai import models as _genai_models
+    if "_genai_generate_plain" not in globals():
+        _genai_generate_plain = _genai_models.Models.generate_content
+    def _genai_generate_metered(self, *a, **kw):
+        return _metered_generate(_genai_generate_plain, self, *a, **kw)
+    _genai_models.Models.generate_content = _genai_generate_metered
+except Exception as _e:                                         # no google-genai (Colab ai, tests): nothing to meter
+    print("F9: Gemini meter not installed:", type(_e).__name__)
+
+def gemini_all_used_up():
+    """True when every model we know of has used its daily quota (nothing left until midnight Pacific)."""
+    day = _gemini_state()["days"].get(_pacific_day(), {})
+    known = list(dict.fromkeys(list(globals().get("_GEMINI_CACHE") or []) or list(day)))
+    return bool(known) and all(day.get(m, {}).get("used_up") for m in known)
+
+if "_llm_allowed_before_f9" not in globals():
+    _llm_allowed_before_f9 = llm_allowed
+def llm_allowed(purpose="other"):
+    if gemini_all_used_up():
+        _slowdown("gemini daily quota", "all LLM work until midnight Pacific")
+        if not any(h["limit"] == "gemini: every model used up" for h in _f9_run()["hits"]):
+            _hit("gemini: every model used up", "no LLM work until midnight Pacific")
+        return False
+    ok = _llm_allowed_before_f9(purpose)
+    if not ok and not _llm_run_state().get("open"):
+        _slowdown("LLM daily cap", f"low-value LLM work ({purpose})", cap=LLM_DAILY_CAP)
+    return ok
+
+# =========================================== GitHub meter ===========================================
+def _token_label(headers):
+    auth = str((headers or {}).get("Authorization") or (headers or {}).get("authorization") or "")
+    if not auth:
+        return "anonymous"
+    tok = auth.split()[-1]
+    if tok and tok == os.environ.get("SWINGS_GH_TOKEN"):
+        return "personal"
+    if tok and tok in (GITHUB_TOKEN, os.environ.get("GITHUB_TOKEN")):
+        return "actions"
+    return "other"
+
+def _gh_resource(url):
+    return "search" if "/search/" in url else "core"
+
+def _held_back(url, why):
+    r = requests.models.Response()
+    r.status_code, r.url, r.reason = 429, url, "Held back by Swings F9"
+    r._content = json.dumps({"message": f"Swings F9 held this request back to keep a reserve: {why}"}).encode()
+    r.headers["Content-Type"] = "application/json"
+    return r
+
+def _gh_state(label, resource):
+    return _f9_run()["gh"].setdefault(label, {}).setdefault(resource, {"calls": 0, "writes": 0})
+
+def _gh_before(method, url, label):
+    """None = send it; a string = hold it back (why). May sleep for a short reset or a write pause."""
+    st, now = _gh_state(label, _gh_resource(url)), time.time()
+    lim, rem, reset = st.get("limit"), st.get("remaining"), st.get("reset", 0)
+    if lim and rem is not None and reset > now:
+        if _gh_resource(url) == "search" and rem <= 0:
+            wait = reset - now + 1
+            if wait <= SEARCH_WAIT_MAX and time_left() > wait + 120:
+                _slowdown("GitHub search", f"waited {int(wait)}s for the search limit to reset")
+                time.sleep(wait)
+            else:
+                _slowdown("GitHub search", "search skipped until the reset")
+                return f"search limit used ({label}); resets in {int(wait)}s"
+        elif _gh_resource(url) == "core" and rem < GH_HARD_RESERVE * lim:
+            _slowdown(f"GitHub API ({label})", "all GitHub calls on this token until the reset",
+                      remaining=rem, of=lim)
+            return f"{label} token has {rem}/{lim} left (reserve {int(GH_HARD_RESERVE * 100)}%)"
+    if method.upper() not in ("GET", "HEAD", "OPTIONS"):
+        w = _f9_run()["writes"]
+        while w and now - w[0] > 3600:
+            w.popleft()
+        if len(w) >= GH_WRITES_PER_HOUR:
+            _slowdown("GitHub writes", "writes for the rest of this run", last_hour=len(w))
+            return f"{len(w)} writes in the last hour"
+        last_min = [t for t in w if now - t < 60]
+        if len(last_min) >= GH_WRITES_PER_MIN:
+            wait = 60 - (now - last_min[0]) + 1
+            _slowdown("GitHub writes", f"paused {int(wait)}s (writes per minute)")
+            time.sleep(max(wait, 0))
+    return None
+
+def _gh_after(method, url, label, r):
+    st = _gh_state(label, (r.headers.get("x-ratelimit-resource") if r is not None else None) or _gh_resource(url))
+    st["calls"] += 1
+    if method.upper() not in ("GET", "HEAD", "OPTIONS"):
+        st["writes"] += 1; _f9_run()["writes"].append(time.time())
+    if r is None:
+        return
+    h = r.headers
+    if h.get("x-ratelimit-limit"):
+        st.update(limit=int(h["x-ratelimit-limit"]), remaining=int(h.get("x-ratelimit-remaining", 0)),
+                  reset=int(h.get("x-ratelimit-reset", 0)))
+        st["min_remaining"] = min(st.get("min_remaining", st["remaining"]), st["remaining"])
+    if r.status_code in (403, 429) and "rate limit" in (r.text or "")[:500].lower():
+        _hit(f"GitHub rate limit ({label})", f"{r.status_code} on {method} {url.split('?')[0][-80:]}")
+
+def _metered_request(self, method, url, *a, **kw):
+    try:
+        watched = str(url).startswith("https://api.github.com")
+    except Exception:
+        watched = False
+    if not watched:
+        return _gh_send_plain(self, method, url, *a, **kw)
+    try:
+        label = _token_label(kw.get("headers") or getattr(self, "headers", {}))
+        why = _gh_before(method, url, label)
+    except Exception as e:
+        _f9_run()["meter_errors"] += 1; label, why = None, None
+        syslog("warn", "limits", f"github meter: {type(e).__name__}: {e}")
+    if why:
+        return _held_back(url, why)
+    r = _gh_send_plain(self, method, url, *a, **kw)
+    try:
+        if label:
+            _gh_after(method, url, label, r)
+    except Exception as e:
+        _f9_run()["meter_errors"] += 1
+        syslog("warn", "limits", f"github meter: {type(e).__name__}: {e}")
+    return r
+
+import requests.sessions as _req_sessions
+if "_gh_send_plain" not in globals():
+    _gh_send_plain = _req_sessions.Session.request
+_req_sessions.Session.request = _metered_request
+
+def _scout_label():
+    return _token_label(HEADERS)
+
+def allowed(kind, purpose="other"):
+    """(ok, why) for: scout (GitHub searches by scouting, news and needs), github_write, llm."""
+    if kind == "llm":
+        return (True, "") if llm_allowed(purpose) else (False, "LLM budget or quota")
+    if kind == "scout":
+        label = _scout_label()
+        for res in ("core", "search"):
+            st = _f9_run()["gh"].get(label, {}).get(res, {})
+            if st.get("limit") and st.get("reset", 0) > time.time() and st.get("remaining", 1) < GH_SOFT_RESERVE * st["limit"]:
+                return False, f"{label} token {res}: {st['remaining']}/{st['limit']} left (reserve {int(GH_SOFT_RESERVE * 100)}%)"
+        return True, ""
+    if kind == "github_write":
+        w = _f9_run()["writes"]
+        n = sum(1 for t in w if time.time() - t < 3600)
+        return (n < GH_WRITES_PER_HOUR, f"{n} writes in the last hour")
+    return True, ""
+
+# ---- soft gates: heavy GitHub users ask first ----
+if "_scout_repos_before_f9" not in globals():
+    _scout_repos_before_f9 = scout_repos
+def scout_repos(dry_run=False):
+    ok, why = allowed("scout")
+    if not ok:
+        _slowdown("GitHub API (scouting)", "repo scouting this run", why=why)
+        return f"skipped: {why}"
+    return _scout_repos_before_f9(dry_run)
+
+if "_search_for_need_before_f9" not in globals():
+    _search_for_need_before_f9 = search_for_need
+def search_for_need(n, exclude=()):
+    ok, why = allowed("scout")
+    if not ok:
+        _slowdown("GitHub API (needs)", "need searches this run", why=why)
+        raise GitHubUnavailable(f"GitHub limit reserve: {why}")       # the need keeps its tries
+    return _search_for_need_before_f9(n, exclude)
+
+if "_safe_run_before_f9" not in globals():
+    _safe_run_before_f9 = _safe_run
+def _safe_run(name, task, context=None, resume=None):
+    if name == "news_scout":
+        ok, why = allowed("scout")
+        if not ok:
+            _slowdown("GitHub API (news)", "news scouting this run", why=why)
+            return {"success": True, "summary": f"skipped: {why}"}
+    return _safe_run_before_f9(name, task, context, resume)
+
+# =========================================== snapshot, sizes, pruning ===========================================
+def _dir_mb(p):
+    p = Path(p)
+    if not p.exists():
+        return 0.0
+    return round(sum(f.stat().st_size for f in p.rglob("*") if f.is_file()) / 1e6, 2)
+
+SIZE_SKIP = (".git", ".skill_repos", ".private_logs", ".projects_repo", "node_modules", "__pycache__")
+
+def size_guard():
+    """Files of BIG_FILE_MB or more are kept out of git (added to .gitignore), never deleted."""
+    big = []
+    for f in SKILLS_DIR.rglob("*"):
+        rel = f.relative_to(SKILLS_DIR)
+        if any(part in SIZE_SKIP for part in rel.parts) or f.is_symlink() or not f.is_file():
+            continue
+        if f.stat().st_size >= BIG_FILE_MB * 1e6:
+            big.append(str(rel))
+    if big:
+        gi = SKILLS_DIR / ".gitignore"
+        have = gi.read_text(encoding="utf-8").splitlines() if gi.exists() else []
+        add = [b for b in big if b not in have]
+        if add:
+            gi.write_text("\n".join(have + ["# F9: too big for git (kept on disk, not pushed)"] + add) + "\n", encoding="utf-8")
+            for b in add:
+                git(["rm", "-q", "--cached", "--ignore-unmatch", b], SKILLS_DIR)
+            _slowdown("repo size", f"{len(add)} file(s) of {BIG_FILE_MB} MB+ kept out of git", files=add[:10])
+    return big
+
+def prune_old_logs(keep_days=LOG_KEEP_DAYS, today=None):
+    """Pack private run-log folders older than keep_days into runs/archive/<YYYY-MM>.jsonl.gz. Nothing else."""
+    runs, packed = PRIVATE_LOG_DIR / "runs", []
+    if not runs.exists():
+        return packed
+    today = today or datetime.date.today()
+    for d in sorted(runs.iterdir()):
+        try:
+            day = datetime.date.fromisoformat(d.name)
+        except ValueError:
+            continue                                   # archive/ and anything unexpected stay
+        if not d.is_dir() or (today - day).days <= keep_days:
+            continue
+        arch = runs / "archive"; arch.mkdir(exist_ok=True)
+        with gzip.open(arch / f"{day:%Y-%m}.jsonl.gz", "ab") as z:
+            for f in sorted(d.glob("*.jsonl")):
+                z.write(f.read_bytes())
+        shutil.rmtree(d)
+        packed.append(d.name)
+    if packed:
+        log(f"limits: packed {len(packed)} day(s) of private run logs older than {keep_days} days")
+    return packed
+
+def _rate_limit_now():
+    """GET /rate_limit for each token (free on the primary limit): fills the meters at the start of a snapshot."""
+    tokens = {"actions": HEADERS}
+    try:
+        tokens["personal"] = GITHUB._h()
+    except Exception:
+        pass
+    for label, h in tokens.items():
+        if "Authorization" not in h:
+            continue
+        try:
+            r = requests.get("https://api.github.com/rate_limit", headers=h, timeout=20)
+            if r.ok:
+                real = _token_label(h)
+                for res in ("core", "search"):
+                    v = r.json().get("resources", {}).get(res, {})
+                    if v:
+                        st = _gh_state(real, res)
+                        st.update(limit=v["limit"], remaining=v["remaining"], reset=v["reset"])
+                        st["min_remaining"] = min(st.get("min_remaining", v["remaining"]), v["remaining"])
+        except Exception as e:
+            syslog("warn", "limits", f"rate_limit read failed: {type(e).__name__}")
+
+def _daily_repo_facts(prev):
+    """Once a day: skills repo visibility and the GitHub-side size of the three repos (KB from the API)."""
+    if prev.get("checked") == str(datetime.date.today()):
+        return prev
+    facts = {"checked": str(datetime.date.today())}
+    try:
+        owner = GITHUB.whoami()
+        names = {"skills": os.environ.get("GITHUB_REPOSITORY", f"{owner}/swings-ai-skills"),
+                 "projects": f"{owner}/{PROJECTS_REPO_NAME}", "logs": f"{owner}/{LOG_REPO_NAME}"}
+        for k, full in names.items():
+            r = requests.get(f"{GITHUB.api}/repos/{full}", headers=GITHUB._h(), timeout=20)
+            if r.ok:
+                facts[f"{k}_mb"] = round(r.json().get("size", 0) / 1024, 1)
+                if k == "skills":
+                    facts["skills_private"] = bool(r.json().get("private"))
+    except Exception as e:
+        facts["error"] = f"{type(e).__name__}"
+    return facts
+
+def limits_snapshot():
+    """Every limit the system depends on, this run: state/limits.json + one history line."""
+    st, prev = _f9_run(), _jload(LIMITS_FILE, {})
+    if not IN_COLAB:
+        _rate_limit_now()
+    g = _gemini_state()
+    day = g["days"].get(_pacific_day(), {})
+    _, f3day = _today_usage()
+    exps = load_experiments()
+    today = str(datetime.date.today())
+    started = _RUN.get("started") or time.time()
+    budget = round((CYCLE_DEADLINE - started) / 60, 1) if CYCLE_DEADLINE else None
+    minutes = round((time.time() - started) / 60, 1)
+    gh = {lab: {res: {k: v for k, v in s.items() if k in ("limit", "remaining", "min_remaining", "calls", "writes")}
+                | ({"reset_in_min": round((s["reset"] - time.time()) / 60, 1)} if s.get("reset") else {})
+                for res, s in r.items()} for lab, r in st["gh"].items()}
+    snap = {
+        "ts": datetime.datetime.now().isoformat(timespec="seconds"), "run": _RUN.get("id"),
+        "gemini": {"pacific_day": _pacific_day(), "models": day, "learned_quota": g["quota"],
+                   "cap_in_use": LLM_DAILY_CAP, "calls_today": f3day.get("calls", 0),
+                   "overloads_today": f3day.get("overloads", 0), "all_used_up": gemini_all_used_up()},
+        "github": gh,
+        "writes_last_hour": sum(1 for t in st["writes"] if time.time() - t < 3600),
+        "runtime": {"minutes": minutes, "budget": budget, "near_budget": bool(budget and minutes >= budget - 3)},
+        "repos": {"new_today": _new_repos_today(exps), "max_new_per_day": MAX_NEW_REPOS_PER_DAY,
+                  "graduated_today": sum(1 for e in exps.values() if str(e.get("graduated", "")).startswith(today))},
+        "sizes": {"skills_git_mb": _dir_mb(SKILLS_DIR / ".git"), "big_files": size_guard(),
+                  "daily": _daily_repo_facts(prev.get("sizes", {}).get("daily", {})) if not IN_COLAB else {}},
+        "queue_todo": sum(1 for t in _jload(TASKS_FILE, []) if t.get("status") == "todo"),
+        "slowdowns": st["slowdowns"][-30:], "hits": st["hits"][-30:], "meter_errors": st["meter_errors"],
+    }
+    _jsave(LIMITS_FILE, snap)
+    line = {"ts": snap["ts"], "run": snap["run"], "gemini_calls": snap["gemini"]["calls_today"],
+            "gemini_cap": LLM_DAILY_CAP, "gemini_overloads": snap["gemini"]["overloads_today"],
+            "gemini_used_up": [m for m, v in day.items() if v.get("used_up")],
+            "gh_min_pct": {f"{lab}:{res}": round(100 * s.get("min_remaining", s.get("remaining", 0)) / s["limit"])
+                           for lab, r in st["gh"].items() for res, s in r.items() if s.get("limit")},
+            "writes": snap["writes_last_hour"], "minutes": minutes, "budget": budget,
+            "near_budget": snap["runtime"]["near_budget"], "new_repos": snap["repos"]["new_today"],
+            "git_mb": snap["sizes"]["skills_git_mb"], "big_files": len(snap["sizes"]["big_files"]),
+            "queue_todo": snap["queue_todo"], "slowdowns": sorted({s["limit"] for s in st["slowdowns"]}),
+            "hits": [h["limit"] for h in st["hits"]]}
+    rows = _read_history() + [line]
+    rows = [r for r in rows if _days_ago(r.get("ts", "")) <= HISTORY_KEEP_DAYS]
+    LIMITS_HISTORY_FILE.write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
+    return snap
+
+def _read_history(days=None):
+    if not LIMITS_HISTORY_FILE.exists():
+        return []
+    rows = [json.loads(l) for l in LIMITS_HISTORY_FILE.read_text(encoding="utf-8").splitlines() if l.strip()]
+    return [r for r in rows if days is None or _days_ago(r.get("ts", "")) <= days]
+
+# =========================================== weekly health report ===========================================
+def _week_key(d=None):
+    y, w, _ = (d or datetime.date.today()).isocalendar()
+    return f"{y}-W{w:02d}"
+
+def schedule_advice(rows=None):
+    """Advice only; the workflow file is never edited."""
+    rows = rows if rows is not None else _read_history(7)
+    out = []
+    last8 = rows[-8:]
+    if len(last8) >= 8 and sum(1 for r in last8 if not r.get("queue_todo")) >= 6:
+        out.append("The queue was empty in 6 or more of the last 8 runs: running every 6 hours instead of 3 "
+                   "would save Actions time with no loss of work (cron `23 */6 * * *`).")
+    hist = _jload(QUEUE_HISTORY_FILE, {})
+    last = [hist[k] for k in sorted(hist)[-4:]]
+    peak = max([max(r.get("gh_min_pct", {}).values(), default=100) for r in rows] or [100])
+    low = min([min(r.get("gh_min_pct", {}).values(), default=100) for r in rows] or [100])
+    llm_peak = max([r.get("gemini_calls", 0) / max(r.get("gemini_cap", 1), 1) for r in rows] or [0])
+    if len(last) == 4 and all(a < b for a, b in zip(last, last[1:])) and llm_peak < 0.5 and low > 50:
+        out.append("The queue grew for 3 days while every limit stayed under half used: running every 2 hours "
+                   "would clear it faster (cron `23 */2 * * *`).")
+    return out
+
+def _verdict(rows, hits):
+    return "yes" if not hits and not any(r.get("near_budget") and r.get("minutes", 0) >= (r.get("budget") or 99) for r in rows) else "no"
+
+def build_health_report(days=7):
+    rows = _read_history(days)
+    hits = [h for r in rows for h in r.get("hits", [])]
+    slow = collections.Counter(s for r in rows for s in r.get("slowdowns", []))
+    m = metrics()
+    runs = [json.loads(l) for l in (PRIVATE_LOG_DIR / "runs_index.jsonl").read_text(encoding="utf-8").splitlines()
+            if l.strip()] if (PRIVATE_LOG_DIR / "runs_index.jsonl").exists() else []
+    runs = [r for r in runs if _days_ago(_run_ts(r.get("run", ""))) <= days]
+    heals = [h for h in _jload(HEALS_FILE, []) if _days_ago(h.get("ts", "")) <= days]
+    exps = load_experiments()
+    verdict = _verdict(rows, hits)
+    pct = lambda r: round(100 * r.get("gemini_calls", 0) / max(r.get("gemini_cap", 1), 1))
+    gh_low = {}
+    for r in rows:
+        for k, v in r.get("gh_min_pct", {}).items():
+            gh_low[k] = min(gh_low.get(k, 100), v)
+    decisions = schedule_advice(rows)
+    last = _jload(LIMITS_FILE, {})
+    daily = last.get("sizes", {}).get("daily", {})
+    for k in ("skills_mb", "projects_mb", "logs_mb"):
+        if daily.get(k, 0) > REPO_DECISION_MB:
+            decisions.append(f"The {k[:-3]} repo is {daily[k]:.0f} MB on GitHub (over 1 GB): decide what to move out of git.")
+    if daily.get("skills_private"):
+        mins = sum(r.get("minutes", 0) or 0 for r in rows) / max(days, 1) * 30
+        decisions.append(f"The skills repo is private, so Actions minutes are no longer free: about {mins:.0f} "
+                         "minutes a month at the current pace. Decide: make it public again or run less often.")
+    L = [f"# Swings AI health report — {_week_key()}", "",
+         f"**Within free limits: {verdict}.** " + (f"{len(hits)} limit hit(s) this week." if hits else
+                                                   "No limit was hit; slow-downs below are the guards working."), "",
+         "## Growth", "",
+         f"- Capability score: {m.get('capability_score', 0):.0%}",
+         f"- Attempts per passed task (7 days): {m.get('attempts_per_pass_7d')}",
+         f"- Task success rate (7 days): {m.get('task_success_rate_7d', 0):.0%}",
+         f"- Active skills: {m.get('skills_active')}; needs closed: {m.get('needs_closed')}, open: {m.get('needs_open')}",
+         f"- Experiments passed: {m.get('experiments_passed')}; finished projects: "
+         f"{sum(1 for e in exps.values() if e.get('kind') == 'project')}; graduated: {m.get('projects_graduated')}", "",
+         "## Health", "",
+         f"- Runs: {len(runs)} ({sum(1 for r in runs if r.get('status') != 'ok')} not ok); "
+         f"errors: {sum(r.get('errors', 0) for r in runs)}; open issues now: {runs[-1].get('open_issues') if runs else 'n/a'}",
+         f"- Self-fixes this week: {len(heals)} ({', '.join(f'{v} {k}' for k, v in collections.Counter(h['status'] for h in heals).items()) or 'none'})",
+         f"- Longest run: {max([r.get('minutes', 0) or 0 for r in rows] or [0])} min of a "
+         f"{max([r.get('budget') or 0 for r in rows] or [0])}-minute budget", "",
+         "## Limits", "",
+         "| Limit | Peak use this week | Slow-downs |", "|---|---|---|",
+         f"| Gemini daily calls | {max([pct(r) for r in rows] or [0])}% of the cap "
+         f"({max([r.get('gemini_cap', 0) for r in rows] or [0])}) | {slow.get('LLM daily cap', 0) + slow.get('gemini daily quota', 0)} |",
+         f"| Gemini overloads | {max([r.get('gemini_overloads', 0) for r in rows] or [0])} in a day | circuit breaker (F3) |"]
+    for k, v in sorted(gh_low.items()):
+        lab = k.split(":")[0]
+        L.append(f"| GitHub {k} | {100 - v}% used at the lowest point | "
+                 f"{sum(c for s, c in slow.items() if lab in s or ('search' in s and 'search' in k))} |")
+    L += [f"| GitHub writes | {max([r.get('writes', 0) for r in rows] or [0])} in an hour (limit 500) | {slow.get('GitHub writes', 0)} |",
+          f"| New repos | {max([r.get('new_repos', 0) for r in rows] or [0])} in a day (own limit {MAX_NEW_REPOS_PER_DAY}) | — |",
+          f"| Skills repo .git | {max([r.get('git_mb', 0) for r in rows] or [0])} MB (GitHub suggests under 10 GB) | "
+          f"{sum(r.get('big_files', 0) for r in rows)} big file(s) kept out |",
+          f"| Repos on GitHub | skills {daily.get('skills_mb', '?')} MB, projects {daily.get('projects_mb', '?')} MB, "
+          f"logs {daily.get('logs_mb', '?')} MB | — |"]
+    used_up = sorted({m_ for r in rows for m_ in r.get("gemini_used_up", [])})
+    if used_up:
+        L += ["", f"Gemini models that used their daily quota (skipped until midnight Pacific, other models took over): "
+                  f"{', '.join(used_up)}."]
+    if hits:
+        L += ["", "**Limit hits:**", ""] + [f"- {h}" for h, _ in collections.Counter(hits).most_common()]
+    L += ["", "## Decisions waiting for you", ""] + ([f"- {d}" for d in decisions] or ["- None this week."])
+    return "\n".join(L) + "\n", verdict
+
+def _run_ts(run_id):
+    try:
+        return datetime.datetime.strptime(run_id[:15], "%Y%m%d-%H%M%S").isoformat()
+    except (TypeError, ValueError):
+        return ""
+
+def weekly_report(force=False):
+    """First run of each ISO week (and the first run after install): a report file + one issue, last week's closed."""
+    week, done = _week_key(), _jload(REPORTS_FILE, {})
+    if week in done and not force:
+        return None
+    text, verdict = build_health_report()
+    d = PRIVATE_LOG_DIR / "reports"; d.mkdir(parents=True, exist_ok=True)
+    f = d / f"health-{week}.md"
+    f.write_text(_redact(text), encoding="utf-8")
+    rec = {"verdict": verdict, "ts": datetime.datetime.now().isoformat(timespec="minutes")}
+    try:
+        owner = GITHUB.whoami()
+        r = requests.post(f"{GITHUB.api}/repos/{owner}/{LOG_REPO_NAME}/issues", headers=GITHUB._h(), timeout=30,
+                          json={"title": f"Swings AI health report {week}: within free limits {verdict}",
+                                "body": _redact(text)[:60000], "labels": []})
+        if r.status_code < 300:
+            rec["issue"] = r.json().get("number")
+            for w, old in done.items():
+                if old.get("issue") and not old.get("closed"):
+                    requests.patch(f"{GITHUB.api}/repos/{owner}/{LOG_REPO_NAME}/issues/{old['issue']}",
+                                   headers=GITHUB._h(), timeout=30, json={"state": "closed"})
+                    old["closed"] = True
+        else:
+            rec["issue_error"] = r.status_code
+    except Exception as e:
+        rec["issue_error"] = type(e).__name__
+    done[week] = rec
+    _jsave(REPORTS_FILE, {k: done[k] for k in sorted(done)[-12:]})
+    log(f"limits: health report {week} written (within free limits: {verdict})"
+        + (f", issue #{rec['issue']}" if rec.get("issue") else ""))
+    return f
+
+TOOLS.register("limits_status", lambda: {k: v for k, v in _jload(LIMITS_FILE, {}).items()
+                                         if k in ("gemini", "github", "writes_last_hour", "runtime", "repos", "slowdowns", "hits")},
+               "Free-tier limits right now: Gemini per model, GitHub per token, writes, run time, new repos, slow-downs.")
+
+# =========================================== in every run ===========================================
+def sustainability_step():
+    if IN_COLAB:
+        return None
+    snap = limits_snapshot()
+    prune_old_logs()
+    weekly_report()
+    return snap
+
+_apply_learned_cap()
+
+if "_cycle_before_f9" not in globals():
+    _cycle_before_f9 = autopilot_cycle
+def autopilot_cycle():
+    _cycle_before_f9()
+    try:
+        sustainability_step()
+    except Exception as e:
+        syslog_exception("limits", e)
+
+if "_extras_before_f9" not in globals():
+    _extras_before_f9 = _run_extras
+def _run_extras_with_f9():
+    d = _extras_before_f9()
+    st = _f9_run()
+    d["limits"] = {"slowdowns": sorted({s["limit"] for s in st["slowdowns"]}), "hits": [h["limit"] for h in st["hits"]],
+                   "gemini_cap": LLM_DAILY_CAP,
+                   "gh_left": {f"{lab}:{res}": s.get("remaining") for lab, r in st["gh"].items() for res, s in r.items()
+                               if s.get("limit")}}
+    return d
+_run_extras = _run_extras_with_f9
+
+if "_self_report_before_f9" not in globals():
+    _self_report_before_f9 = _write_self_report
+def _write_self_report(caps, notes, gaps, proposals, score, hist):
+    _self_report_before_f9(caps, notes, gaps, proposals, score, hist)
+    s = _jload(LIMITS_FILE, {})
+    lines = ["", "## Free limits (F9)", "",
+             f"- Gemini: {s.get('gemini', {}).get('calls_today', 0)} calls today, cap {LLM_DAILY_CAP}; "
+             f"models used up today: {[m for m, v in s.get('gemini', {}).get('models', {}).items() if v.get('used_up')] or 'none'}",
+             f"- GitHub left: " + (", ".join(f"{lab}:{res} {v.get('remaining')}/{v.get('limit')}" for lab, r in s.get('github', {}).items()
+                                            for res, v in r.items() if v.get('limit')) or "not read yet"),
+             f"- Slow-downs last run: {sorted({x['limit'] for x in s.get('slowdowns', [])}) or 'none'}; hits: {[h['limit'] for h in s.get('hits', [])] or 'none'}"]
+    f = PRIVATE_LOG_DIR / "self_report.md"
+    if f.exists():
+        f.write_text(f.read_text(encoding="utf-8") + _redact("\n".join(lines)) + "\n", encoding="utf-8")
+
+HEAL_PROTECTED |= {"_metered_generate", "_genai_generate_metered", "llm_allowed", "_metered_request", "_gh_before",
+                   "_gh_after", "_held_back", "allowed", "scout_repos", "search_for_need", "_safe_run",
+                   "limits_snapshot", "size_guard", "prune_old_logs", "weekly_report", "build_health_report",
+                   "sustainability_step", "_run_extras_with_f9", "_write_self_report", "_apply_learned_cap"}
