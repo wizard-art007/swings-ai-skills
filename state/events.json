@@ -692,7 +692,7 @@
       "slug": "normalscript-interpreter"
     },
     "source": "agent",
-    "status": "running",
+    "status": "done",
     "ts": "2026-11-27T07:43:39"
   },
   {
@@ -702,7 +702,7 @@
       "slug": "vim-motions-trainer"
     },
     "source": "agent",
-    "status": "new",
+    "status": "running",
     "ts": "2026-11-27T07:44:00"
   },
   {

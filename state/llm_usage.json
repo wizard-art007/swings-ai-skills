@@ -18,15 +18,15 @@
     }
   },
   "2026-11-27": {
-    "calls": 56,
-    "errors": 2,
-    "overloads": 2,
+    "calls": 66,
+    "errors": 6,
+    "overloads": 6,
     "cache_hits": 0,
-    "seconds": 665.7,
+    "seconds": 1567.1,
     "by_purpose": {
       "need_scout": 1,
       "agent:builder": 14,
-      "agent:publisher": 15,
+      "agent:publisher": 25,
       "agent:news_scout": 12,
       "experiment": 9,
       "lesson": 4,
