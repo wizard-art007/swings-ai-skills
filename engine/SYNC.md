@@ -1,4 +1,4 @@
-# Notebook sync report (2026-11-27 14:31)
+# Notebook sync report (2026-11-27 14:33)
 
 ## Self-fixes
 
@@ -28,13 +28,4 @@
 
 ## GitHub engine vs this notebook
 
-- Cell 36: 0 line(s) on GitHub vs 63 in the notebook; you edited this cell (will be exported)
-  ```diff
-  + 
-  + # ===== Cell 37: Notebook sync (F10), engine side =====
-  + # The notebook (Cell 15) records every export in engine/export.json and writes engine/SYNC.md. The engine reads that
-  ```
-
-## After the export
-
-- IDENTICAL
+- **IDENTICAL**: GitHub runs exactly what this notebook builds.
