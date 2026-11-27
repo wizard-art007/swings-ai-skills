@@ -47,6 +47,29 @@ expect(now == heals_before, "T2 the live heals file is untouched")
 expect(not sc.drill_due() and sc.fire_drill_step(fake_llm=FAKE) is None, "T3 one drill a month")
 expect(sc._run_extras().get("fire_drill", {}).get("ok") is True, "T3 the run log carries the drill result")
 
+# ---- a failed drill is tried again the next day, at most 3 times a month ----
+d = sc._jload(sc.DRILL_FILE, {}); m = max(d); keep = dict(d[m])
+d[m] = {**keep, "ok": False, "attempts": 1, "ts": (sc.datetime.datetime.now() - sc.datetime.timedelta(days=2)).isoformat(timespec="minutes")}
+sc._jsave(sc.DRILL_FILE, d)
+due_next_day = sc.drill_due()
+d[m]["ts"] = sc._now_min(); sc._jsave(sc.DRILL_FILE, d)
+due_same_day = sc.drill_due()
+d[m].update(attempts=3, ts=(sc.datetime.datetime.now() - sc.datetime.timedelta(days=2)).isoformat(timespec="minutes")); sc._jsave(sc.DRILL_FILE, d)
+expect(due_next_day and not due_same_day and not sc.drill_due(), "T3 a failed drill is retried the next day, at most 3 times a month")
+d[m] = keep; sc._jsave(sc.DRILL_FILE, d)
+
+# ---- F9's "run less often" advice is dropped while most runs do real work ----
+rows = [{"run": f"x{i}", "queue_todo": 0} for i in range(8)]
+st = sc._jload(sc.P5_STATE, {})
+st["runs"] = [{"run": f"x{i}", "ts": sc._now_min(), "useful": i < 5} for i in range(8)]
+sc._jsave(sc.P5_STATE, st)
+busy = sc.schedule_advice(rows)
+st["runs"] = [{"run": f"x{i}", "ts": sc._now_min(), "useful": i < 2} for i in range(8)]
+sc._jsave(sc.P5_STATE, st)
+idle = sc.schedule_advice(rows)
+expect(not any(a.startswith("The queue was empty") for a in busy) and any(a.startswith("The queue was empty") for a in idle),
+       "T7 'run less often' is only advised when runs really are idle")
+
 # ---- a failed drill asks the owner ----
 d = sc._jload(sc.DRILL_FILE, {})
 m = max(d)
@@ -76,7 +99,7 @@ rows[-1]["steps"] = {"queue": "error: KeyError", "plan": 0.1}
 sc._RUN["id"] = "p5d-run"
 out = sc._log_repo_sync(push=True)
 dash = sc.DASHBOARD_FILE.read_text() if sc.DASHBOARD_FILE.exists() else ""
-expect(dash.startswith("# Swings AI dashboard") and "## Needs you" in dash and "## This week" in dash and "## Last runs" in dash,
+expect(dash.startswith("# Swings AI dashboard") and "Within free limits:" in dash and "## Needs you" in dash and "## This week" in dash and "## Last runs" in dash,
        "T5 the dashboard is written before the private logs are pushed")
 expect("self-repair drill failed" in dash, "T5 open decisions are on the dashboard")
 expect(dash.count("| r") == 10 and "| r11 | ok | 0 | 1.0 | - | queue |" in dash, "T5 the last 10 runs, newest first, with failed steps")
