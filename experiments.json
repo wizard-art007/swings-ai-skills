@@ -216,5 +216,17 @@
       "tests/test_normalscript.py",
       "src/normalscript.py"
     ]
+  },
+  "vim-motions-trainer": {
+    "title": "Vim Motions Trainer",
+    "description": "A lightweight offline Python CLI game/trainer for practicing fundamental Vim modal editing motions.",
+    "source_url": "http://themouseless.dev/vim/",
+    "status": "passed",
+    "created": "2026-11-27T07:43",
+    "files": [
+      "README.md",
+      "tests/test_vim_trainer.py",
+      "src/vim_trainer.py"
+    ]
   }
 }

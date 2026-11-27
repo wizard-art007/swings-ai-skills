@@ -227,3 +227,4 @@
 - 2026-11-27 07:41 — agent publisher v3: OK — Published experiment 'anchor-security-linter-heuristic' to the private projects repo.
 - 2026-11-27 07:41 — exp/normalscript-interpreter: 'experiment normalscript-interpreter' PASSED on attempt 3 (README.md, src/normalscript.py, tests/test_normalscript.py)
 - 2026-11-27 07:43 — agent builder v1: OK — Built NormalScript Interpreter and emitted experiment.ready event.
+- 2026-11-27 07:43 — exp/vim-motions-trainer: 'experiment vim-motions-trainer' PASSED on attempt 3 (README.md, src/vim_trainer.py, tests/test_vim_trainer.py)
