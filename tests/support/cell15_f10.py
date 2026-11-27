@@ -163,6 +163,9 @@ def _tests_gate(skip=False):
     runner = SKILLS_DIR / "tests" / "run_tests.py"
     if not runner.exists():
         return True, "no tests/ folder yet"
+    c15 = next((c for c in _notebook_cells() if c.startswith("# ===== Cell 15:")), "")
+    if c15:   # test this cell as it is now (export writes the same file), so a new engine cell does not fail F10
+        (SKILLS_DIR / "engine" / "notebook_cell15.py").write_text(c15.split("# " + "\u25b6 notebook-only")[0], encoding="utf-8")
     import tempfile as _tf
     d = _tf.mkdtemp(prefix="swings-gate-")
     cand, res = os.path.join(d, "engine.py"), os.path.join(d, "results.json")

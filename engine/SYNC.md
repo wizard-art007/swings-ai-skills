@@ -1,4 +1,4 @@
-# Notebook sync report (2026-11-27 18:58)
+# Notebook sync report (2026-11-27 19:26)
 
 ## Self-fixes
 
@@ -28,8 +28,9 @@
 
 ## GitHub engine vs this notebook
 
-- **IDENTICAL**: GitHub runs exactly what this notebook builds.
-
-## After the export
-
-- IDENTICAL
+- Cell 38: 0 line(s) on GitHub vs 281 in the notebook; you edited this cell (will be exported)
+  ```diff
+  + 
+  + # ===== Cell 38: Phase 5 - output and proof =====
+  + # Step 1 (engine side): every run reads the latest result of the tests workflow (tests.yml).
+  ```
