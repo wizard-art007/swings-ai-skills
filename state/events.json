@@ -604,7 +604,7 @@
       "slug": "llm-in-assembly"
     },
     "source": "agent",
-    "status": "running",
+    "status": "done",
     "ts": "2026-11-26T23:27:34"
   },
   {
@@ -614,7 +614,7 @@
       "slug": "youtube-ad-punisher"
     },
     "source": "agent",
-    "status": "new",
+    "status": "running",
     "ts": "2026-11-26T23:28:15"
   }
 ]

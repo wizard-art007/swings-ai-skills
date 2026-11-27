@@ -209,3 +209,5 @@
 - 2026-11-27 01:42 — need c6aea0cd: searching -> parked (no repo passes the hard rules for ['flaky test detector', 'flaky test analyzer', 'flaky test', 'flaky test'])
 - 2026-11-27 01:42 — agent builder: resuming (resume 1 of 2)
 - 2026-11-27 01:42 — agent builder v1: OK — Built experiment and emitted experiment.ready event for youtube-ad-punisher.
+- 2026-11-27 01:43 — projects: pushed 1 folder(s) to swings-ai-projects: llm-in-assembly
+- 2026-11-27 01:43 — agent publisher v3: OK — Published experiment 'llm-in-assembly' to the private projects repo successfully.
