@@ -20,8 +20,7 @@ def generate_sequence_diagram(events, title="Sequence Diagram", autonumber=True)
         events = []
 
     actors = []
-    formatted_dicts = []
-    formatted_tuples = []
+    formatted_events = []
 
     for ev in events:
         if isinstance(ev, dict):
@@ -42,16 +41,17 @@ def generate_sequence_diagram(events, title="Sequence Diagram", autonumber=True)
         if target not in actors:
             actors.append(target)
 
-        formatted_dicts.append({
+        formatted_events.append({
             'actor': actor,
             'target': target,
             'message': msg
         })
-        formatted_tuples.append((actor, target, msg))
 
-    # Try calling vendor make_sequence defensively
+    if not actors:
+        actors = ['Runner', 'API']
+
     try:
-        puml = make_sequence(actors, events, title, autonumber)
+        puml = make_sequence(actors, formatted_events, title, autonumber)
         if puml and isinstance(puml, str) and '@startuml' in puml:
             if title and title not in puml:
                 lines = puml.splitlines()
@@ -61,67 +61,52 @@ def generate_sequence_diagram(events, title="Sequence Diagram", autonumber=True)
     except Exception:
         pass
 
-    try:
-        puml = make_sequence(actors, formatted_tuples, title, autonumber)
-        if puml and isinstance(puml, str) and '@startuml' in puml:
-            if title and title not in puml:
-                lines = puml.splitlines()
-                lines.insert(1, f"title {title}")
-                puml = "\n".join(lines)
-            return puml
-    except Exception:
-        pass
-
-    try:
-        puml = make_sequence(actors, formatted_dicts, title, autonumber)
-        if puml and isinstance(puml, str) and '@startuml' in puml:
-            if title and title not in puml:
-                lines = puml.splitlines()
-                lines.insert(1, f"title {title}")
-                puml = "\n".join(lines)
-            return puml
-    except Exception:
-        pass
-
-    # Fallback sequence diagram generator if vendor call signature differs
+    # Fallback generator if vendor call encounters an issue
     lines = ["@startuml"]
     if title:
         lines.append(f"title {title}")
     if autonumber:
         lines.append("autonumber")
-    for actor in actors:
-        lines.append(f"participant {actor}")
-    for item in formatted_dicts:
-        lines.append(f"{item['actor']} -> {item['target']} : {item['message']}")
+    for a in actors:
+        lines.append(f"participant {a}")
+    for fe in formatted_events:
+        lines.append(f"{fe['actor']} -> {fe['target']}: {fe['message']}")
     lines.append("@enduml")
     return "\n".join(lines)
 
 
-def generate_retry_sequence_diagram(test_name, runs, title=None):
+def generate_retry_sequence_diagram(test_name, runs, autonumber=True):
     """
-    Generate a sequence diagram specifically for test attempt retries.
+    Generate a PlantUML sequence diagram specifically for test retry attempts.
 
     Args:
         test_name (str): Name of the test.
-        runs (list[dict]): List of run details for the test.
-        title (str, optional): Custom diagram title.
+        runs (list): List of run dicts or attempts for the test.
+        autonumber (bool, optional): Whether to enable autonumbering.
 
     Returns:
         str: PlantUML sequence diagram string.
     """
-    if title is None:
-        title = f"Retry Trace: {test_name}"
-
+    title = f"Retry Trace: {test_name}"
     events = []
-    for idx, run in enumerate(runs, 1):
-        status = run.get('status', 'unknown')
-        msg = f"Attempt {idx}: {status}"
-        if 'error' in run:
-            msg += f" ({run['error']})"
-        events.append({
-            'actor': 'Runner',
-            'target': test_name,
-            'message': msg
-        })
 
-    return generate_sequence_diagram(events, title=title)
+    if runs:
+        for i, run in enumerate(runs):
+            if isinstance(run, dict):
+                actor = str(run.get('actor') or run.get('sender') or 'Runner')
+                target = str(run.get('target') or run.get('receiver') or 'API')
+                if 'message' in run or 'msg' in run:
+                    msg = str(run.get('message') or run.get('msg'))
+                else:
+                    st = run.get('status', 'unknown')
+                    err = run.get('error')
+                    msg = f"Attempt {i + 1}: {st}" + (f" ({err})" if err else "")
+            else:
+                actor = 'Runner'
+                target = 'API'
+                msg = f"Attempt {i + 1}: {run}"
+            events.append({'actor': actor, 'target': target, 'message': msg})
+    else:
+        events.append({'actor': 'Runner', 'target': 'API', 'message': 'No runs recorded'})
+
+    return generate_sequence_diagram(events, title=title, autonumber=autonumber)
