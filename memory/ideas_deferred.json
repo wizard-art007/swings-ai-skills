@@ -1,0 +1,8 @@
+[
+  {
+    "ts": "2026-11-27T10:40",
+    "title": "Three-Way IOLTA Accounting Reconciliation Engine",
+    "description": "Minimal offline Python implementation of exact-cent three-way trust account reconciliation across bank statements, checkbooks, and client ledgers.",
+    "source_url": "https://dev.to/eth_shihao_26864ff19b7b61/benchmarking-exact-cent-three-way-iolta-reconciliation-in-javascript-54o4"
+  }
+]
