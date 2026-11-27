@@ -4924,6 +4924,23 @@ HEAL_PROTECTED |= CORE_PROTECTED | {
 #   propose (1 Gemini call a day) -> active -> one milestone per task -> finished (-> F7 publish/graduate) | dropped
 # Acceptance tests are written at proposal time, must fail on an empty project, and are never edited by the code
 # writer. Skills count as "used" only when the finished code really imports their tools.
+# ---- replies with ``` inside the code (found in run #37: a Markdown report generator was cut in half) -----------
+FILE_HEADER = re.compile(r"^###\s*FILE:\s*(?P<path>[^\n]+)\n", re.M)
+def _parse_files_robust(text):
+    """A file runs from its header to the next header; its code ends at the LAST closing fence in that span,
+    so ``` inside the code (a Markdown template, a docstring) no longer cuts the file short."""
+    out, heads = {}, list(FILE_HEADER.finditer(text or ""))
+    for i, h in enumerate(heads):
+        seg = text[h.end(): heads[i + 1].start() if i + 1 < len(heads) else len(text)]
+        opening = re.match(r"\s*```[\w+-]*\n", seg)
+        closes = list(re.finditer(r"^```[ \t]*$", seg[opening.end():], re.M)) if opening else []
+        if closes:
+            out[h["path"].strip()] = seg[opening.end():][:closes[-1].start()]
+    return out or _parse_files_plain(text)
+if "_parse_files_plain" not in globals():
+    _parse_files_plain = parse_files
+parse_files = _parse_files_robust
+
 PROJECTS_FILE = STATE_DIR / "projects.json"
 MAX_ACTIVE_PROJECTS = 2
 MAX_MILESTONE_TRIES = 5
@@ -5338,6 +5355,6 @@ def _upgrade_agents_for_projects():
         commit_skills("planner can read project status")
 _upgrade_agents_for_projects()
 
-HEAL_PROTECTED |= {"_milestone_task", "advance_projects", "propose_project", "_validate_proposal", "_tests_fail_empty",
+HEAL_PROTECTED |= {"_parse_files_robust", "_milestone_task", "advance_projects", "propose_project", "_validate_proposal", "_tests_fail_empty",
                    "setup_project_dir", "_skills_imported", "_finish", "_drop", "projects_step", "_run_extras_with_f8",
                    "_write_self_report"}
