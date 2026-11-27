@@ -172,5 +172,17 @@
     "published": "2026-11-26T23:28",
     "pushed": "2026-11-27T01:47",
     "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/youtube-ad-punisher"
+  },
+  "olumino-markdown-spaced-repetition": {
+    "title": "Olumino Markdown Spaced Repetition",
+    "description": "A lightweight Markdown notes and spaced repetition app concept modeled in a small offline Python CLI tool parsing markdown files with frontmatter for flashcard scheduling.",
+    "source_url": "https://olumino.app",
+    "status": "passed",
+    "created": "2026-11-27T04:26",
+    "files": [
+      "README.md",
+      "src/olumino.py",
+      "tests/test_olumino.py"
+    ]
   }
 }
