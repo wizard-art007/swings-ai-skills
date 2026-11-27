@@ -619,7 +619,7 @@
     ],
     "action": "Implement the flake hunter capability for test stability.",
     "priority": 2.0,
-    "status": "open",
+    "status": "parked",
     "source": "self_review",
     "ts": "2026-11-26T18:11",
     "log": [
@@ -646,17 +646,28 @@
         "from": "searching",
         "to": "open",
         "why": "no repo passes the hard rules for ['flaky test hunter', 'test flake analyzer', 'flaky', 'flaky test', 'test flake']"
+      },
+      {
+        "ts": "2026-11-27T01:40",
+        "from": "open",
+        "to": "searching",
+        "why": "tool scripts/flake_hunter.py"
+      },
+      {
+        "ts": "2026-11-27T01:42",
+        "from": "searching",
+        "to": "parked",
+        "why": "no repo passes the hard rules for ['flaky test detector', 'flaky test analyzer', 'flaky test', 'flaky test']"
       }
     ],
-    "updated": "2026-11-26T23:28",
+    "updated": "2026-11-27T01:42",
     "queries": [
-      "flaky test hunter",
-      "test flake analyzer",
-      "flaky",
+      "flaky test detector",
+      "flaky test analyzer",
       "flaky test",
-      "test flake"
+      "flaky test"
     ],
-    "tries": 2
+    "tries": 3
   },
   {
     "id": "345d80bd",

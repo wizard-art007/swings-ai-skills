@@ -16,5 +16,17 @@
       "agent:builder": 12,
       "experiment": 3
     }
+  },
+  "2026-11-27": {
+    "calls": 3,
+    "errors": 0,
+    "overloads": 0,
+    "cache_hits": 0,
+    "seconds": 112.2,
+    "by_purpose": {
+      "need_scout": 1,
+      "agent:builder": 1,
+      "agent:publisher": 1
+    }
   }
 }
