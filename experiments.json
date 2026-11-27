@@ -236,5 +236,51 @@
     "published": "2026-11-27T07:44",
     "pushed": "2026-11-27T10:30",
     "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/vim-motions-trainer"
+  },
+  "proj-flaky-test-pattern-detector": {
+    "title": "flaky_test_pattern_detector",
+    "description": "Detect flaky test patterns from execution history, calculate coverage deltas, and generate visual sequence trace diagrams.",
+    "status": "passed",
+    "kind": "project",
+    "skills": [
+      "plantuml-plantuml",
+      "sebastianbergmann-php-code-coverage"
+    ],
+    "milestones": [
+      {
+        "name": "flaky_log_analyzer",
+        "done": true
+      },
+      {
+        "name": "flaky_sequence_diagrammer",
+        "done": true
+      },
+      {
+        "name": "flaky_report_generator",
+        "done": true
+      }
+    ],
+    "created": "2026-11-27T12:35",
+    "finished": "2026-11-27T13:14",
+    "objective": "O2",
+    "files": [
+      "README.md",
+      "tests/test_m3.py",
+      "tests/test_m2.py",
+      "tests/test_extra_report.py",
+      "tests/test_m1.py",
+      "tests/test_extra_analyzer.py",
+      "tests/test_extra_diagrammer.py",
+      "src/vendor/__init__.py",
+      "src/app/__init__.py",
+      "src/app/diagrammer.py",
+      "src/app/report_builder.py",
+      "src/app/analyzer.py",
+      "src/vendor/plantuml_plantuml/__init__.py",
+      "src/vendor/plantuml_plantuml/class_diagram_generator.py",
+      "src/vendor/plantuml_plantuml/sequence_generator.py",
+      "src/vendor/sebastianbergmann_php_code_coverage/__init__.py",
+      "src/vendor/sebastianbergmann_php_code_coverage/test_coverage_analyzer.py"
+    ]
   }
 }

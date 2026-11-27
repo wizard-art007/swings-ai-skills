@@ -510,10 +510,14 @@
     "kind": "milestone",
     "skill": "sebastianbergmann-php-code-coverage",
     "goal": "proj-flaky-test-pattern-detector milestone 3: flaky_report_generator",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-27T12:53",
     "project": "f2072df9",
     "milestone": 3,
-    "objective": "O2"
+    "objective": "O2",
+    "value": 2001.199,
+    "finished": "2026-11-27T13:14",
+    "minutes": 9.3,
+    "estimate": 1.1
   }
 ]
