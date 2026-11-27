@@ -10,7 +10,9 @@
     "list_experiments",
     "recall_experience",
     "open_needs",
-    "capability_status"
+    "capability_status",
+    "current_plan",
+    "recall_decisions"
   ],
   "triggers": [
     "goal.new"

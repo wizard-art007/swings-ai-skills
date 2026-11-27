@@ -11,7 +11,9 @@
     "tune_score_weights",
     "top_repos",
     "capability_status",
-    "open_needs"
+    "open_needs",
+    "recall_decisions",
+    "current_plan"
   ],
   "triggers": [
     "system.review"

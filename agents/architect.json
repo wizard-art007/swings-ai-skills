@@ -5,7 +5,8 @@
   "tools": [
     "list_tools",
     "agent_stats",
-    "create_agent"
+    "create_agent",
+    "recall_decisions"
   ],
   "triggers": [
     "agent.needed"
