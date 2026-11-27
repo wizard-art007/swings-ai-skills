@@ -56,6 +56,18 @@ text, _ = sc.build_health_report()
 expect("## Self-repair drill (Phase 5)" in text and "self-repair drill failed" in text.split("## Decisions waiting for you", 1)[-1],
        "T4 a failed drill becomes a decision in the weekly report")
 
+# ---- the healer's sandbox can import the engine (the first CI drill found it could not) ----
+if not REAL_COLAB:
+    import tempfile, shutil as _sh
+    w = sc.Path(tempfile.mkdtemp(prefix="swings-sbx-")) / "w"
+    w.mkdir()
+    _sh.copy(sc.ENGINE_FILE, w / "swings_core.py")
+    (w / "t.py").write_text("import os, sys\nsys.path.insert(0, '.')\n"            # as the healer's self-test does
+                            "os.environ.update(SWINGS_SKILLS_DIR=os.path.abspath('skills'), SWINGS_REPO_CACHE=os.path.abspath('cache'))\n"
+                            "import swings_core\nprint('IMPORT_OK')\n")
+    ok, out = sc.run_sandboxed(w, [sys.executable, "t.py"], timeout=240)
+    expect(ok and "IMPORT_OK" in out, f"T6 the engine imports inside the healer's sandbox (as 'nobody' on CI): {out[-300:]}")
+
 # ---- dashboard ----
 sc.PRIVATE_LOG_DIR.mkdir(exist_ok=True)
 rows = [{"run": f"r{i}", "status": "ok", "errors": 0, "minutes": 1.0, "steps": {"queue": 1.0}} for i in range(12)]
