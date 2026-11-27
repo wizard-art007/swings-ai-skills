@@ -261,3 +261,5 @@
 - 2026-11-27 13:50 — limits: LLM daily cap -> low-value LLM work (agent:news_scout)
 - 2026-11-27 13:50 — agent news_scout: ERROR LLMUnavailable: LLM unavailable for agent:news_scout: daily budget reached
 - 2026-11-27 13:50 — limits: health report 2026-W48 written (within free limits: yes), issue #1
+- 2026-11-27 13:57 — agent news_scout: loop detected (fetch_news), run stopped early
+- 2026-11-27 13:57 — agent news_scout v1: FAIL — stopped: repeated the same call to fetch_news

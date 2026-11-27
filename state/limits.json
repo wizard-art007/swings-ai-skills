@@ -1,6 +1,6 @@
 {
-  "ts": "2026-11-27T13:50:33",
-  "run": "20261127-135028-actions",
+  "ts": "2026-11-27T13:57:08",
+  "run": "20261127-135701-actions",
   "gemini": {
     "pacific_day": "2026-11-27",
     "models": {
@@ -11,7 +11,7 @@
         "minute_429": 0,
         "overload": 0,
         "other": 0,
-        "skipped": 0,
+        "skipped": 3,
         "used_up": true
       },
       "gemini-3.7-flash": {
@@ -21,7 +21,7 @@
         "minute_429": 0,
         "overload": 0,
         "other": 0,
-        "skipped": 0,
+        "skipped": 3,
         "used_up": true
       },
       "gemini-3.6-flash": {
@@ -31,7 +31,7 @@
         "minute_429": 0,
         "overload": 0,
         "other": 0,
-        "skipped": 0,
+        "skipped": 3,
         "used_up": true
       },
       "gemini-3.5-flash": {
@@ -41,12 +41,12 @@
         "minute_429": 0,
         "overload": 0,
         "other": 0,
-        "skipped": 0,
+        "skipped": 3,
         "used_up": true
       },
       "gemini-3.5-flash-lite": {
-        "calls": 1,
-        "ok": 1,
+        "calls": 4,
+        "ok": 4,
         "quota_429": 0,
         "minute_429": 0,
         "overload": 0,
@@ -77,8 +77,10 @@
         "per_day": 20
       }
     },
-    "cap_in_use": 72,
-    "calls_today": 91,
+    "cap_in_use": 300,
+    "calls_today": 94,
+    "quota_known_for_all": false,
+    "learned_total": null,
     "overloads_today": 10,
     "all_used_up": false
   },
@@ -88,9 +90,9 @@
         "calls": 8,
         "writes": 0,
         "limit": 5000,
-        "remaining": 4985,
-        "min_remaining": 4985,
-        "reset_in_min": 45.9
+        "remaining": 4973,
+        "min_remaining": 4973,
+        "reset_in_min": 39.3
       },
       "search": {
         "calls": 0,
@@ -114,9 +116,9 @@
         "calls": 1,
         "writes": 0,
         "limit": 5000,
-        "remaining": 4996,
-        "min_remaining": 4996,
-        "reset_in_min": 45.6
+        "remaining": 4994,
+        "min_remaining": 4994,
+        "reset_in_min": 39.1
       }
     }
   },
@@ -143,38 +145,7 @@
     }
   },
   "queue_todo": 0,
-  "slowdowns": [
-    {
-      "ts": "2026-11-27T13:50:30",
-      "limit": "gemini daily quota",
-      "skipped": "gemini-3.8-flash skipped until midnight Pacific",
-      "quota": 20
-    },
-    {
-      "ts": "2026-11-27T13:50:30",
-      "limit": "gemini daily quota",
-      "skipped": "gemini-3.7-flash skipped until midnight Pacific",
-      "quota": 20
-    },
-    {
-      "ts": "2026-11-27T13:50:30",
-      "limit": "gemini daily quota",
-      "skipped": "gemini-3.6-flash skipped until midnight Pacific",
-      "quota": 20
-    },
-    {
-      "ts": "2026-11-27T13:50:30",
-      "limit": "gemini daily quota",
-      "skipped": "gemini-3.5-flash skipped until midnight Pacific",
-      "quota": 20
-    },
-    {
-      "ts": "2026-11-27T13:50:32",
-      "limit": "LLM daily cap",
-      "skipped": "low-value LLM work (agent:news_scout)",
-      "cap": 72
-    }
-  ],
+  "slowdowns": [],
   "hits": [],
   "meter_errors": 0
 }
