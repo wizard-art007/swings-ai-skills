@@ -325,6 +325,10 @@
       "src/vendor/plantuml_stdlib_c4_plantuml/__init__.py",
       "src/vendor/plantuml_stdlib_c4_plantuml/c4_plantuml_generator.py",
       "src/vendor/plantuml_stdlib_c4_plantuml/c4_generator.py"
-    ]
+    ],
+    "projects_path": "experiments/proj-archdoc-kit-generator",
+    "published": "2026-11-27T19:42",
+    "pushed": "2026-11-27T19:42",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/proj-archdoc-kit-generator"
   }
 }
