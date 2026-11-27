@@ -1,19 +1,19 @@
 {
   "yizhiyanhua-ai-fireworks-tech-graph": {
-    "used": 4,
-    "success": 1
+    "used": 5,
+    "success": 2
   },
   "deepset-ai-haystack": {
-    "used": 1,
-    "success": 1
+    "used": 2,
+    "success": 2
   },
   "juliusbrussee-caveman": {
     "used": 1,
     "success": 1
   },
   "agents365-ai-drawio-skill": {
-    "used": 1,
-    "success": 1
+    "used": 3,
+    "success": 3
   },
   "drawdb-io-drawdb": {
     "used": 1,
@@ -28,6 +28,10 @@
     "success": 4
   },
   "plantuml-plantuml": {
+    "used": 2,
+    "success": 2
+  },
+  "plantuml-stdlib-c4-plantuml": {
     "used": 2,
     "success": 2
   }

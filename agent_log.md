@@ -271,3 +271,16 @@
 - 2026-11-27 19:16 — events: tidied 2 duplicate or stuck event(s)
 - 2026-11-27 19:16 — agent news_scout v1: OK — Fetched tech news, saved trend notes, and successfully recorded observations without duplicating existing experiments.
 - 2026-11-27 19:16 — agent evolver v1: OK — All evaluated agents with >=3 runs meet the success rate threshold (>= 0.6). No prompt updates or weight changes required at this time.
+- 2026-11-27 19:42 — project: proposal attempt 1 rejected (milestone 1: the test must be a pytest test that imports the app package)
+- 2026-11-27 19:42 — project proj-archdoc-kit-generator: proposed -> active (2 milestones; tools from ['agents365-ai-drawio-skill', 'plantuml-stdlib-c4-plantuml'])
+- 2026-11-27 19:42 — project/proj-archdoc-kit-generator: 'proj-archdoc-kit-generator milestone 1: Parse and generate dual diagrams' PASSED on attempt 1 (src/app/__init__.py, src/app/kit.py)
+- 2026-11-27 19:42 — project proj-archdoc-kit-generator: milestone 1 'Parse and generate dual diagrams' done; skills imported ['agents365-ai-drawio-skill', 'plantuml-stdlib-c4-plantuml']
+- 2026-11-27 19:42 — project/proj-archdoc-kit-generator: 'proj-archdoc-kit-generator milestone 2: Add documentation index builder' PASSED on attempt 1 (src/app/kit.py)
+- 2026-11-27 19:42 — project proj-archdoc-kit-generator: milestone 2 'Add documentation index builder' done; skills imported ['agents365-ai-drawio-skill', 'plantuml-stdlib-c4-plantuml']
+- 2026-11-27 19:42 — project proj-archdoc-kit-generator: active -> finished (all 2 milestones pass; skills used ['agents365-ai-drawio-skill', 'plantuml-stdlib-c4-plantuml'])
+- 2026-11-27 19:42 — projects: pushed 1 folder(s) to swings-ai-projects: proj-archdoc-kit-generator
+- 2026-11-27 19:42 — project: proposal attempt 1 rejected (milestone 1: the test must be a pytest test that imports the app package)
+- 2026-11-27 19:42 — project proj-agentic-workflow-visualizer: proposed -> active (2 milestones; tools from ['deepset-ai-haystack', 'yizhiyanhua-ai-fireworks-tech-graph'])
+- 2026-11-27 19:42 — project/proj-agentic-workflow-visualizer: 'proj-agentic-workflow-visualizer milestone 1: M1: Route and Spec' PASSED on attempt 1 (src/app/__init__.py, src/app/visualizer.py)
+- 2026-11-27 19:42 — project proj-agentic-workflow-visualizer: milestone 1 'M1: Route and Spec' done; skills imported ['deepset-ai-haystack', 'yizhiyanhua-ai-fireworks-tech-graph']
+- 2026-11-27 19:42 — phase5: 2 extra work round(s) at the end of the run; 1 project(s) proposed
