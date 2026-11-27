@@ -105,8 +105,9 @@
         "name": "Parse and generate dual diagrams",
         "goal": "Create a module in app.kit that takes a description and returns both a C4 PlantUML snippet and a Mermaid flowchart snippet.",
         "test": "import sys\nsys.path.insert(0, 'src')\nfrom app.kit import generate_kit\n\ndef test_generate_kit():\n    desc = 'System: WebApp handling user login via AuthMicroservice.'\n    result = generate_kit(desc)\n    assert 'c4' in result\n    assert 'mermaid' in result\n    assert len(result['c4']) > 0\n    assert len(result['mermaid']) > 0",
-        "status": "todo",
-        "tries": 0
+        "status": "done",
+        "tries": 0,
+        "done_at": "2026-11-27T19:42"
       },
       {
         "n": 2,
@@ -149,6 +150,10 @@
         "to": "active",
         "why": "2 milestones; tools from ['agents365-ai-drawio-skill', 'plantuml-stdlib-c4-plantuml']"
       }
+    ],
+    "skills_used": [
+      "agents365-ai-drawio-skill",
+      "plantuml-stdlib-c4-plantuml"
     ]
   }
 ]

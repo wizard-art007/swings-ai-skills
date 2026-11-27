@@ -12,3 +12,25 @@ def generate_kit(description: str) -> dict:
         "c4": c4_snippet or "",
         "mermaid": mermaid_snippet or ""
     }
+
+def build_markdown_docs(description: str) -> str:
+    """Compile the generated diagrams into a single structured markdown documentation file."""
+    kit = generate_kit(description)
+    c4_code = kit.get("c4", "")
+    mermaid_code = kit.get("mermaid", "")
+
+    md_lines = [
+        "# Architecture Documentation",
+        "",
+        "## C4 Architecture Diagram",
+        "```plantuml",
+        c4_code,
+        "```",
+        "",
+        "## System Flow (Mermaid)",
+        "```mermaid",
+        mermaid_code,
+        "```",
+        ""
+    ]
+    return "\n".join(md_lines)

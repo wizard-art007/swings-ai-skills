@@ -12,8 +12,8 @@
     "success": 1
   },
   "agents365-ai-drawio-skill": {
-    "used": 1,
-    "success": 1
+    "used": 2,
+    "success": 2
   },
   "drawdb-io-drawdb": {
     "used": 1,
@@ -30,5 +30,9 @@
   "plantuml-plantuml": {
     "used": 2,
     "success": 2
+  },
+  "plantuml-stdlib-c4-plantuml": {
+    "used": 1,
+    "success": 1
   }
 }
