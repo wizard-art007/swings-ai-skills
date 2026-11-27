@@ -670,7 +670,7 @@
       "source_url": "https://psychoscript.com/"
     },
     "source": "agent",
-    "status": "running",
+    "status": "done",
     "ts": "2026-11-27T07:41:04"
   },
   {
@@ -682,7 +682,17 @@
       "source_url": "http://themouseless.dev/vim/"
     },
     "source": "agent",
-    "status": "new",
+    "status": "running",
     "ts": "2026-11-27T07:41:05"
+  },
+  {
+    "id": "4e151d7bb9",
+    "type": "experiment.ready",
+    "payload": {
+      "slug": "normalscript-interpreter"
+    },
+    "source": "agent",
+    "status": "new",
+    "ts": "2026-11-27T07:43:39"
   }
 ]
