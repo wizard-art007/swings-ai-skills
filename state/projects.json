@@ -114,11 +114,12 @@
         "name": "Add documentation index builder",
         "goal": "Extend the kit builder to compile the generated diagrams into a single structured markdown documentation file.",
         "test": "import sys\nsys.path.insert(0, 'src')\nfrom app.kit import build_markdown_docs\n\ndef test_build_markdown_docs():\n    desc = 'System: API Gateway routing requests to PaymentService.'\n    md = build_markdown_docs(desc)\n    assert '# Architecture Documentation' in md\n    assert '```plantuml' in md\n    assert '```mermaid' in md",
-        "status": "todo",
-        "tries": 0
+        "status": "done",
+        "tries": 0,
+        "done_at": "2026-11-27T19:42"
       }
     ],
-    "status": "active",
+    "status": "finished",
     "created": "2026-11-27T19:42",
     "objective": "O2",
     "vendored": [
@@ -149,11 +150,75 @@
         "from": "proposed",
         "to": "active",
         "why": "2 milestones; tools from ['agents365-ai-drawio-skill', 'plantuml-stdlib-c4-plantuml']"
+      },
+      {
+        "ts": "2026-11-27T19:42",
+        "from": "active",
+        "to": "finished",
+        "why": "all 2 milestones pass; skills used ['agents365-ai-drawio-skill', 'plantuml-stdlib-c4-plantuml']"
       }
     ],
     "skills_used": [
       "agents365-ai-drawio-skill",
       "plantuml-stdlib-c4-plantuml"
+    ]
+  },
+  {
+    "id": "1aeaa0f7",
+    "slug": "proj-agentic-workflow-visualizer",
+    "title": "Agentic Workflow Visualizer",
+    "goal": "Combine agent prompt routing with automatic diagram generation to produce visual workflows from natural language prompts.",
+    "area": "ai_agents",
+    "tools": [
+      {
+        "skill": "deepset-ai-haystack",
+        "module": "agent_prompt_router"
+      },
+      {
+        "skill": "yizhiyanhua-ai-fireworks-tech-graph",
+        "module": "diagram_helper"
+      }
+    ],
+    "milestones": [
+      {
+        "n": 1,
+        "name": "M1: Route and Spec",
+        "goal": "Route an input prompt and generate a corresponding graph specification.",
+        "test": "import sys\nsys.path.insert(0, 'src')\nfrom app.visualizer import route_and_spec\n\ndef test_route_and_spec(tmp_path):\n    spec = route_and_spec(\"Search the web and summarize results\")\n    assert \"nodes\" in spec\n    assert \"edges\" in spec\n",
+        "status": "todo",
+        "tries": 0
+      },
+      {
+        "n": 2,
+        "name": "M2: Complete Workflow Diagram Generator",
+        "goal": "Generate Mermaid and PlantUML markup from the routed agent prompt.",
+        "test": "import sys\nsys.path.insert(0, 'src')\nfrom app.visualizer import generate_workflow_diagram\n\ndef test_generate_workflow_diagram(tmp_path):\n    result = generate_workflow_diagram(\"Run QA tests and report status\", format_type=\"mermaid\")\n    assert isinstance(result, str)\n    assert \"graph\" in result or \"flowchart\" in result\n",
+        "status": "todo",
+        "tries": 0
+      }
+    ],
+    "status": "active",
+    "created": "2026-11-27T19:42",
+    "objective": "O2",
+    "vendored": [
+      {
+        "skill": "deepset-ai-haystack",
+        "file": "agent_prompt_router.py",
+        "sha256": "1a9cf2089dcb862c"
+      },
+      {
+        "skill": "yizhiyanhua-ai-fireworks-tech-graph",
+        "file": "diagram_helper.py",
+        "sha256": "4597fdd881b5581a"
+      }
+    ],
+    "log": [
+      {
+        "ts": "2026-11-27T19:42",
+        "from": "proposed",
+        "to": "active",
+        "why": "2 milestones; tools from ['deepset-ai-haystack', 'yizhiyanhua-ai-fireworks-tech-graph']"
+      }
     ]
   }
 ]

@@ -278,3 +278,6 @@
 - 2026-11-27 19:42 — project/proj-archdoc-kit-generator: 'proj-archdoc-kit-generator milestone 2: Add documentation index builder' PASSED on attempt 1 (src/app/kit.py)
 - 2026-11-27 19:42 — project proj-archdoc-kit-generator: milestone 2 'Add documentation index builder' done; skills imported ['agents365-ai-drawio-skill', 'plantuml-stdlib-c4-plantuml']
 - 2026-11-27 19:42 — project proj-archdoc-kit-generator: active -> finished (all 2 milestones pass; skills used ['agents365-ai-drawio-skill', 'plantuml-stdlib-c4-plantuml'])
+- 2026-11-27 19:42 — projects: pushed 1 folder(s) to swings-ai-projects: proj-archdoc-kit-generator
+- 2026-11-27 19:42 — project: proposal attempt 1 rejected (milestone 1: the test must be a pytest test that imports the app package)
+- 2026-11-27 19:42 — project proj-agentic-workflow-visualizer: proposed -> active (2 milestones; tools from ['deepset-ai-haystack', 'yizhiyanhua-ai-fireworks-tech-graph'])
