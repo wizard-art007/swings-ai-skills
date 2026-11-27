@@ -779,5 +779,43 @@
     "source": "self_review",
     "status": "new",
     "ts": "2026-11-27T19:16:35"
+  },
+  {
+    "id": "5611a48c07",
+    "type": "system.review",
+    "payload": {
+      "gaps": [
+        {
+          "gap": "Agent Step Limits and Infinite Loops in News Scout and Evolver",
+          "evidence": [
+            "news_scout: step limit reached",
+            "maintainer: step limit reached",
+            "evolver: step limit reached"
+          ],
+          "action": "Refine agent prompts and tool call logic to prevent redundant calls and step limit exhausts"
+        }
+      ]
+    },
+    "source": "needs",
+    "status": "new",
+    "ts": "2026-11-27T19:16:35"
+  },
+  {
+    "id": "edffe7abb2",
+    "type": "system.review",
+    "payload": {
+      "gaps": [
+        {
+          "gap": "Zero Success Rate and Runs for Architect Agent",
+          "evidence": [
+            "architect: {\"success_rate\": 0.0, \"runs\": 0, \"step_limit\": 6}"
+          ],
+          "action": "Investigate why the architect agent has zero runs and integrate it into active workflows"
+        }
+      ]
+    },
+    "source": "needs",
+    "status": "new",
+    "ts": "2026-11-27T19:16:35"
   }
 ]

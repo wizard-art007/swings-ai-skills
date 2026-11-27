@@ -793,7 +793,9 @@
     "priority": 2.0,
     "status": "open",
     "source": "self_review",
-    "ts": "2026-11-27T19:16"
+    "ts": "2026-11-27T19:16",
+    "routed_to": "evolver",
+    "routed_at": "2026-11-27T19:16"
   },
   {
     "id": "881bdbc1",
@@ -809,6 +811,8 @@
     "priority": 1.0,
     "status": "open",
     "source": "self_review",
-    "ts": "2026-11-27T19:16"
+    "ts": "2026-11-27T19:16",
+    "routed_to": "evolver",
+    "routed_at": "2026-11-27T19:16"
   }
 ]

@@ -265,3 +265,6 @@
 - 2026-11-27 13:57 — agent news_scout v1: FAIL — stopped: repeated the same call to fetch_news
 - 2026-11-27 19:16 — guard: blocked need.reopened b5c81ace: same gap again with no new evidence
 - 2026-11-27 19:16 — guard: blocked need.reopened c6aea0cd: same gap again with no new evidence
+- 2026-11-27 19:16 — self-review: capability score 95% (18/19 strong), 4 gap(s), 4 new need(s)
+- 2026-11-27 19:16 — need 2ebc0572: internal gap routed to the evolver
+- 2026-11-27 19:16 — need 881bdbc1: internal gap routed to the evolver
