@@ -19,6 +19,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+        with: { ref: "${{ github.ref_name }}" }   # latest main, not the commit the run was queued at
       - uses: actions/setup-python@v5
         with: { python-version: "3.12", cache: pip, cache-dependency-path: engine/requirements.txt }
       - uses: actions/setup-node@v4
