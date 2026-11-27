@@ -520,5 +520,15 @@
     "minutes": 9.3,
     "estimate": 1.1,
     "counted": true
+  },
+  {
+    "kind": "milestone",
+    "skill": "plantuml-stdlib-c4-plantuml",
+    "goal": "proj-archdoc-kit-generator milestone 1: Parse and generate dual diagrams",
+    "status": "todo",
+    "queued": "2026-11-27T19:42",
+    "project": "3b6199ad",
+    "milestone": 1,
+    "objective": "O2"
   }
 ]

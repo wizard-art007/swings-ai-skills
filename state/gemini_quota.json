@@ -30,7 +30,7 @@
         "minute_429": 0,
         "overload": 0,
         "other": 0,
-        "skipped": 14,
+        "skipped": 15,
         "used_up": true
       },
       "gemini-3.7-flash": {
@@ -40,7 +40,7 @@
         "minute_429": 0,
         "overload": 0,
         "other": 0,
-        "skipped": 14,
+        "skipped": 15,
         "used_up": true
       },
       "gemini-3.6-flash": {
@@ -50,7 +50,7 @@
         "minute_429": 0,
         "overload": 0,
         "other": 0,
-        "skipped": 14,
+        "skipped": 15,
         "used_up": true
       },
       "gemini-3.5-flash": {
@@ -60,12 +60,12 @@
         "minute_429": 0,
         "overload": 0,
         "other": 0,
-        "skipped": 14,
+        "skipped": 15,
         "used_up": true
       },
       "gemini-3.5-flash-lite": {
-        "calls": 15,
-        "ok": 15,
+        "calls": 16,
+        "ok": 16,
         "quota_429": 0,
         "minute_429": 0,
         "overload": 0,
