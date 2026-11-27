@@ -34,3 +34,7 @@
   + # ===== Cell 37: Notebook sync (F10), engine side =====
   + # The notebook (Cell 15) records every export in engine/export.json and writes engine/SYNC.md. The engine reads that
   ```
+
+## After the export
+
+- IDENTICAL
