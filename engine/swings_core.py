@@ -619,6 +619,7 @@ agent = CodeAgent()
 import schedule, threading, traceback
 
 TASKS_FILE = SKILLS_DIR / "tasks.json"   # queue you (or the agent) can add to
+TASK_HANDLERS = {}   # kind -> fn(skill, task) -> bool: later cells plug new task kinds into the queue here
 REFRESH_DAYS = 7
 CYCLE_DEADLINE = None   # set by run_autopilot.py on GitHub Actions (time budget per run)
 
@@ -659,6 +660,8 @@ def run_task_queue(limit=3):
             elif t["kind"] == "reengineer":
                 ok = agent.reengineer(skill, t["goal"], files=t.get("files"), file_glob=t.get("file_glob"),
                                       check_cmd=t.get("check_cmd"))
+            elif t["kind"] in TASK_HANDLERS:
+                ok = TASK_HANDLERS[t["kind"]](skill, t)
             else:
                 ok = False
             t["status"] = "done" if ok else "failed"
@@ -4915,3 +4918,417 @@ HEAL_PROTECTED |= CORE_PROTECTED | {
     "build_charter", "charter_text", "_llm_with_charter", "plan_month", "update_progress", "metrics", "objective_for",
     "add_task", "task_value", "build_experiment", "write_summary", "trim_agent_log", "coherence_step",
     "_run_extras_with_coherence", "syslog_exception"}
+
+# ===== Cell 35: Real projects (F8) =====
+# Phase 3: the system builds real projects, over several runs, out of its own skill tools.
+#   propose (1 Gemini call a day) -> active -> one milestone per task -> finished (-> F7 publish/graduate) | dropped
+# Acceptance tests are written at proposal time, must fail on an empty project, and are never edited by the code
+# writer. Skills count as "used" only when the finished code really imports their tools.
+PROJECTS_FILE = STATE_DIR / "projects.json"
+MAX_ACTIVE_PROJECTS = 2
+MAX_MILESTONE_TRIES = 5
+PROPOSALS_PER_DAY = 1
+PROPOSAL_ATTEMPTS_PER_DAY = 2      # a bad reply may be retried once the same day
+MILESTONES_RANGE = (2, 4)
+KIND_PRIORITY["milestone"] = 2
+HIGH_VALUE = HIGH_VALUE + ("milestone", "project_plan")
+_F8 = {"run": None, "milestones_done": 0, "proposed": 0}
+
+def _f8_run():
+    if _F8["run"] != _RUN.get("id"):
+        _F8.update(run=_RUN.get("id"), milestones_done=0, proposed=0)
+    return _F8
+
+def load_projects():
+    return _jload(PROJECTS_FILE, [])
+
+def _pmove(p, to, why):
+    p.setdefault("log", []).append({"ts": _now_min(), "from": p.get("status"), "to": to, "why": str(why)[:200]})
+    p["log"] = p["log"][-30:]
+    p["status"] = to
+    log(f"project {p['slug']}: {p['log'][-1]['from']} -> {to} ({str(why)[:120]})")
+
+def _vendor_pkg(skill_name):
+    return re.sub(r"\W", "_", skill_name)
+
+def _project_dir(p):
+    return EXPERIMENTS_DIR / p["slug"]
+
+# ---- what the system can build with ------------------------------------------------------------------------
+def project_inventory():
+    """Tool modules with real functions, from skills whose capability checks are not failing."""
+    weak = {s for c in _jload(CAPABILITIES_FILE, []) if c.get("status") in ("missing", "weak") for s in _skills_in(c["check"])}
+    return [t for t in tool_inventory() if t["skill"] not in weak and t["functions"]]
+
+# ---- 1. propose -----------------------------------------------------------------------------------------------
+TEST_IMPORT_HINT = "sys.path.insert(0, 'src'); from app.<module> import <function>"
+
+def _proposal_prompt(inv, avoid, feedback=""):
+    tools = "\n".join(f"- skill '{t['skill']}', module '{t['module']}': " + "; ".join(t["functions"][:6]) for t in inv)
+    objs = "; ".join(f"{o['id']} {o['title']}" for o in _active_objectives()) or "none"
+    return (f"TOOLS THE SYSTEM BUILT ITSELF (offline Python, one module each):\n{tools}\n\n"
+            f"THIS MONTH'S OBJECTIVES: {objs}\nAVOID REPEATING: {avoid or 'nothing yet'}\n\n"
+            "Propose ONE small but genuinely useful project that COMBINES tools from at least 2 different skills "
+            "above into something more than either does alone (for example a CLI or library that turns a short "
+            "system description into a documentation kit). It is built in milestones, each small enough for one "
+            "focused coding session, in a package named `app` under src/. The tools will be available as "
+            "`from vendor.<skill_with_underscores>.<module> import <function>`.\n"
+            f"Write {MILESTONES_RANGE[0]}-{MILESTONES_RANGE[1]} milestones. Each has an offline pytest acceptance test "
+            f"that imports the PROJECT's code (`{TEST_IMPORT_HINT}`), calls it with small inputs and asserts on real "
+            "results. Tests must fail until the milestone is built. No network, no subprocess, no files outside tmp_path.\n"
+            'Reply with JSON only: {"title": "...", "goal": "one sentence", "area": "diagrams|ai_agents|qa_testing", '
+            '"tools": [{"skill": "...", "module": "..."}], "milestones": [{"name": "...", "goal": "...", '
+            '"test": "import sys\\nsys.path.insert(0, \'src\')\\n..."}]}' + feedback)
+
+def _validate_proposal(prop, inv):
+    have = {(t["skill"], t["module"]) for t in inv}
+    tools = [t for t in prop.get("tools", []) if (t.get("skill"), t.get("module")) in have]
+    if len({t["skill"] for t in tools}) < 2:
+        return "needs tools from at least 2 different skills in the inventory"
+    ms = prop.get("milestones") or []
+    if not MILESTONES_RANGE[0] <= len(ms) <= MILESTONES_RANGE[1]:
+        return f"needs {MILESTONES_RANGE[0]}-{MILESTONES_RANGE[1]} milestones"
+    for i, m in enumerate(ms, 1):
+        code = str(m.get("test") or "")
+        if "def test" not in code or "app" not in code:
+            return f"milestone {i}: the test must be a pytest test that imports the app package"
+        bad = scan_python(code)
+        if bad:
+            return f"milestone {i}: test rejected ({bad[0]})"
+    prop["tools"] = tools
+    return None
+
+def _new_project(prop):
+    slug_ = ("proj-" + slug(prop["title"]))[:40]
+    return {"id": uuid.uuid4().hex[:8], "slug": slug_, "title": prop["title"][:100], "goal": str(prop.get("goal", ""))[:300],
+            "area": prop.get("area") if prop.get("area") in MISSION_AREAS else "",
+            "tools": [{"skill": t["skill"], "module": t["module"]} for t in prop["tools"]],
+            "milestones": [{"n": i, "name": str(m.get("name", f"milestone {i}"))[:80], "goal": str(m.get("goal", ""))[:300],
+                            "test": m["test"], "status": "todo", "tries": 0} for i, m in enumerate(prop["milestones"], 1)],
+            "status": "proposed", "created": _now_min(), "objective": _project_objective(prop)}
+
+PROJECT_METRICS = ("experiments_using_skills", "projects_graduated", "projects_finished", "milestones_done")
+def _project_objective(prop):
+    """A project serves the objective whose metric it moves; otherwise the closest one by area and words."""
+    for o in _active_objectives():
+        if o["metric"] in PROJECT_METRICS:
+            return o["id"]
+    return objective_for(f"{prop.get('title', '')} {prop.get('goal', '')}", prop.get("area") or "")
+
+def setup_project_dir(p):
+    """Copy the skill tools in (with licence + hash), the fixed acceptance tests, a README."""
+    d = _project_dir(p)
+    (d / "src" / "app").mkdir(parents=True, exist_ok=True)
+    (d / "tests").mkdir(exist_ok=True)
+    (d / "src" / "app" / "__init__.py").touch()
+    (d / "src" / "vendor").mkdir(exist_ok=True)
+    (d / "src" / "vendor" / "__init__.py").touch()
+    reg = load_registry()
+    p["vendored"] = []
+    for skill in sorted({t["skill"] for t in p["tools"]}):
+        s = reg.get(skill)
+        if not s:
+            continue
+        dest = d / "src" / "vendor" / _vendor_pkg(skill)
+        dest.mkdir(exist_ok=True)
+        (dest / "__init__.py").write_text("import os, sys\nsys.path.insert(0, os.path.dirname(__file__))  # sibling imports\n",
+                                          encoding="utf-8")
+        for f in sorted(Path(s["path"], "scripts").glob("*.py")):
+            body = f.read_text(encoding="utf-8")
+            (dest / f.name).write_text(body, encoding="utf-8")
+            p["vendored"].append({"skill": skill, "file": f.name, "sha256": hashlib.sha256(body.encode()).hexdigest()[:16]})
+        for lic in Path(s["path"]).glob("LICEN*"):
+            shutil.copy(lic, dest / lic.name)
+    _install_tests(p, upto=len(p["milestones"]))           # all of them for the empty-project check
+    (d / "README.md").write_text(
+        f"# {p['title']}\n\n{p['goal']}\n\nBuilt by Swings AI from its own skill tools, one milestone per session.\n\n"
+        "## Milestones\n\n" + "\n".join(f"{m['n']}. {m['name']}: {m['goal']}" for m in p["milestones"]) +
+        "\n\n## Skill tools used (copied into src/vendor/, with their licences)\n\n" +
+        "\n".join(f"- {v['skill']}/{v['file']} (sha256 {v['sha256']})" for v in p["vendored"]) + "\n", encoding="utf-8")
+
+def _install_tests(p, upto):
+    """Fixed acceptance tests for milestones 1..upto; later ones stay out until their turn."""
+    for m in p["milestones"]:
+        f = _project_dir(p) / "tests" / f"test_m{m['n']}.py"
+        if m["n"] <= upto:
+            f.write_text(m["test"], encoding="utf-8")
+        elif f.exists():
+            f.unlink()
+
+def _tests_fail_empty(p):
+    """Every acceptance test must fail on the empty project, or it proves nothing."""
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        work = Path(tmp) / "p"
+        shutil.copytree(_project_dir(p), work)
+        passing = []
+        for m in p["milestones"]:
+            ok, _ = run_sandboxed(work, [sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider", f"tests/test_m{m['n']}.py"],
+                                  timeout=120)
+            if ok:
+                passing.append(m["n"])
+    return passing
+
+def propose_project(force=False):
+    projects = load_projects()
+    if sum(p.get("status") == "active" for p in projects) >= MAX_ACTIVE_PROJECTS:
+        return f"proposal limit: {MAX_ACTIVE_PROJECTS} projects already active"
+    today = str(datetime.date.today())
+    if not force and sum(1 for p in projects if p.get("created", "").startswith(today)) >= PROPOSALS_PER_DAY:
+        return "proposal limit reached today"
+    tried = sum(1 for d in load_decisions(days=1) if d["kind"] in ("project.rejected", "project.started") and d["ts"].startswith(today))
+    if not force and tried >= PROPOSAL_ATTEMPTS_PER_DAY:
+        return "proposal limit: attempts used up today"
+    inv = project_inventory()
+    if len({t["skill"] for t in inv}) < 2:
+        return "fewer than 2 skills with working tools"
+    avoid = "; ".join(p["title"] for p in projects[-10:])
+    with _as_purpose("project_plan"):
+        prop = _extract_json(llm(_proposal_prompt(inv, avoid), system="You design small, useful software projects."))
+    why = _validate_proposal(prop or {}, inv) if prop else "reply was not valid JSON"
+    if why:
+        record_decision("project.rejected", (prop or {}).get("title", "?"), "proposal rejected", why)
+        log(f"project: proposal rejected ({why})")
+        return f"rejected: {why}"
+    p = _new_project(prop)
+    if any(x["slug"] == p["slug"] for x in projects):
+        return "rejected: a project with that name exists"
+    setup_project_dir(p)
+    trivial = _tests_fail_empty(p)
+    if trivial:
+        shutil.rmtree(_project_dir(p), ignore_errors=True)
+        record_decision("project.rejected", p["title"], "proposal rejected", f"tests {trivial} pass on an empty project")
+        log(f"project: proposal '{p['title']}' rejected (tests {trivial} pass before any code)")
+        return f"rejected: tests {trivial} pass on an empty project"
+    _install_tests(p, upto=1)
+    _pmove(p, "active", f"{len(p['milestones'])} milestones; tools from {sorted({t['skill'] for t in p['tools']})}")
+    projects.append(p)
+    _jsave(PROJECTS_FILE, projects)
+    record_decision("project.started", p["slug"], p["title"], p["goal"], evidence={"tools": p["tools"], "objective": p["objective"]},
+                    undo="drop the project")
+    commit_skills(f"project {p['slug']}: proposed and started")
+    _f8_run()["proposed"] += 1
+    return p["slug"]
+
+# ---- 2. build a milestone (a queue task) --------------------------------------------------------------------------
+def _vendor_api(p):
+    out = []
+    for v in p.get("vendored", []):
+        f = _project_dir(p) / "src" / "vendor" / _vendor_pkg(v["skill"]) / v["file"]
+        try:
+            tree = ast.parse(f.read_text(encoding="utf-8"))
+        except (OSError, SyntaxError):
+            continue
+        for n in tree.body:
+            if isinstance(n, ast.FunctionDef) and not n.name.startswith("_"):
+                doc = (ast.get_docstring(n) or "").split("\n")[0][:90]
+                out.append(f"from vendor.{_vendor_pkg(v['skill'])}.{v['file'][:-3]} import {n.name}  "
+                           f"# {n.name}({', '.join(a.arg for a in n.args.args)}) {doc}")
+    return "\n".join(out[:40])
+
+def _app_sources(p, limit=6000):
+    files = sorted((_project_dir(p) / "src" / "app").rglob("*.py"))
+    text = "\n\n".join(f"### src/app/{f.relative_to(_project_dir(p) / 'src' / 'app')}\n```python\n{f.read_text(encoding='utf-8')}\n```"
+                       for f in files if f.stat().st_size)
+    return text[:limit] or "(empty package)"
+
+ALLOWED_PROJECT_FILE = re.compile(r"(\./)?(src/app/[\w/]+\.py|tests/test_extra_\w+\.py|README\.md)")
+
+def _milestone_task(skill, t):
+    projects = load_projects()
+    p = next((x for x in projects if x["id"] == t.get("project")), None)
+    if not p or p["status"] != "active":
+        return False
+    m = p["milestones"][t["milestone"] - 1]
+    _install_tests(p, upto=m["n"])                            # the fixed tests are always the real ones
+    plan = "\n".join(f"{'->' if x['n'] == m['n'] else '  '} {x['n']}. {x['name']}: {x['goal']} [{x['status']}]"
+                     for x in p["milestones"])
+    prompt = (f"PROJECT: {p['title']}\nGOAL: {p['goal']}\nMILESTONES:\n{plan}\n\nCURRENT MILESTONE: {m['n']} - {m['name']}\n"
+              f"{m['goal']}\n\nACCEPTANCE TEST (tests/test_m{m['n']}.py, fixed, must pass; earlier milestone tests must keep "
+              f"passing):\n```python\n{m['test']}\n```\n\nSKILL TOOLS YOU SHOULD BUILD ON (already in src/vendor/, do not "
+              f"copy or edit them, import them):\n{_vendor_api(p)}\n\nCURRENT CODE:\n{_app_sources(p)}\n\n"
+              "Write or change files under src/app/ only (and optional extra tests as tests/test_extra_<name>.py). "
+              "Use the skill tools above where they fit instead of re-implementing them. Standard library only besides "
+              "them; no network, no subprocess, no eval/exec.\n" + FILE_FORMAT)
+    plain = globals()["parse_files"]
+    def only_project_files(text):
+        files = plain(text)
+        for k in [k for k in files if not ALLOWED_PROJECT_FILE.fullmatch(k)]:
+            files.pop(k)
+            log(f"project {p['slug']}: dropped the LLM's write to {k} (only src/app and extra tests may change)")
+        return files
+    globals()["parse_files"] = only_project_files
+    try:
+        return agent._attempt(_project_dir(p), prompt, f"{p['slug']} milestone {m['n']}: {m['name']}",
+                              test_cmd=[sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider", "tests"],
+                              label=f"project/{p['slug']}", memory_mb=2048)
+    finally:
+        globals()["parse_files"] = plain
+
+TASK_HANDLERS["milestone"] = _experienced(lambda skill, t: "milestone", lambda skill, t: t.get("goal", ""),
+                                          lambda skill, t: skill.get("skill_name"))(_milestone_task)
+
+# ---- 3. advance: queue, score, finish or drop ------------------------------------------------------------------------
+def _skills_imported(p):
+    pkgs = {_vendor_pkg(t["skill"]): t["skill"] for t in p["tools"]}
+    used = set()
+    for f in (_project_dir(p) / "src" / "app").rglob("*.py"):
+        try:
+            tree = ast.parse(f.read_text(encoding="utf-8"))
+        except SyntaxError:
+            continue
+        for n in ast.walk(tree):
+            mods = [n.module or ""] if isinstance(n, ast.ImportFrom) else [a.name for a in n.names] if isinstance(n, ast.Import) else []
+            for mod in mods:
+                parts = mod.split(".")
+                if len(parts) >= 2 and parts[0] == "vendor" and parts[1] in pkgs:
+                    used.add(pkgs[parts[1]])
+    return sorted(used)
+
+def _finish(p):
+    p["skills_used"] = _skills_imported(p)
+    _install_tests(p, upto=len(p["milestones"]))
+    _pmove(p, "finished", f"all {len(p['milestones'])} milestones pass; skills used {p['skills_used']}")
+    exps = load_experiments()
+    exps[p["slug"]] = {"title": p["title"], "description": p["goal"], "status": "passed", "kind": "project",
+                       "skills": p["skills_used"], "milestones": [{"name": m["name"], "done": True} for m in p["milestones"]],
+                       "created": p["created"], "finished": _now_min(), "objective": p.get("objective"),
+                       "files": [str(f.relative_to(_project_dir(p))) for f in _project_dir(p).rglob("*") if f.is_file()]}
+    _jsave(EXPERIMENTS_FILE, exps)
+    runs = len({x["ts"][:13] for x in p.get("log", [])})
+    record_decision("project.finished", p["slug"], p["title"], f"{len(p['milestones'])} milestones; skills {p['skills_used']}",
+                    evidence={"milestones": [(m["n"], m["tries"]) for m in p["milestones"]]})
+    save_note(f"Project '{p['title']}' finished: {len(p['milestones'])} milestones, "
+              f"{sum(m['tries'] for m in p['milestones'])} failed tries, built on {', '.join(p['skills_used']) or 'no skill tools'}.")
+    commit_skills(f"project {p['slug']}: finished")
+    try:
+        GITHUB._token()
+        publish_to_projects_repo([p["slug"]])
+        graduate_ready()
+    except RuntimeError:
+        pass
+
+def _drop(p, m, why):
+    _pmove(p, "dropped", f"milestone {m['n']} failed {m['tries']} times: {why}")
+    record_decision("project.dropped", p["slug"], f"milestone {m['n']} '{m['name']}'", why)
+    save_note(f"Project '{p['title']}' dropped at milestone {m['n']} ({m['name']}) after {m['tries']} tries: {str(why)[:160]}")
+    commit_skills(f"project {p['slug']}: dropped")
+
+def advance_projects():
+    projects, tasks = load_projects(), _jload(TASKS_FILE, [])
+    queued = 0
+    for p in projects:
+        if p.get("status") != "active":
+            continue
+        m = next((x for x in p["milestones"] if x["status"] != "done"), None)
+        if m is None:
+            _finish(p); continue
+        t = next((x for x in reversed(tasks) if x.get("project") == p["id"] and x.get("milestone") == m["n"]), None)
+        if t and t.get("status") == "todo":
+            continue
+        if t and t.get("status") == "done" and not t.get("counted"):
+            t["counted"] = True
+            m.update(status="done", done_at=_now_min())
+            used = _skills_imported(p)
+            for s in used:
+                record_skill_use(s, True)                     # real usefulness data for the scout's weights
+            p["skills_used"] = used
+            _f8_run()["milestones_done"] += 1
+            log(f"project {p['slug']}: milestone {m['n']} '{m['name']}' done; skills imported {used}")
+            m = next((x for x in p["milestones"] if x["status"] != "done"), None)
+            if m is None:
+                _finish(p); continue
+        elif t and not t.get("counted") and str(t.get("status", "")).startswith(("failed", "error", "skipped")):
+            t["counted"] = True
+            if not INFRA_ERROR.search(str(t.get("status"))):
+                m["tries"] += 1
+                last = next((e for e in reversed(_load_experiences(50)) if e.get("goal") == t.get("goal")), {})
+                tail = " ".join(map(str, last.get("failures", [])))[-400:]
+                for s in {x["skill"] for x in p["tools"]}:
+                    if f"vendor/{_vendor_pkg(s)}" in tail:
+                        record_skill_use(s, False)            # the tool itself broke, not just the new code
+                if m["tries"] >= MAX_MILESTONE_TRIES:
+                    _drop(p, m, tail[-160:] or t.get("status")); continue
+        reg = load_registry()
+        skill = next((x["skill"] for x in p["tools"] if x["skill"] in reg), None)
+        if not skill:
+            _drop(p, m, "none of its skills is active any more"); continue
+        _jsave(TASKS_FILE, tasks)                             # keep the "counted" marks before add_task re-reads
+        add_task("milestone", skill, f"{p['slug']} milestone {m['n']}: {m['name']}", project=p["id"], milestone=m["n"],
+                 objective=p.get("objective"))
+        tasks = _jload(TASKS_FILE, [])
+        queued += 1
+    _jsave(TASKS_FILE, tasks)
+    _jsave(PROJECTS_FILE, projects)
+    return queued
+
+def project_status():
+    return [{"slug": p["slug"], "title": p["title"], "status": p["status"], "skills_used": p.get("skills_used", []),
+             "milestones": [f"{m['n']}. {m['name']} [{m['status']}, {m['tries']} failed]" for m in p["milestones"]]}
+            for p in load_projects()]
+TOOLS.register("project_status", project_status, "Active, finished and dropped projects with their milestones.")
+
+# ---- run step, metrics, reports ------------------------------------------------------------------------------------------
+def projects_step():
+    if IN_COLAB or time_left() < 600:
+        return
+    advance_projects()                                        # record what finished last run, queue next milestones
+    active = sum(p.get("status") == "active" for p in load_projects())
+    if active < MAX_ACTIVE_PROJECTS and time_left() > 900 and llm_allowed("project_plan"):
+        r = propose_project()
+        if r and not r.startswith(("rejected", "proposal limit", "fewer")):  # a slug
+            advance_projects()                                # its first milestone goes into this run's queue
+
+if "_cycle_before_projects_f8" not in globals():
+    _cycle_before_projects_f8 = autopilot_cycle
+def autopilot_cycle():
+    try:
+        projects_step()
+    except Exception as e:
+        syslog_exception("projects.f8", e)
+    _cycle_before_projects_f8()
+    try:
+        if not IN_COLAB:
+            advance_projects()
+    except Exception as e:
+        syslog_exception("projects.f8", e)
+
+if "_metrics_before_f8" not in globals():
+    _metrics_before_f8 = metrics
+def metrics():
+    m = _metrics_before_f8()
+    ps = load_projects()
+    m.update(projects_active=sum(p.get("status") == "active" for p in ps),
+             projects_finished=sum(p.get("status") == "finished" for p in ps),
+             milestones_done=sum(1 for p in ps for x in p["milestones"] if x["status"] == "done"))
+    return m
+
+if "_extras_before_f8" not in globals():
+    _extras_before_f8 = _run_extras
+def _run_extras_with_f8():
+    d = _extras_before_f8()
+    ps = load_projects()
+    d.update(projects={s: sum(p.get("status") == s for p in ps) for s in ("active", "finished", "dropped")},
+             milestones_done_run=_f8_run()["milestones_done"], project_proposed_run=_f8_run()["proposed"])
+    return d
+_run_extras = _run_extras_with_f8
+
+if "_self_report_before_f8" not in globals():
+    _self_report_before_f8 = _write_self_report
+def _write_self_report(caps, notes, gaps, proposals, score, hist):
+    _self_report_before_f8(caps, notes, gaps, proposals, score, hist)
+    lines = ["", "## Projects", ""] + [f"- **{p['title']}** ({p['status']}): " + ", ".join(
+        f"{m['n']} {m['status']}" for m in p["milestones"]) + f"; skills used {p.get('skills_used', [])}" for p in load_projects()]
+    f = PRIVATE_LOG_DIR / "self_report.md"
+    if f.exists():
+        f.write_text(f.read_text(encoding="utf-8") + _redact("\n".join(lines or ["- none"]) + "\n"), encoding="utf-8")
+
+def _upgrade_agents_for_projects():
+    a = load_agents().get("planner")
+    if a and "project_status" not in a.tools:
+        a.tools.append("project_status"); save_agent(a)
+        commit_skills("planner can read project status")
+_upgrade_agents_for_projects()
+
+HEAL_PROTECTED |= {"_milestone_task", "advance_projects", "propose_project", "_validate_proposal", "_tests_fail_empty",
+                   "setup_project_dir", "_skills_imported", "_finish", "_drop", "projects_step", "_run_extras_with_f8",
+                   "_write_self_report"}
