@@ -4,7 +4,7 @@
 # Colab and GitHub stay in sync with sync_skills().
 import base64 as _b64
 
-ENGINE_CELLS = ["1", "2", "3", "4", "5", "10", "11", "12", "13", "17", "18", "19", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37"]   # cells the engine needs
+ENGINE_CELLS = ["1", "2", "3", "4", "5", "10", "11", "12", "13", "17", "18", "19", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38"]   # cells the engine needs
 
 def _notebook_cells():
     from google.colab import _message
@@ -390,6 +390,9 @@ def _tests_gate(skip=False):
     runner = SKILLS_DIR / "tests" / "run_tests.py"
     if not runner.exists():
         return True, "no tests/ folder yet"
+    c15 = next((c for c in _notebook_cells() if c.startswith("# ===== Cell 15:")), "")
+    if c15:   # test this cell as it is now (export writes the same file), so a new engine cell does not fail F10
+        (SKILLS_DIR / "engine" / "notebook_cell15.py").write_text(c15.split("# " + "\u25b6 notebook-only")[0], encoding="utf-8")
     import tempfile as _tf
     d = _tf.mkdtemp(prefix="swings-gate-")
     cand, res = os.path.join(d, "engine.py"), os.path.join(d, "results.json")
