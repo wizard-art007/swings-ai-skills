@@ -1,0 +1,124 @@
+{
+  "affaan-m-ecc": {
+    "ts": "2026-11-27T20:10",
+    "hash": "39864116e449",
+    "language": "JavaScript",
+    "tools": {
+      "ecc_diagram.text_to_mermaid": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      }
+    },
+    "network_only": [
+      "ecc_diagram.render_diagram_kroki"
+    ],
+    "grade": 1.0,
+    "status": "graded",
+    "inputs": [
+      "README block 23 (text)",
+      "README block 8 (text)",
+      "agents/skills/ecc-contribution-review/docs/DESIGN.md"
+    ]
+  },
+  "agents365-ai-drawio-skill": {
+    "ts": "2026-11-27T20:10",
+    "hash": "99d2015a86bc",
+    "language": "Python",
+    "tools": {
+      "bpmn_generator.generate_bpmn": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      },
+      "diagram_helper.text_to_mermaid": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      },
+      "diagram_helper.text_to_plantuml": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      },
+      "diagram_helper.text_to_diagram": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      },
+      "diagram_helper.encode_kroki_payload": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      },
+      "diagram_helper.build_kroki_url": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      }
+    },
+    "network_only": [
+      "diagram_helper.render_diagram"
+    ],
+    "grade": 1.0,
+    "status": "graded",
+    "inputs": [
+      "README block 3 (text)",
+      "README block 4 (text)",
+      "README block 8 (text)",
+      "assets/kanban-cn.mmd",
+      "assets/kanban.mmd",
+      "examples/architecture-studio/codebase/checkout/__init__.py",
+      "examples/architecture-studio/codebase/checkout/gateway.py",
+      "examples/architecture-studio/codebase/checkout/orders.py",
+      "examples/architecture-studio/generated/checkout-failure.drawio",
+      "examples/architecture-studio/generated/codebase.drawio",
+      "examples/architecture-studio/generated/manual-layout.drawio"
+    ]
+  },
+  "ahmadhassan-bted-openheart": {
+    "ts": "2026-11-27T20:10",
+    "hash": "65582ccf5d66",
+    "language": "Rust",
+    "tools": {
+      "openheart_helper.text_to_diagram": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      },
+      "openheart_helper.encode_mermaid_for_kroki": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      },
+      "openheart_helper.get_kroki_url": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      }
+    },
+    "network_only": [
+      "openheart_helper.render_diagram_remotely"
+    ],
+    "grade": 1.0,
+    "status": "graded",
+    "inputs": [
+      "README block 1 (text)",
+      "README block 2 (text)",
+      "docs/README.md",
+      "scripts/benchmark_all_java_design_patterns.py",
+      "scripts/generate_diagrams.py",
+      "scripts/test_authored_design_patterns.py"
+    ]
+  }
+}
