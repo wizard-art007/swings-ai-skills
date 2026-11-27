@@ -1,0 +1,180 @@
+{
+  "ts": "2026-11-27T13:50:33",
+  "run": "20261127-135028-actions",
+  "gemini": {
+    "pacific_day": "2026-11-27",
+    "models": {
+      "gemini-3.8-flash": {
+        "calls": 1,
+        "ok": 0,
+        "quota_429": 1,
+        "minute_429": 0,
+        "overload": 0,
+        "other": 0,
+        "skipped": 0,
+        "used_up": true
+      },
+      "gemini-3.7-flash": {
+        "calls": 1,
+        "ok": 0,
+        "quota_429": 1,
+        "minute_429": 0,
+        "overload": 0,
+        "other": 0,
+        "skipped": 0,
+        "used_up": true
+      },
+      "gemini-3.6-flash": {
+        "calls": 1,
+        "ok": 0,
+        "quota_429": 1,
+        "minute_429": 0,
+        "overload": 0,
+        "other": 0,
+        "skipped": 0,
+        "used_up": true
+      },
+      "gemini-3.5-flash": {
+        "calls": 1,
+        "ok": 0,
+        "quota_429": 1,
+        "minute_429": 0,
+        "overload": 0,
+        "other": 0,
+        "skipped": 0,
+        "used_up": true
+      },
+      "gemini-3.5-flash-lite": {
+        "calls": 1,
+        "ok": 1,
+        "quota_429": 0,
+        "minute_429": 0,
+        "overload": 0,
+        "other": 0,
+        "skipped": 0,
+        "used_up": false
+      }
+    },
+    "learned_quota": {
+      "gemini-3.8-flash": {
+        "id": "GenerateRequestsPerDayPerProjectPerModel-FreeTier",
+        "learned": "2026-11-27",
+        "per_day": 20
+      },
+      "gemini-3.7-flash": {
+        "id": "GenerateRequestsPerDayPerProjectPerModel-FreeTier",
+        "learned": "2026-11-27",
+        "per_day": 20
+      },
+      "gemini-3.6-flash": {
+        "id": "GenerateRequestsPerDayPerProjectPerModel-FreeTier",
+        "learned": "2026-11-27",
+        "per_day": 20
+      },
+      "gemini-3.5-flash": {
+        "id": "GenerateRequestsPerDayPerProjectPerModel-FreeTier",
+        "learned": "2026-11-27",
+        "per_day": 20
+      }
+    },
+    "cap_in_use": 72,
+    "calls_today": 91,
+    "overloads_today": 10,
+    "all_used_up": false
+  },
+  "github": {
+    "personal": {
+      "core": {
+        "calls": 8,
+        "writes": 0,
+        "limit": 5000,
+        "remaining": 4985,
+        "min_remaining": 4985,
+        "reset_in_min": 45.9
+      },
+      "search": {
+        "calls": 0,
+        "writes": 0,
+        "limit": 30,
+        "remaining": 30,
+        "min_remaining": 30,
+        "reset_in_min": 1.0
+      }
+    },
+    "actions": {
+      "search": {
+        "calls": 1,
+        "writes": 0,
+        "limit": 30,
+        "remaining": 29,
+        "min_remaining": 29,
+        "reset_in_min": 1.0
+      },
+      "core": {
+        "calls": 1,
+        "writes": 0,
+        "limit": 5000,
+        "remaining": 4996,
+        "min_remaining": 4996,
+        "reset_in_min": 45.6
+      }
+    }
+  },
+  "writes_last_hour": 0,
+  "runtime": {
+    "minutes": 0.1,
+    "budget": 30.0,
+    "near_budget": false
+  },
+  "repos": {
+    "new_today": 1,
+    "max_new_per_day": 3,
+    "graduated_today": 1
+  },
+  "sizes": {
+    "skills_git_mb": 0.65,
+    "big_files": [],
+    "daily": {
+      "checked": "2026-11-27",
+      "skills_mb": 0.7,
+      "skills_private": false,
+      "projects_mb": 0.0,
+      "logs_mb": 0.1
+    }
+  },
+  "queue_todo": 0,
+  "slowdowns": [
+    {
+      "ts": "2026-11-27T13:50:30",
+      "limit": "gemini daily quota",
+      "skipped": "gemini-3.8-flash skipped until midnight Pacific",
+      "quota": 20
+    },
+    {
+      "ts": "2026-11-27T13:50:30",
+      "limit": "gemini daily quota",
+      "skipped": "gemini-3.7-flash skipped until midnight Pacific",
+      "quota": 20
+    },
+    {
+      "ts": "2026-11-27T13:50:30",
+      "limit": "gemini daily quota",
+      "skipped": "gemini-3.6-flash skipped until midnight Pacific",
+      "quota": 20
+    },
+    {
+      "ts": "2026-11-27T13:50:30",
+      "limit": "gemini daily quota",
+      "skipped": "gemini-3.5-flash skipped until midnight Pacific",
+      "quota": 20
+    },
+    {
+      "ts": "2026-11-27T13:50:32",
+      "limit": "LLM daily cap",
+      "skipped": "low-value LLM work (agent:news_scout)",
+      "cap": 72
+    }
+  ],
+  "hits": [],
+  "meter_errors": 0
+}

@@ -254,3 +254,10 @@
 - 2026-11-27 13:14 — projects: pushed 1 folder(s) to swings-ai-projects: proj-flaky-test-pattern-detector
 - 2026-11-27 13:14 — projects: proj-flaky-test-pattern-detector graduated to its own repo https://github.com/wizard-art007/swings-exp-proj-flaky-test-pattern-detector
 - 2026-11-27 13:14 — projects: pushed 1 folder(s) to swings-ai-projects: proj-flaky-test-pattern-detector
+- 2026-11-27 13:50 — limits: gemini daily quota -> gemini-3.8-flash skipped until midnight Pacific
+- 2026-11-27 13:50 — limits: gemini daily quota -> gemini-3.7-flash skipped until midnight Pacific
+- 2026-11-27 13:50 — limits: gemini daily quota -> gemini-3.6-flash skipped until midnight Pacific
+- 2026-11-27 13:50 — limits: gemini daily quota -> gemini-3.5-flash skipped until midnight Pacific
+- 2026-11-27 13:50 — limits: LLM daily cap -> low-value LLM work (agent:news_scout)
+- 2026-11-27 13:50 — agent news_scout: ERROR LLMUnavailable: LLM unavailable for agent:news_scout: daily budget reached
+- 2026-11-27 13:50 — limits: health report 2026-W48 written (within free limits: yes), issue #1
