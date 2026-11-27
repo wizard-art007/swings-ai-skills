@@ -555,10 +555,25 @@
     "kind": "milestone",
     "skill": "deepset-ai-haystack",
     "goal": "proj-agentic-workflow-visualizer milestone 1: M1: Route and Spec",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-27T19:42",
     "project": "1aeaa0f7",
     "milestone": 1,
+    "objective": "O2",
+    "value": 1699.328,
+    "finished": "2026-11-27T19:42",
+    "minutes": 0.03,
+    "estimate": 0.8,
+    "counted": true
+  },
+  {
+    "kind": "milestone",
+    "skill": "deepset-ai-haystack",
+    "goal": "proj-agentic-workflow-visualizer milestone 2: M2: Complete Workflow Diagram Generator",
+    "status": "todo",
+    "queued": "2026-11-27T19:42",
+    "project": "1aeaa0f7",
+    "milestone": 2,
     "objective": "O2"
   }
 ]

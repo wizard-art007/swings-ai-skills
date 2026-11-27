@@ -1,11 +1,11 @@
 {
   "yizhiyanhua-ai-fireworks-tech-graph": {
-    "used": 4,
-    "success": 1
+    "used": 5,
+    "success": 2
   },
   "deepset-ai-haystack": {
-    "used": 1,
-    "success": 1
+    "used": 2,
+    "success": 2
   },
   "juliusbrussee-caveman": {
     "used": 1,

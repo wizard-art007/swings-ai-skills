@@ -185,8 +185,9 @@
         "name": "M1: Route and Spec",
         "goal": "Route an input prompt and generate a corresponding graph specification.",
         "test": "import sys\nsys.path.insert(0, 'src')\nfrom app.visualizer import route_and_spec\n\ndef test_route_and_spec(tmp_path):\n    spec = route_and_spec(\"Search the web and summarize results\")\n    assert \"nodes\" in spec\n    assert \"edges\" in spec\n",
-        "status": "todo",
-        "tries": 0
+        "status": "done",
+        "tries": 0,
+        "done_at": "2026-11-27T19:42"
       },
       {
         "n": 2,
@@ -219,6 +220,10 @@
         "to": "active",
         "why": "2 milestones; tools from ['deepset-ai-haystack', 'yizhiyanhua-ai-fireworks-tech-graph']"
       }
+    ],
+    "skills_used": [
+      "deepset-ai-haystack",
+      "yizhiyanhua-ai-fireworks-tech-graph"
     ]
   }
 ]
