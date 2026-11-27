@@ -13,6 +13,7 @@ if not hasattr(sc, "run_fire_drill"):
 
 FAKE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "support", "drillfake.py")
 sc.CYCLE_DEADLINE = sc.time.time() + 3600
+sc._jsave(sc.DRILL_FILE, {})                    # isolate from the live repo's drill record (copied with the repo)
 eng = sc.SKILLS_DIR / "engine" / "swings_core.py"
 before = hashlib.sha256(eng.read_bytes()).hexdigest()
 heals_before = (sc.SKILLS_DIR / "engine" / "heals.json").read_text() if (sc.SKILLS_DIR / "engine" / "heals.json").exists() else None

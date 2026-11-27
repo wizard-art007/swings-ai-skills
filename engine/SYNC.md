@@ -1,4 +1,4 @@
-# Notebook sync report (2026-11-27 21:05)
+# Notebook sync report (2026-11-27 21:24)
 
 ## Self-fixes
 
@@ -28,16 +28,13 @@
 
 ## GitHub engine vs this notebook
 
-- Cell 12: 3 line(s) on GitHub vs 10 in the notebook; you edited this cell (will be exported)
+- Cell 42: 6 line(s) on GitHub vs 28 in the notebook; you edited this cell (will be exported)
   ```diff
-  - CHECKER_PATH.parent.mkdir(parents=True, exist_ok=True)
-  - CHECKER_PATH.write_text(SYNTAX_CHECKER)
-  - os.chmod(CHECKER_PATH.parent, 0o755); os.chmod(CHECKER_PATH, 0o644)
-  + try:
-  +     CHECKER_PATH.parent.mkdir(parents=True, exist_ok=True)
-  +     if not CHECKER_PATH.exists() or CHECKER_PATH.read_text() != SYNTAX_CHECKER:
+  -            "heal_log": {i.get("function"): [f"{x.get('result')}: {str(x.get('detail', ''))[:240]}" for x in i.get("heal_log", [])][-2:]
+  -                         for i in issues.values() if i.get("function") in ("drill_open_count", "drill_skill_names")}}
+  +            "heal_log": {f: [f"{x.get('result')}: {str(x.get('detail', ''))[:240]}" for i in issues.values()
+  +                             if i.get("function") == f for x in i.get("heal_log", [])][-3:]
+  +                         for f in ("drill_open_count", "drill_skill_names")}}
+  + DRILL_ATTEMPTS_PER_MONTH = 3
+  + 
   ```
-
-## After the export
-
-- IDENTICAL
