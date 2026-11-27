@@ -4168,6 +4168,28 @@ _run_extras = _run_extras_with_projects
 HEAL_PROTECTED |= {"publish_to_projects_repo", "_projects_repo_sync", "_projects_push", "graduate_project",
                    "publish_experiment_folder", "write_projects_index", "_gh_auth", "_run_extras_with_projects"}
 
+# ---- the publisher needs no LLM: publishing is one fixed step (run #30: it used 17 of 21 Gemini calls) --------
+if "_safe_run_before_publisher" not in globals():
+    _safe_run_before_publisher = _safe_run
+def _safe_run_publisher_direct(name, task, context=None, resume=None):
+    if name != "publisher":
+        return _safe_run_before_publisher(name, task, context, resume)
+    slug_ = (context or {}).get("slug")
+    try:
+        GITHUB._token()
+        r = publish_to_projects_repo([slug_]) if slug_ in load_experiments() else publish_pending()
+        g = graduate_ready()
+        ok, summary = not r.get("refused"), f"published {r.get('published')}; refused {r.get('refused')}; {g}"
+    except RuntimeError as e:
+        ok, summary = True, f"publishing skipped: {e}"
+    with open(STATE_DIR / "agent_runs.jsonl", "a", encoding="utf-8") as f:
+        f.write(json.dumps({"agent": "publisher", "version": 0, "task": task, "success": ok, "paused": False, "steps": 0,
+                            "direct": True, "summary": summary[:300], "ts": datetime.datetime.now().isoformat(timespec="minutes")}) + "\n")
+    log(f"agent publisher: {summary[:200]} (direct, no LLM call)")
+    return {"success": ok, "summary": summary}
+_safe_run = _safe_run_publisher_direct
+HEAL_PROTECTED |= {"_safe_run_publisher_direct"}
+
 # ===== Cell 34: Long-term coherence (LC) =====
 # Keeps Swings AI one coherent system over months:
 #   LC1 decision ledger + daily digest   - every significant change, why, evidence, how to undo
@@ -4849,6 +4871,8 @@ def coherence_step():
         if datetime.date.today().day == 1:
             write_summary("monthly")
         _jsave(MEMORY_DIR / "last_housekeeping.json", {"day": today})
+    if self_review_due() and time_left() > 1200:   # before the agents: a slow Gemini must not starve the review
+        self_review()
     plan_month()
     update_progress()
     if _days_ago(_jload(MEMORY_DIR / "charter_built.json", {}).get("ts", "")) >= 7:
