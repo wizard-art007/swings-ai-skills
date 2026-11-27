@@ -578,6 +578,7 @@
     "value": 1699.328,
     "finished": "2026-11-27T20:10",
     "minutes": 0.03,
-    "estimate": 0.6
+    "estimate": 0.6,
+    "counted": true
   }
 ]
