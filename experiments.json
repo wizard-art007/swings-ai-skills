@@ -184,5 +184,17 @@
       "src/olumino.py",
       "tests/test_olumino.py"
     ]
+  },
+  "anchor-security-linter-heuristic": {
+    "title": "Anchor Security Linter Heuristic",
+    "description": "A heuristic security linter for checking missing owner/signer checks in smart contract instruction accounts, implementable as a simple Python AST or regex-based pattern matcher for Solana/Anchor IDLs or source code.",
+    "source_url": "https://dev.to/abdeldjalilchougui/anchor-sec-lint-a-heuristic-security-linter-for-anchor-programs-3afp",
+    "status": "passed",
+    "created": "2026-11-27T04:26",
+    "files": [
+      "README.md",
+      "src/anchor_sec_lint.py",
+      "tests/test_anchor_sec_lint.py"
+    ]
   }
 }
