@@ -658,7 +658,7 @@
       "slug": "anchor-security-linter-heuristic"
     },
     "source": "agent",
-    "status": "running",
+    "status": "done",
     "ts": "2026-11-27T04:27:49"
   },
   {
@@ -670,7 +670,7 @@
       "source_url": "https://psychoscript.com/"
     },
     "source": "agent",
-    "status": "new",
+    "status": "running",
     "ts": "2026-11-27T07:41:04"
   },
   {
