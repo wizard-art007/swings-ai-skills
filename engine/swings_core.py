@@ -5082,11 +5082,20 @@ def propose_project(force=False):
     if len({t["skill"] for t in inv}) < 2:
         return "fewer than 2 skills with working tools"
     avoid = "; ".join(p["title"] for p in projects[-10:])
-    with _as_purpose("project_plan"):
-        prop = _extract_json(llm(_proposal_prompt(inv, avoid), system="You design small, useful software projects."))
-    why = _validate_proposal(prop or {}, inv) if prop else "reply was not valid JSON"
+    feedback, prop, why = "", None, None
+    for attempt in (1, 2):                                    # one retry, told exactly what was wrong
+        with _as_purpose("project_plan"):
+            prop = _extract_json(llm(_proposal_prompt(inv, avoid, feedback), system="You design small, useful software projects."))
+        why = _validate_proposal(prop or {}, inv) if prop else "reply was not valid JSON"
+        if not why:
+            break
+        feedback = (f"\n\nYOUR LAST PROPOSAL WAS REJECTED: {why}. Every test must start with `import sys`, "
+                    "`sys.path.insert(0, 'src')` and import from the `app` package, e.g. `from app.kit import build`. "
+                    "Fix it and reply with the full JSON again.")
+        log(f"project: proposal attempt {attempt} rejected ({why})")
     if why:
-        record_decision("project.rejected", (prop or {}).get("title", "?"), "proposal rejected", why)
+        record_decision("project.rejected", (prop or {}).get("title", "?"), "proposal rejected", why,
+                        evidence={"proposal": json.dumps(prop, default=str)[:3000] if prop else None})
         log(f"project: proposal rejected ({why})")
         return f"rejected: {why}"
     p = _new_project(prop)
