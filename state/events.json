@@ -638,7 +638,7 @@
       "source_url": "https://dev.to/abdeldjalilchougui/anchor-sec-lint-a-heuristic-security-linter-for-anchor-programs-3afp"
     },
     "source": "agent",
-    "status": "running",
+    "status": "done",
     "ts": "2026-11-27T04:26:29"
   },
   {
@@ -650,5 +650,15 @@
     "source": "agent",
     "status": "new",
     "ts": "2026-11-27T04:26:38"
+  },
+  {
+    "id": "061d71b2b4",
+    "type": "experiment.ready",
+    "payload": {
+      "slug": "anchor-security-linter-heuristic"
+    },
+    "source": "agent",
+    "status": "new",
+    "ts": "2026-11-27T04:27:49"
   }
 ]

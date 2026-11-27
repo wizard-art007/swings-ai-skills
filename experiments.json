@@ -183,7 +183,11 @@
       "README.md",
       "src/olumino.py",
       "tests/test_olumino.py"
-    ]
+    ],
+    "projects_path": "experiments/olumino-markdown-spaced-repetition",
+    "published": "2026-11-27T04:27",
+    "pushed": "2026-11-27T04:27",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/olumino-markdown-spaced-repetition"
   },
   "anchor-security-linter-heuristic": {
     "title": "Anchor Security Linter Heuristic",
@@ -195,6 +199,10 @@
       "README.md",
       "src/anchor_sec_lint.py",
       "tests/test_anchor_sec_lint.py"
-    ]
+    ],
+    "projects_path": "experiments/anchor-security-linter-heuristic",
+    "published": "2026-11-27T04:27",
+    "pushed": "2026-11-27T04:27",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/anchor-security-linter-heuristic"
   }
 }
