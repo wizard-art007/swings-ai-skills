@@ -550,5 +550,15 @@
     "minutes": 0.03,
     "estimate": 1.1,
     "counted": true
+  },
+  {
+    "kind": "milestone",
+    "skill": "deepset-ai-haystack",
+    "goal": "proj-agentic-workflow-visualizer milestone 1: M1: Route and Spec",
+    "status": "todo",
+    "queued": "2026-11-27T19:42",
+    "project": "1aeaa0f7",
+    "milestone": 1,
+    "objective": "O2"
   }
 ]
