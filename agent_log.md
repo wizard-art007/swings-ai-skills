@@ -296,3 +296,6 @@
 - 2026-11-27 21:16 — quality: juliusbrussee-caveman no text tools
 - 2026-11-27 21:16 — fire drill: planting two bugs in a throwaway copy; the healer must fix, keep and revert
 - 2026-11-27 21:16 — fire drill: PASSED in 6 runs (healed 2, kept True, reverted True)
+- 2026-11-27 22:13 — quality: leonxlnx-taste-skill graded, grade 1.0
+- 2026-11-27 22:13 — quality: mermaid-js-mermaid graded, grade 1.0
+- 2026-11-27 22:13 — quality: microsoft-playwright no text tools

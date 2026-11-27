@@ -169,5 +169,64 @@
     "language": "Go",
     "tools": {},
     "status": "no text tools"
+  },
+  "leonxlnx-taste-skill": {
+    "ts": "2026-11-27T22:12",
+    "hash": "fbaab498cb37",
+    "language": "JavaScript",
+    "tools": {
+      "taste_diagram.description_to_mermaid": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      }
+    },
+    "network_only": [
+      "taste_diagram.render_via_kroki"
+    ],
+    "grade": 1.0,
+    "status": "graded",
+    "inputs": [
+      "README block 2 (text)",
+      "examples/v2/CREDITS.md",
+      "skills/taste-skill/assets/effects/README.md"
+    ]
+  },
+  "mermaid-js-mermaid": {
+    "ts": "2026-11-27T22:13",
+    "hash": "5492612f50e9",
+    "language": "TypeScript",
+    "tools": {
+      "mermaid_helper.text_to_mermaid": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      },
+      "mermaid_helper.get_kroki_url": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      }
+    },
+    "network_only": [],
+    "grade": 1.0,
+    "status": "graded",
+    "inputs": [
+      "README block 1 (text)",
+      "README block 10 (mermaid)",
+      "README block 11 (text)",
+      "README block 12 (mermaid)",
+      "README block 14 (mermaid)"
+    ]
+  },
+  "microsoft-playwright": {
+    "ts": "2026-11-27T22:13",
+    "hash": "34c5805982d2",
+    "language": "TypeScript",
+    "tools": {},
+    "status": "no text tools"
   }
 }

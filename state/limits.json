@@ -1,6 +1,6 @@
 {
-  "ts": "2026-11-27T21:16:44",
-  "run": "20261127-211616-actions",
+  "ts": "2026-11-27T22:13:04",
+  "run": "20261127-221258-actions",
   "gemini": {
     "pacific_day": "2026-11-27",
     "models": {
@@ -90,9 +90,9 @@
         "calls": 8,
         "writes": 0,
         "limit": 5000,
-        "remaining": 4993,
-        "min_remaining": 4993,
-        "reset_in_min": 59.5
+        "remaining": 4985,
+        "min_remaining": 4985,
+        "reset_in_min": 3.2
       },
       "search": {
         "calls": 0,
@@ -108,9 +108,9 @@
         "calls": 2,
         "writes": 0,
         "limit": 5000,
-        "remaining": 4997,
-        "min_remaining": 4997,
-        "reset_in_min": 59.1
+        "remaining": 4994,
+        "min_remaining": 4994,
+        "reset_in_min": 2.8
       },
       "search": {
         "calls": 0,
@@ -124,7 +124,7 @@
   },
   "writes_last_hour": 0,
   "runtime": {
-    "minutes": 0.5,
+    "minutes": 0.1,
     "budget": 30.0,
     "near_budget": false
   },
