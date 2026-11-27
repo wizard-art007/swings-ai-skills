@@ -215,7 +215,11 @@
       "README.md",
       "tests/test_normalscript.py",
       "src/normalscript.py"
-    ]
+    ],
+    "projects_path": "experiments/normalscript-interpreter",
+    "published": "2026-11-27T07:44",
+    "pushed": "2026-11-27T07:44",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/normalscript-interpreter"
   },
   "vim-motions-trainer": {
     "title": "Vim Motions Trainer",
@@ -227,6 +231,10 @@
       "README.md",
       "tests/test_vim_trainer.py",
       "src/vim_trainer.py"
-    ]
+    ],
+    "projects_path": "experiments/vim-motions-trainer",
+    "published": "2026-11-27T07:44",
+    "pushed": "2026-11-27T07:44",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/vim-motions-trainer"
   }
 }

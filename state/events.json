@@ -682,7 +682,7 @@
       "source_url": "http://themouseless.dev/vim/"
     },
     "source": "agent",
-    "status": "running",
+    "status": "done",
     "ts": "2026-11-27T07:41:05"
   },
   {
@@ -694,5 +694,15 @@
     "source": "agent",
     "status": "new",
     "ts": "2026-11-27T07:43:39"
+  },
+  {
+    "id": "48d24eecf8",
+    "type": "experiment.ready",
+    "payload": {
+      "slug": "vim-motions-trainer"
+    },
+    "source": "agent",
+    "status": "new",
+    "ts": "2026-11-27T07:44:00"
   }
 ]
