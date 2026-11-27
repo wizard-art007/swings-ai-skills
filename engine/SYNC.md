@@ -37,3 +37,7 @@
   +     CHECKER_PATH.parent.mkdir(parents=True, exist_ok=True)
   +     if not CHECKER_PATH.exists() or CHECKER_PATH.read_text() != SYNTAX_CHECKER:
   ```
+
+## After the export
+
+- IDENTICAL
