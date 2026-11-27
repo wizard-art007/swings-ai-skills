@@ -1,6 +1,6 @@
 {
-  "ts": "2026-11-27T13:57:08",
-  "run": "20261127-135701-actions",
+  "ts": "2026-11-27T14:35:42",
+  "run": "20261127-143537-actions",
   "gemini": {
     "pacific_day": "2026-11-27",
     "models": {
@@ -90,9 +90,9 @@
         "calls": 8,
         "writes": 0,
         "limit": 5000,
-        "remaining": 4973,
-        "min_remaining": 4973,
-        "reset_in_min": 39.3
+        "remaining": 4965,
+        "min_remaining": 4965,
+        "reset_in_min": 0.7
       },
       "search": {
         "calls": 0,
@@ -104,21 +104,21 @@
       }
     },
     "actions": {
-      "search": {
-        "calls": 1,
-        "writes": 0,
-        "limit": 30,
-        "remaining": 29,
-        "min_remaining": 29,
-        "reset_in_min": 1.0
-      },
       "core": {
         "calls": 1,
         "writes": 0,
         "limit": 5000,
-        "remaining": 4994,
-        "min_remaining": 4994,
-        "reset_in_min": 39.1
+        "remaining": 4992,
+        "min_remaining": 4992,
+        "reset_in_min": 0.5
+      },
+      "search": {
+        "calls": 0,
+        "writes": 0,
+        "limit": 30,
+        "remaining": 30,
+        "min_remaining": 30,
+        "reset_in_min": 1.0
       }
     }
   },
@@ -134,7 +134,7 @@
     "graduated_today": 1
   },
   "sizes": {
-    "skills_git_mb": 0.65,
+    "skills_git_mb": 0.66,
     "big_files": [],
     "daily": {
       "checked": "2026-11-27",
