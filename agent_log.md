@@ -231,3 +231,4 @@
 - 2026-11-27 07:44 — agent builder v1: OK — Successfully built the Vim Motions Trainer experiment and emitted experiment.ready event.
 - 2026-11-27 07:44 — projects: pushed 2 folder(s) to swings-ai-projects: normalscript-interpreter, vim-motions-trainer
 - 2026-11-27 10:13 — ledger: backfilled 20 past decisions
+- 2026-11-27 10:13 — plan: 2026-11 objectives O1 Close the Flaky Test Pattern Detector capability gap (capability_score:qa_testing -> 1.0); O2 Graduate first real-world projects built from skills (projects_graduated -> 2.0); O3 Utilize active skills across experimental builds (experiments_using_skills -> 6.0); O4 Eliminate deployment and publish pipeline failures (publish_failures_7d -> 0.0)

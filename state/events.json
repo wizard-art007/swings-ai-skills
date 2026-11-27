@@ -692,7 +692,7 @@
       "slug": "normalscript-interpreter"
     },
     "source": "agent",
-    "status": "new",
+    "status": "running",
     "ts": "2026-11-27T07:43:39"
   },
   {
@@ -704,5 +704,44 @@
     "source": "agent",
     "status": "new",
     "ts": "2026-11-27T07:44:00"
+  },
+  {
+    "id": "52cd723371",
+    "type": "system.review",
+    "payload": {
+      "recent_failures": [
+        {
+          "agent": "maintainer",
+          "version": 1,
+          "task": "Handle event 'tasks.pending'",
+          "success": false,
+          "summary": "step limit reached",
+          "ts": "2026-11-26T14:42"
+        },
+        {
+          "agent": "evolver",
+          "version": 1,
+          "task": "Handle event 'system.review'",
+          "success": false,
+          "summary": "step limit reached",
+          "ts": "2026-11-26T14:43"
+        },
+        {
+          "agent": "publisher",
+          "version": 3,
+          "task": "Handle event 'experiment.ready'",
+          "success": false,
+          "paused": false,
+          "steps": 2,
+          "limit": 6,
+          "resumed": false,
+          "summary": "stopped: repeated the same call to list_experiments",
+          "ts": "2026-11-27T07:41"
+        }
+      ]
+    },
+    "source": "system",
+    "status": "new",
+    "ts": "2026-11-27T10:13:47"
   }
 ]
