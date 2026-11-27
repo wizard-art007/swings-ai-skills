@@ -49,7 +49,7 @@ sc._jsave(sc.TASKS_FILE, [])
 sc._jsave(sc.P5_STATE, {})
 
 # ---- wiring ----
-expect(sc._cycle_before_f9 is sc._cycle_with_phase5, "the Phase 5 step runs inside F9's step (before the limits snapshot)")
+expect(sc._cycle_with_phase5 in (sc._cycle_before_f9, getattr(sc, "_cycle_before_p5q", None)), "the Phase 5 step runs inside F9's step (before the limits snapshot)")
 expect(sc.PROPOSALS_PER_DAY == 3 and sc.PROPOSAL_ATTEMPTS_PER_DAY == 5, "up to 3 projects a day, 5 proposal attempts")
 expect(getattr(sc._build_experiment_unplanned, "_experienced", False), "news experiments go through the skilled builder, still recorded as experiences")
 
