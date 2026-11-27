@@ -1,6 +1,6 @@
 """Swings AI test runner.
 
-    python tests/run_tests.py            # quick: the 8 suites (~40 s)
+    python tests/run_tests.py            # quick: the 9 suites (~40 s)
     python tests/run_tests.py --full     # suites + the 6-run simulated regression (~3 min)
     python tests/run_tests.py --engine /tmp/candidate.py   # test an engine before it is exported
 
@@ -11,7 +11,7 @@ import os, sys, json, shutil, subprocess, tempfile, time, datetime, argparse
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
-SUITES = ["lc_test", "f6_test", "f6_tamper", "f7_test", "pub_direct_test", "f8_test", "f9_test", "f10_test"]
+SUITES = ["lc_test", "f6_test", "f6_tamper", "f7_test", "pub_direct_test", "f8_test", "f9_test", "f10_test", "p5_test"]
 SKIP_DIRS = {".git", ".skill_repos", ".private_logs", ".projects_repo", "__pycache__", ".pytest_cache", "node_modules"}
 SECRETS = ("GITHUB_TOKEN", "SWINGS_GH_TOKEN", "GEMINI_API_KEY", "GOOGLE_API_KEY", "SWINGS_FALLBACK_API_KEY")
 

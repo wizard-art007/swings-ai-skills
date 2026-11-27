@@ -1,6 +1,6 @@
 # Swings AI tests
 
-`python tests/run_tests.py` runs the 8 suites (about 40 s); `--full` adds the 6-run simulated regression (about 3 min).
+`python tests/run_tests.py` runs the 9 suites (about 40 s); `--full` adds the 6-run simulated regression (about 3 min).
 Each suite runs on a throwaway copy of this repo with no tokens and a scripted stand-in for Gemini, so tests never
 touch GitHub, Gemini or the live state.
 
@@ -13,6 +13,7 @@ touch GitHub, Gemini or the live state.
 | f8_test | Real projects: proposal checks, one milestone per run, skills counted from imports |
 | f9_test | Sustainability meters: Gemini quotas, GitHub reserves, weekly report, pruning |
 | f10_test | Notebook sync: sync report, fix states, drift guard, IDENTICAL check |
+| p5_test | Phase 5: experiments built on skill tools, the end-of-run work pass, useful runs, the CI result in the report |
 
 CI: `.github/workflows/tests.yml` (written by notebook Cell 15) runs `--full` on every engine or test change, daily,
 and on demand. Cell 15 runs the quick suites on the candidate engine before every export.

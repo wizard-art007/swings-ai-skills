@@ -39,6 +39,13 @@ def fake(prompt, system="", model=None, retries=3):
         return json.dumps({"tool": "save_note", "args": {"text": f"verification note {done}"}})
     if "YOU ARE:" in prompt:
         return '{"final": "nothing to do in verification", "success": true}'
+    if "SKILL TOOLS YOU MUST BUILD ON" in prompt:              # Phase 5: an experiment built on a vendored tool
+        pkg, mod = re.search(r"`from vendor\.(\w+)\.(\w+) import", prompt).groups()
+        name = "vexp_" + str(abs(hash(prompt.split("IDEA:")[-1][:80])) % 10**6)
+        return (f"### FILE: src/{name}.py\n```python\nfrom vendor.{pkg} import {mod} as _tool\n\n"
+                "def run(x):\n    return x\n\ndef tool():\n    return _tool.__name__\n```\n"
+                f"### FILE: tests/test_{name}.py\n```python\nimport sys\nsys.path.insert(0, 'src')\nfrom {name} import run, tool\n"
+                f"def test_run():\n    assert run(1) == 1 and tool().endswith('{mod}')\n```\n")
     if "Reply ONLY with files" in prompt or "### FILE:" in prompt:
         name = "vtool_" + str(abs(hash(prompt.split("GOAL:")[-1][:80])) % 10**6)
         flaky = "flaky" in prompt and "Attempt 1 failed" not in prompt
