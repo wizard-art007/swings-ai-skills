@@ -702,7 +702,7 @@
       "slug": "vim-motions-trainer"
     },
     "source": "agent",
-    "status": "running",
+    "status": "done",
     "ts": "2026-11-27T07:44:00"
   },
   {
@@ -741,7 +741,7 @@
       ]
     },
     "source": "system",
-    "status": "new",
+    "status": "done",
     "ts": "2026-11-27T10:13:47"
   }
 ]

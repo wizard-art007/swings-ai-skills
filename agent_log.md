@@ -234,3 +234,6 @@
 - 2026-11-27 10:13 — plan: 2026-11 objectives O1 Close the Flaky Test Pattern Detector capability gap (capability_score:qa_testing -> 1.0); O2 Graduate first real-world projects built from skills (projects_graduated -> 2.0); O3 Utilize active skills across experimental builds (experiments_using_skills -> 6.0); O4 Eliminate deployment and publish pipeline failures (publish_failures_7d -> 0.0)
 - 2026-11-27 10:14 — projects: pushed 1 folder(s) to swings-ai-projects: normalscript-interpreter
 - 2026-11-27 10:30 — agent publisher v3: OK — Published experiment 'normalscript-interpreter' to https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/normalscript-interpreter.
+- 2026-11-27 10:30 — projects: pushed 1 folder(s) to swings-ai-projects: vim-motions-trainer
+- 2026-11-27 10:33 — agent publisher v3: OK — Published experiment 'vim-motions-trainer' to the private projects repo at https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/v
+- 2026-11-27 10:37 — agent evolver: ERROR LLMUnavailable: LLM overloaded (agent:evolver)
