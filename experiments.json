@@ -281,6 +281,10 @@
       "src/vendor/plantuml_plantuml/sequence_generator.py",
       "src/vendor/sebastianbergmann_php_code_coverage/__init__.py",
       "src/vendor/sebastianbergmann_php_code_coverage/test_coverage_analyzer.py"
-    ]
+    ],
+    "projects_path": "experiments/proj-flaky-test-pattern-detector",
+    "published": "2026-11-27T13:14",
+    "pushed": "2026-11-27T13:14",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/proj-flaky-test-pattern-detector"
   }
 }
