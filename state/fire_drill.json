@@ -1,0 +1,68 @@
+{
+  "2026-11": {
+    "ts": "2026-11-27T21:16",
+    "runs": 6,
+    "minutes": 0.4,
+    "detected": 3,
+    "healed": 2,
+    "kept": true,
+    "reverted": true,
+    "trace": [
+      {
+        "run": 1,
+        "mode": "plant",
+        "exit": 0,
+        "heals": {}
+      },
+      {
+        "run": 2,
+        "mode": "plant",
+        "exit": 0,
+        "heals": {}
+      },
+      {
+        "run": 3,
+        "mode": "plant",
+        "exit": 0,
+        "heals": {
+          "drill_open_count": "trial"
+        }
+      },
+      {
+        "run": 4,
+        "mode": "plant",
+        "exit": 0,
+        "heals": {
+          "drill_open_count": "trial",
+          "drill_skill_names": "trial"
+        }
+      },
+      {
+        "run": 5,
+        "mode": "poison",
+        "exit": 0,
+        "heals": {
+          "drill_open_count": "trial",
+          "drill_skill_names": "reverted"
+        }
+      },
+      {
+        "run": 6,
+        "mode": "plant",
+        "exit": 0,
+        "heals": {
+          "drill_open_count": "kept",
+          "drill_skill_names": "trial"
+        }
+      }
+    ],
+    "notes": [],
+    "heal_log": {
+      "drill_open_count": [
+        "fixed: heal #1 applied to drill_open_count()"
+      ],
+      "drill_skill_names": []
+    },
+    "ok": true
+  }
+}
