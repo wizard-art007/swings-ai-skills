@@ -12,7 +12,8 @@
     "open_needs",
     "capability_status",
     "current_plan",
-    "recall_decisions"
+    "recall_decisions",
+    "project_status"
   ],
   "triggers": [
     "goal.new"
