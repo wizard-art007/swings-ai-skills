@@ -364,6 +364,10 @@
       "src/vendor/yizhiyanhua_ai_fireworks_tech_graph/diagram_helper.py",
       "src/vendor/deepset_ai_haystack/__init__.py",
       "src/vendor/deepset_ai_haystack/agent_prompt_router.py"
-    ]
+    ],
+    "projects_path": "experiments/proj-agentic-workflow-visualizer",
+    "published": "2026-11-27T20:10",
+    "pushed": "2026-11-27T20:10",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/proj-agentic-workflow-visualizer"
   }
 }
