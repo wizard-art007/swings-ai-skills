@@ -275,3 +275,6 @@
 - 2026-11-27 19:42 — project proj-archdoc-kit-generator: proposed -> active (2 milestones; tools from ['agents365-ai-drawio-skill', 'plantuml-stdlib-c4-plantuml'])
 - 2026-11-27 19:42 — project/proj-archdoc-kit-generator: 'proj-archdoc-kit-generator milestone 1: Parse and generate dual diagrams' PASSED on attempt 1 (src/app/__init__.py, src/app/kit.py)
 - 2026-11-27 19:42 — project proj-archdoc-kit-generator: milestone 1 'Parse and generate dual diagrams' done; skills imported ['agents365-ai-drawio-skill', 'plantuml-stdlib-c4-plantuml']
+- 2026-11-27 19:42 — project/proj-archdoc-kit-generator: 'proj-archdoc-kit-generator milestone 2: Add documentation index builder' PASSED on attempt 1 (src/app/kit.py)
+- 2026-11-27 19:42 — project proj-archdoc-kit-generator: milestone 2 'Add documentation index builder' done; skills imported ['agents365-ai-drawio-skill', 'plantuml-stdlib-c4-plantuml']
+- 2026-11-27 19:42 — project proj-archdoc-kit-generator: active -> finished (all 2 milestones pass; skills used ['agents365-ai-drawio-skill', 'plantuml-stdlib-c4-plantuml'])

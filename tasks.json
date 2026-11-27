@@ -540,10 +540,14 @@
     "kind": "milestone",
     "skill": "plantuml-stdlib-c4-plantuml",
     "goal": "proj-archdoc-kit-generator milestone 2: Add documentation index builder",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-27T19:42",
     "project": "3b6199ad",
     "milestone": 2,
-    "objective": "O2"
+    "objective": "O2",
+    "value": 1884.094,
+    "finished": "2026-11-27T19:42",
+    "minutes": 0.03,
+    "estimate": 1.1
   }
 ]

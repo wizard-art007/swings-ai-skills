@@ -289,5 +289,42 @@
     "repo_url": "https://github.com/wizard-art007/swings-exp-proj-flaky-test-pattern-detector",
     "repo_created": "2026-11-27T13:14",
     "graduated": "2026-11-27T13:14"
+  },
+  "proj-archdoc-kit-generator": {
+    "title": "ArchDoc Kit Generator",
+    "description": "Generate an architectural documentation kit combining a C4 diagram and a Mermaid system flow from a unified text description.",
+    "status": "passed",
+    "kind": "project",
+    "skills": [
+      "agents365-ai-drawio-skill",
+      "plantuml-stdlib-c4-plantuml"
+    ],
+    "milestones": [
+      {
+        "name": "Parse and generate dual diagrams",
+        "done": true
+      },
+      {
+        "name": "Add documentation index builder",
+        "done": true
+      }
+    ],
+    "created": "2026-11-27T19:42",
+    "finished": "2026-11-27T19:42",
+    "objective": "O2",
+    "files": [
+      "README.md",
+      "tests/test_m2.py",
+      "tests/test_m1.py",
+      "src/vendor/__init__.py",
+      "src/app/__init__.py",
+      "src/app/kit.py",
+      "src/vendor/agents365_ai_drawio_skill/__init__.py",
+      "src/vendor/agents365_ai_drawio_skill/bpmn_generator.py",
+      "src/vendor/agents365_ai_drawio_skill/diagram_helper.py",
+      "src/vendor/plantuml_stdlib_c4_plantuml/__init__.py",
+      "src/vendor/plantuml_stdlib_c4_plantuml/c4_plantuml_generator.py",
+      "src/vendor/plantuml_stdlib_c4_plantuml/c4_generator.py"
+    ]
   }
 }
