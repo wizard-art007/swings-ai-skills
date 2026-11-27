@@ -4,7 +4,7 @@
 # Colab and GitHub stay in sync with sync_skills().
 import base64 as _b64
 
-ENGINE_CELLS = ["1", "2", "3", "4", "5", "10", "11", "12", "13", "17", "18", "19", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39"]   # cells the engine needs
+ENGINE_CELLS = ["1", "2", "3", "4", "5", "10", "11", "12", "13", "17", "18", "19", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40"]   # cells the engine needs
 
 def _notebook_cells():
     from google.colab import _message
@@ -140,6 +140,9 @@ jobs:
           SWINGS_REPO_CACHE: ${{ github.workspace }}/.skill_repos
           FORCE_REFRESH: ${{ inputs.force_refresh }}
           SWINGS_GH_TOKEN: ${{ secrets.SWINGS_GH_TOKEN }}          # PAT that can create repos (GitHub plugin)
+          SWINGS_FALLBACK_BASE_URL: ${{ secrets.SWINGS_FALLBACK_BASE_URL }}   # optional second LLM (OpenAI-compatible); off until all 3 are set
+          SWINGS_FALLBACK_API_KEY: ${{ secrets.SWINGS_FALLBACK_API_KEY }}
+          SWINGS_FALLBACK_MODEL: ${{ secrets.SWINGS_FALLBACK_MODEL }}
           SWINGS_GITHUB_DRY_RUN: ${{ vars.SWINGS_GITHUB_DRY_RUN || 'true' }}   # repo variable; set to false to publish
       - name: Push the agent's work
         if: always()        # save whatever was done, even if the run step failed or timed out

@@ -6823,3 +6823,201 @@ def build_health_report(days=7):
 HEAL_PROTECTED |= {"grade_skill", "grade_tools", "plan_tool_fixes", "_fix_tool", "usefulness", "score_components",
                    "total_score", "quality_step", "_cycle_with_quality", "_run_extras_with_quality", "build_health_report"}
 HIGH_VALUE = HIGH_VALUE + ("fix_tool",)          # a repair keeps its LLM budget when the day's quota runs low
+
+# ===== Cell 40: Phase 5 - stretch the LLM budget =====
+# Step 4: (a) each call picks its Gemini model by the work's value and by what is left of each model's daily quota:
+#         low-value work (lessons, summaries, agents' notes) goes to flash-lite first, keeping the stronger models'
+#         small free quota for projects, repairs and fixes; models already used up today go last.
+#         (b) an optional second provider: any OpenAI-compatible API, used when Gemini is out of quota or down.
+#         It stays OFF until all three settings exist (GitHub secrets or Colab secrets):
+#         SWINGS_FALLBACK_BASE_URL (e.g. https://api.example.com/v1), SWINGS_FALLBACK_API_KEY, SWINGS_FALLBACK_MODEL.
+FALLBACK_USAGE_FILE = STATE_DIR / "fallback_usage.json"
+FALLBACK_MAX_PER_DAY = int(os.environ.get("SWINGS_FALLBACK_MAX_PER_DAY", "100"))
+FALLBACK_TIMEOUT = 120
+LOW_VALUE_UNKNOWN_ROOM = 10                     # assumed calls left on a model whose quota was never learned
+
+_FB = {"run": "unset"}
+def _fb_run():
+    if _FB.get("run") != _RUN.get("id"):
+        _FB.clear(); _FB.update(run=_RUN.get("id"), calls=0, ok=0, errors=0, lite_first=0, strong_first=0)
+    return _FB
+
+# =========================================== (a) model order ===========================================
+def _is_lite(m):
+    return "lite" in m
+
+def _room(model, g=None, day=None):
+    """Calls left today on a model: learned quota minus calls; None when the quota was never learned."""
+    g = g or _gemini_state()
+    rec = g["days"].get(day or _pacific_day(), {}).get(model, {})
+    if rec.get("used_up"):
+        return 0
+    q = g["quota"].get(model, {}).get("per_day")
+    return None if not q else max(0, q - rec.get("calls", 0))
+
+def low_value(purpose):
+    return purpose in ("lesson", "other") or not str(purpose).startswith(HIGH_VALUE)
+
+def order_models(models, purpose, g=None):
+    """High-value work: strongest model with quota left first (newest first), flash-lite last.
+    Low-value work: flash-lite first, then the model with the most quota left. Used-up models always last."""
+    g = g or _gemini_state()
+    room = {m: _room(m, g) for m in models}
+    pos = {m: i for i, m in enumerate(models)}                      # the API's order: newest first
+    left = lambda m: LOW_VALUE_UNKNOWN_ROOM if room[m] is None else room[m]
+    if low_value(purpose):
+        key = lambda m: (room[m] == 0, not _is_lite(m), -left(m), pos[m])
+    else:
+        key = lambda m: (room[m] == 0, _is_lite(m), pos[m])
+    return sorted(models, key=key)
+
+if "_gemini_models_plain" not in globals():
+    _gemini_models_plain = _gemini_models
+def _gemini_models(client):
+    models = _gemini_models_plain(client)
+    try:
+        purpose = _purpose()
+        out = order_models(models, purpose)
+        _fb_run()["lite_first" if out and _is_lite(out[0]) else "strong_first"] += 1
+        return out
+    except Exception as e:                       # ordering is an optimisation: never block a call
+        syslog("warn", "llm", f"model order: {type(e).__name__}: {e}")
+        return models
+
+# =========================================== (b) the fallback provider ===========================================
+FALLBACK_KEYS = ("SWINGS_FALLBACK_BASE_URL", "SWINGS_FALLBACK_API_KEY", "SWINGS_FALLBACK_MODEL")
+
+def _fallback_settings():
+    vals = {}
+    for k in FALLBACK_KEYS:
+        v = os.environ.get(k, "")
+        if not v and IN_COLAB:
+            try:
+                from google.colab import userdata
+                v = userdata.get(k) or ""
+            except Exception:
+                v = ""
+        vals[k] = v.strip()
+    return vals if all(vals.values()) else None
+
+def _fallback_today():
+    u = _jload(FALLBACK_USAGE_FILE, {})
+    return u, u.setdefault(str(datetime.date.today()), {"calls": 0, "ok": 0, "errors": 0, "by_purpose": {}})
+
+def fallback_ready():
+    return bool(_fallback_settings()) and _fallback_today()[1]["calls"] < FALLBACK_MAX_PER_DAY
+
+def _fallback_llm(prompt, system="You are an expert software engineer."):
+    s = _fallback_settings()
+    u, day = _fallback_today()
+    purpose = _purpose()
+    day["calls"] += 1; day["by_purpose"][purpose] = day["by_purpose"].get(purpose, 0) + 1
+    _fb_run()["calls"] += 1
+    try:
+        r = requests.post(s["SWINGS_FALLBACK_BASE_URL"].rstrip("/") + "/chat/completions",
+                          headers={"Authorization": f"Bearer {s['SWINGS_FALLBACK_API_KEY']}", "Content-Type": "application/json"},
+                          json={"model": s["SWINGS_FALLBACK_MODEL"], "temperature": 0.2,
+                                "messages": [{"role": "system", "content": system}, {"role": "user", "content": prompt}]},
+                          timeout=FALLBACK_TIMEOUT)
+        if r.status_code == 429 or r.status_code >= 500:
+            raise RuntimeError(f"fallback LLM {r.status_code} UNAVAILABLE")          # an outage, not a task failure
+        if not r.ok:
+            raise RuntimeError(f"fallback LLM refused the call: HTTP {r.status_code}")
+        text = r.json()["choices"][0]["message"]["content"] or ""
+        day["ok"] += 1; _fb_run()["ok"] += 1
+        return text
+    except Exception:
+        day["errors"] += 1; _fb_run()["errors"] += 1
+        raise
+    finally:
+        _jsave(FALLBACK_USAGE_FILE, {k: u[k] for k in sorted(u)[-30:]})
+
+if "_llm_before_fallback" not in globals():
+    _llm_before_fallback = _llm_unbudgeted
+def _llm_with_fallback(prompt, system="You are an expert software engineer.", model=None, retries=3):
+    """Gemini first; when every Gemini model is out of quota or down, the fallback provider (if set up) answers."""
+    if fallback_ready() and gemini_all_used_up():
+        return _fallback_llm(prompt, system)                 # no point asking Gemini until midnight Pacific
+    kw = {"system": system, "retries": retries}
+    if model:
+        kw["model"] = model
+    try:
+        return _llm_before_fallback(prompt, **kw)
+    except Exception as e:
+        if not fallback_ready() or not (_is_infra_error(e) or "No LLM" in str(e)):
+            raise
+        log(f"llm: Gemini unavailable ({str(e)[:80]}); the fallback provider answers this call")
+        return _fallback_llm(prompt, system)
+_llm_unbudgeted = _llm_with_fallback
+
+if "_llm_allowed_before_fb" not in globals():
+    _llm_allowed_before_fb = llm_allowed
+def llm_allowed(purpose="other"):
+    """When Gemini's quota is what stops the work, a ready fallback lets it go on (F3's own cap still applies)."""
+    if _llm_allowed_before_fb(purpose):
+        return True
+    return bool(fallback_ready() and not _llm_run_state().get("open") and _llm_allowed_before_f9(purpose))
+
+# =========================================== report ===========================================
+def llm_use_stats(days=7):
+    g = _gemini_state()
+    since = (datetime.date.today() - datetime.timedelta(days=days)).isoformat()
+    by_model, out_days = {}, 0
+    for d, models in g["days"].items():
+        if d < since:
+            continue
+        for m, r in models.items():
+            by_model[m] = by_model.get(m, 0) + r.get("ok", 0)
+        known = [m for m in models if not m.endswith("latest")]
+        out_days += bool(known) and all(models[m].get("used_up") for m in known if not _is_lite(m)) and \
+                    any(models[m].get("used_up") for m in known)
+    fb = {d: v for d, v in _jload(FALLBACK_USAGE_FILE, {}).items() if d >= since}
+    total = sum(by_model.values())
+    lite = sum(v for m, v in by_model.items() if _is_lite(m))
+    return {"gemini_ok_by_model": dict(sorted(by_model.items(), key=lambda x: -x[1])), "gemini_ok": total,
+            "lite_share": round(lite / total, 2) if total else None,
+            "strong_models_out_days": out_days,
+            "fallback": {"configured": bool(_fallback_settings()), "calls": sum(v["calls"] for v in fb.values()),
+                         "ok": sum(v["ok"] for v in fb.values()), "errors": sum(v["errors"] for v in fb.values())},
+            "quota_per_day": {m: q.get("per_day") for m, q in g["quota"].items()}}
+
+TOOLS.register("llm_use_stats", llm_use_stats, "LLM use: Gemini calls by model, flash-lite share, days out of quota, fallback.")
+
+if "_extras_before_p5b" not in globals():
+    _extras_before_p5b = _run_extras
+def _run_extras_with_budget5():
+    d = _extras_before_p5b()
+    f = _fb_run()
+    d["llm_routing"] = {"lite_first": f["lite_first"], "strong_first": f["strong_first"],
+                        "fallback_calls": f["calls"], "fallback_ok": f["ok"]}
+    return d
+_run_extras = _run_extras_with_budget5
+
+if "_health_report_before_p5b" not in globals():
+    _health_report_before_p5b = build_health_report
+def build_health_report(days=7):
+    text, verdict = _health_report_before_p5b(days)
+    s = llm_use_stats(days)
+    fb = s["fallback"]
+    lines = ["## LLM use (Phase 5)", "",
+             f"- Gemini answers this week: {s['gemini_ok']} ("
+             + ", ".join(f"{m} {n}" for m, n in s["gemini_ok_by_model"].items()) + ")"
+             + (f"; flash-lite share {s['lite_share']:.0%}" if s["lite_share"] is not None else ""),
+             f"- Days the stronger models ran out of quota: {s['strong_models_out_days']}",
+             "- Fallback provider: " + (f"on; {fb['ok']} answers, {fb['errors']} errors this week" if fb["configured"]
+                                        else "off (no SWINGS_FALLBACK_* settings)"), ""]
+    decisions = []
+    if not fb["configured"] and s["strong_models_out_days"] >= 3:
+        decisions.append(f"Gemini's stronger models ran out of quota on {s['strong_models_out_days']} of the last {days} days. "
+                         "To add capacity, add the GitHub secrets SWINGS_FALLBACK_BASE_URL, SWINGS_FALLBACK_API_KEY and "
+                         "SWINGS_FALLBACK_MODEL for any OpenAI-compatible provider; nothing else needs to change.")
+    if fb["configured"] and fb["calls"] and fb["errors"] > fb["ok"]:
+        decisions.append(f"The fallback provider failed {fb['errors']} of {fb['calls']} calls this week: check its settings.")
+    head, sep, tail = text.partition("## Decisions waiting for you\n\n")
+    if not sep:
+        return text + "\n" + "\n".join(lines), verdict
+    tail = tail.replace("- None this week.\n", "") if decisions else tail
+    return head + "\n".join(lines) + "\n" + sep + "".join(f"- {d}\n" for d in decisions) + tail, verdict
+
+HEAL_PROTECTED |= {"order_models", "_gemini_models", "_fallback_llm", "_llm_with_fallback", "llm_allowed",
+                   "_run_extras_with_budget5", "build_health_report", "_fallback_settings"}
