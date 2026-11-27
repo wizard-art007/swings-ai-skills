@@ -18,17 +18,17 @@
     }
   },
   "2026-11-27": {
-    "calls": 18,
+    "calls": 23,
     "errors": 2,
     "overloads": 2,
     "cache_hits": 0,
-    "seconds": 365.8,
+    "seconds": 374.2,
     "by_purpose": {
       "need_scout": 1,
-      "agent:builder": 2,
+      "agent:builder": 5,
       "agent:publisher": 8,
       "agent:news_scout": 6,
-      "experiment": 1
+      "experiment": 3
     }
   }
 }
