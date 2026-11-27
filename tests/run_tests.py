@@ -16,11 +16,39 @@ SKIP_DIRS = {".git", ".skill_repos", ".private_logs", ".projects_repo", "__pycac
 SECRETS = ("GITHUB_TOKEN", "SWINGS_GH_TOKEN", "GEMINI_API_KEY", "GOOGLE_API_KEY", "SWINGS_FALLBACK_API_KEY")
 
 
+def _repo_files():
+    """The files a fresh clone would have: git-tracked plus new unignored files (never the gitignored skill clones)."""
+    if os.path.isdir(os.path.join(REPO, ".git")):
+        r = subprocess.run(["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"], cwd=REPO,
+                           capture_output=True)
+        if r.returncode == 0:
+            return [f for f in r.stdout.decode("utf-8", "replace").split("\0")
+                    if f and not f.startswith("tests/") and os.path.isfile(os.path.join(REPO, f))]
+    out = []
+    for d, dirs, files in os.walk(REPO):
+        rel = os.path.relpath(d, REPO)
+        dirs[:] = [x for x in dirs if x not in SKIP_DIRS and x != "outputs" and not (rel == "tests" or (d == REPO and x == "tests"))
+                   and not (x == "repo" and rel.count(os.sep) == 0 and rel != ".")]
+        out += [os.path.normpath(os.path.join(rel, f)) for f in files if not f.endswith((".pyc", ".npz"))]
+    return out
+
+_BASE = {}
+def _base_copy():
+    """Read the repo once (it may sit on a slow network drive), then copy locally for each suite."""
+    if "dir" not in _BASE:
+        base = tempfile.mkdtemp(prefix="swings-base-")
+        for f in _repo_files():
+            dst = os.path.join(base, f)
+            os.makedirs(os.path.dirname(dst), exist_ok=True)
+            shutil.copy2(os.path.join(REPO, f), dst)
+        _BASE["dir"] = base
+    return _BASE["dir"]
+
+
 def fresh_copy(engine, tmp):
     """A throwaway copy of the repo: the candidate engine in place, scouting off, nothing secret."""
     work = os.path.join(tmp, "work")
-    shutil.copytree(REPO, work, ignore=lambda d, names: [n for n in names if n in SKIP_DIRS
-                                                         or (d == REPO and n == "tests")])
+    shutil.copytree(_base_copy(), work)
     if engine:
         shutil.copy(engine, os.path.join(work, "engine", "swings_core.py"))
     state = os.path.join(work, "autopilot_state.json")
@@ -120,6 +148,8 @@ def main(argv=None):
         print(f"{'PASS' if g['ok'] else 'FAIL'} {g['suite']}: {g['passed']}/6 runs ok, {g['seconds']}s")
         for f in g["failed"]:
             print(f"     - {f[:500]}")
+    if "dir" in _BASE:
+        shutil.rmtree(_BASE["dir"], ignore_errors=True)
     ok = all(r["ok"] for r in results)
     total = sum(r["passed"] for r in results if r["suite"] in SUITES)
     print(f"RESULT {'ALL PASS' if ok else 'FAILED'}: {total} tests in {len([r for r in results if r['suite'] in SUITES])} suites"

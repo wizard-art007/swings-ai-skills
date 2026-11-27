@@ -1,4 +1,4 @@
-# Notebook sync report (2026-11-27 14:33)
+# Notebook sync report (2026-11-27 15:20)
 
 ## Self-fixes
 
@@ -29,7 +29,3 @@
 ## GitHub engine vs this notebook
 
 - **IDENTICAL**: GitHub runs exactly what this notebook builds.
-
-## After the export
-
-- IDENTICAL
