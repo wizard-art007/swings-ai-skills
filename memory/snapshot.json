@@ -129,5 +129,10 @@
     "write_tool:Validate Mermaid syntax and class definition formats against unit test assertion": "active",
     "write_tool:Verify existing test assertions for Mermaid syntax formatting before modifying t": "active"
   },
-  "objectives": {}
+  "objectives": {
+    "O1": "active",
+    "O2": "active",
+    "O3": "active",
+    "O4": "active"
+  }
 }

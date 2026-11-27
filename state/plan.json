@@ -1,0 +1,70 @@
+{
+  "month": "2026-11",
+  "set": "2026-11-27T10:13",
+  "objectives": [
+    {
+      "id": "O1",
+      "title": "Close the Flaky Test Pattern Detector capability gap",
+      "area": "qa_testing",
+      "metric": "capability_score:qa_testing",
+      "target": 1.0,
+      "why": "QA capability is currently at 0.75 due to the missing Flaky Test Pattern Detector skill; raising it to 1.0 achieves full capability coverage.",
+      "baseline": 0.75,
+      "status": "active",
+      "progress": [
+        {
+          "ts": "2026-11-27T10:13",
+          "value": 0.75
+        }
+      ]
+    },
+    {
+      "id": "O2",
+      "title": "Graduate first real-world projects built from skills",
+      "area": "ai_agents",
+      "metric": "projects_graduated",
+      "target": 2.0,
+      "why": "With 15 active skills and 0 graduated projects, building and graduating verified projects fulfills the core mission of practical output.",
+      "baseline": 0,
+      "status": "active",
+      "progress": [
+        {
+          "ts": "2026-11-27T10:13",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "O3",
+      "title": "Utilize active skills across experimental builds",
+      "area": "qa_testing",
+      "metric": "experiments_using_skills",
+      "target": 6.0,
+      "why": "Currently 0 experiments use active skills; applying learned skills to experiments validates tool integration and agent capability.",
+      "baseline": 0,
+      "status": "active",
+      "progress": [
+        {
+          "ts": "2026-11-27T10:13",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "O4",
+      "title": "Eliminate deployment and publish pipeline failures",
+      "area": "",
+      "metric": "publish_failures_7d",
+      "target": 0.0,
+      "why": "Publish failures in the last 7 days stand at 4; driving this to 0 reinforces safety and guardrail compliance during project delivery.",
+      "baseline": 4,
+      "status": "active",
+      "progress": [
+        {
+          "ts": "2026-11-27T10:13",
+          "value": 4
+        }
+      ]
+    }
+  ]
+}
