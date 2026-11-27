@@ -5378,7 +5378,6 @@ GH_HARD_RESERVE = 0.05          # below 5% left: no GitHub calls on that token a
 GH_WRITES_PER_MIN = 70          # GitHub allows about 80 a minute ...
 GH_WRITES_PER_HOUR = 450        # ... and 500 an hour
 SEARCH_WAIT_MAX = 60            # seconds worth waiting for the search limit to reset
-LEARNED_CAP_SHARE = 0.9         # F3's daily cap = 90% of the daily quotas Gemini has told us about
 BIG_FILE_MB = 50                # GitHub refuses files over 100 MB; keep anything this big out of git
 REPO_DECISION_MB = 1024         # a repo over 1 GB becomes a decision for the owner
 LOG_KEEP_DAYS = 30              # private run logs older than this are packed into one gzip file per month
@@ -5432,11 +5431,19 @@ def _parse_quota(text):
     return (i.group(1) if i else None), (int(v.group(1)) if v else None)
 
 def _apply_learned_cap(g=None):
-    """F3's daily cap follows what Gemini told us: 90% of the known daily quotas (never above the default)."""
-    known = [q["per_day"] for q in (g or _gemini_state())["quota"].values() if q.get("per_day")]
-    cap = min(_CAP_DEFAULT, max(20, int(LEARNED_CAP_SHARE * sum(known)))) if known else _CAP_DEFAULT
-    globals()["LLM_DAILY_CAP"] = cap
-    return cap
+    """F3's own cap stays in charge: run #40 showed that lowering it from PARTIAL knowledge (4 models at 20 a day)
+    blocked work while another model (flash-lite) still had quota. The learned view is used in llm_allowed instead."""
+    globals()["LLM_DAILY_CAP"] = _CAP_DEFAULT
+    return _CAP_DEFAULT
+
+def _quota_view():
+    """(models in use, quota known for every one, total daily quota, calls so far this Pacific day)."""
+    g = _gemini_state()
+    day = g["days"].get(_pacific_day(), {})
+    models = list(dict.fromkeys(list(globals().get("_GEMINI_CACHE") or []) or list(day)))
+    known = [g["quota"].get(m, {}).get("per_day") for m in models]
+    all_known = bool(models) and all(known)
+    return models, all_known, (sum(known) if all_known else None), sum(v.get("calls", 0) for v in day.values())
 
 def _metered_generate(inner, client_models, *a, **kw):
     model = kw.get("model") or (a[0] if a else "?")
@@ -5465,7 +5472,6 @@ def _metered_generate(inner, client_models, *a, **kw):
                 q.update(id=qid, learned=_pacific_day())
                 if qval:
                     q["per_day"] = qval
-                _apply_learned_cap(g)
                 _slowdown("gemini daily quota", f"{model} skipped until midnight Pacific", quota=qval)
             else:
                 rec["minute_429"] += 1
@@ -5504,6 +5510,10 @@ def llm_allowed(purpose="other"):
         _slowdown("gemini daily quota", "all LLM work until midnight Pacific")
         if not any(h["limit"] == "gemini: every model used up" for h in _f9_run()["hits"]):
             _hit("gemini: every model used up", "no LLM work until midnight Pacific")
+        return False
+    _, all_known, total, used = _quota_view()
+    if all_known and total and used >= LLM_HIGH_VALUE_AT * total and not str(purpose).startswith(HIGH_VALUE):
+        _slowdown("gemini daily quota", f"low-value LLM work ({purpose}): {used} of {total} used today")
         return False
     ok = _llm_allowed_before_f9(purpose)
     if not ok and not _llm_run_state().get("open"):
@@ -5773,6 +5783,7 @@ def limits_snapshot():
         "ts": datetime.datetime.now().isoformat(timespec="seconds"), "run": _RUN.get("id"),
         "gemini": {"pacific_day": _pacific_day(), "models": day, "learned_quota": g["quota"],
                    "cap_in_use": LLM_DAILY_CAP, "calls_today": f3day.get("calls", 0),
+                   "quota_known_for_all": _quota_view()[1], "learned_total": _quota_view()[2],
                    "overloads_today": f3day.get("overloads", 0), "all_used_up": gemini_all_used_up()},
         "github": gh,
         "writes_last_hour": sum(1 for t in st["writes"] if time.time() - t < 3600),
@@ -5889,6 +5900,10 @@ def build_health_report(days=7):
           f"{sum(r.get('big_files', 0) for r in rows)} big file(s) kept out |",
           f"| Repos on GitHub | skills {daily.get('skills_mb', '?')} MB, projects {daily.get('projects_mb', '?')} MB, "
           f"logs {daily.get('logs_mb', '?')} MB | — |"]
+    learned = _gemini_state()["quota"]
+    if learned:
+        L += ["", "Daily quotas Gemini reported (free tier, per model): " +
+              ", ".join(f"{m_} {q.get('per_day', '?')}" for m_, q in sorted(learned.items())) + "."]
     used_up = sorted({m_ for r in rows for m_ in r.get("gemini_used_up", [])})
     if used_up:
         L += ["", f"Gemini models that used their daily quota (skipped until midnight Pacific, other models took over): "
