@@ -1,4 +1,4 @@
-# Notebook sync report (2026-11-27 20:26)
+# Notebook sync report (2026-11-27 20:37)
 
 ## Self-fixes
 
@@ -28,7 +28,7 @@
 
 ## GitHub engine vs this notebook
 
-- Cell 41: 0 line(s) on GitHub vs 106 in the notebook; you edited this cell (will be exported)
+- Cell 41: 0 line(s) on GitHub vs 361 in the notebook; you edited this cell (will be exported)
   ```diff
   + 
   + # ===== Cell 41: Phase 5 - one explicit run pipeline =====
