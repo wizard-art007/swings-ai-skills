@@ -7021,3 +7021,366 @@ def build_health_report(days=7):
 
 HEAL_PROTECTED |= {"order_models", "_gemini_models", "_fallback_llm", "_llm_with_fallback", "llm_allowed",
                    "_run_extras_with_budget5", "build_health_report", "_fallback_settings"}
+
+# ===== Cell 41: Phase 5 - one explicit run pipeline =====
+# Step 5: until now a run was nine autopilot_cycle wrappers stacked by Cells 13-40, each adding work before or after
+# the one below it; the real order could only be worked out by reading them all. RUN_PIPELINE below is that same
+# order written out once (the p5r tests prove it matches the old stack call for call). Each step is isolated (one
+# failing step never skips the next), timed, and listed in the run log. To change what a run does, edit this list.
+def _not_colab():
+    return not IN_COLAB
+
+def _has_time(seconds):
+    return lambda: not IN_COLAB and time_left() > seconds
+
+def _step_heal():
+    r = self_heal()
+    if r != "skipped":
+        syslog("info", "heal", r)
+
+def _step_review():
+    if self_review_due():
+        self_review()
+
+_NEEDS_TOTAL = {}
+def _step_needs():
+    """Run twice: before the queue (so the tool tasks it queues run in this run) and after it (to verify them)."""
+    got = work_needs(max_new=MAX_NEEDS_PER_RUN - _NEEDS_TOTAL["started"])
+    for k in ("started", "verified", "routed"):
+        _NEEDS_TOTAL[k] += got.get(k, 0)
+    _NEED_RUN[_RUN.get("id")] = {k: _NEEDS_TOTAL[k] for k in ("started", "verified", "routed")}
+
+def _step_publish():
+    try:
+        GITHUB._token()
+    except RuntimeError:
+        return syslog("info", "projects", "no GitHub token: publishing skipped this run")
+    if time_left() > 300:
+        publish_pending()                                 # catches anything the publisher agent missed
+        got = graduate_ready()
+        if not got.startswith(("nothing", "DRY")) and "stays" not in got:
+            _PROJECTS_RUN["graduated"] = got
+
+def _step_coherence_end():
+    update_progress()
+    _diff_and_record("end of run")
+
+# (name, function, when it may run, syslog component)  -- in run order
+RUN_PIPELINE = [
+    ("quality",          lambda: quality_step(),            None,          "quality"),      # Cell 39: grade tools, plan repairs
+    ("projects.start",   lambda: projects_step(),           None,          "projects.f8"),  # Cell 35: record milestones, start a project
+    ("coherence.start",  lambda: coherence_step(),          _not_colab,    "coherence"),    # Cell 34: monthly plan, charter, invariants
+    ("needs.before",     _step_needs,                       _has_time(600),    "needs"),        # Cell 32: need-driven scouting
+    ("heal",             _step_heal,                        None,          "heal"),         # Cell 26: fix recurring errors
+    ("plan",             lambda: autopilot_plan(),          None,          "autopilot"),    # Cell 13: queue skill upkeep
+    ("queue",            lambda: run_task_queue(limit=3),   None,          "autopilot"),    # Cell 13 + F3/F4: the task queue
+    ("agents",           lambda: orchestrator_tick(),       None,          "agents"),       # Cell 18: agents and events
+    ("review",           _step_review,                      _has_time(600),    "self_review"),  # Cell 30: weekly self-review
+    ("needs.after",      _step_needs,                       _has_time(600),    "needs"),        # Cell 32: verify finished needs
+    ("publish",          _step_publish,                     _not_colab,    "projects"),     # Cell 33: projects repo, graduation
+    ("coherence.end",    _step_coherence_end,               _not_colab,    "coherence"),    # Cell 34: progress + ledger diff
+    ("projects.advance", lambda: advance_projects(),        _not_colab,    "projects.f8"),  # Cell 35: queue next milestones
+    ("more_work",        lambda: more_work_pass(),          None,          "phase5"),       # Cell 38: extra rounds while time is left
+    ("ci",               lambda: ci_status(),               None,          "phase5"),       # Cell 38: latest test result
+    ("useful_run",       lambda: record_useful_run(),       None,          "phase5"),       # Cell 38: did this run do real work
+    ("sustainability",   lambda: sustainability_step(),     None,          "limits"),       # Cell 36: limits, size, pruning, reports
+]
+
+_PIPE = {"run": "unset"}
+def _pipe_run():
+    if _PIPE.get("run") != _RUN.get("id"):
+        _PIPE.clear(); _PIPE.update(run=_RUN.get("id"), steps=[])
+    return _PIPE
+
+def run_pipeline(steps=None):
+    """One run: every step in RUN_PIPELINE order; a failing step is logged and the next one still runs."""
+    rec = _pipe_run()["steps"]
+    _NEEDS_TOTAL.clear(); _NEEDS_TOTAL.update(started=0, verified=0, routed=0)      # per cycle, as before
+    for name, fn, when, component in (steps or RUN_PIPELINE):
+        t0 = time.time()
+        try:
+            if when is not None and not when():
+                rec.append({"step": name, "status": "skipped", "s": 0.0}); continue
+            fn()
+            rec.append({"step": name, "status": "ok", "s": round(time.time() - t0, 1)})
+        except Exception as e:
+            syslog_exception(component, e)
+            rec.append({"step": name, "status": f"error: {type(e).__name__}", "s": round(time.time() - t0, 1)})
+    return rec
+
+if "_legacy_autopilot_cycle" not in globals():
+    _legacy_autopilot_cycle = autopilot_cycle           # the old stack, kept for the equivalence test only
+autopilot_cycle = run_pipeline
+
+def pipeline_text():
+    return "\n".join(f"{i + 1:2}. {n}" for i, (n, *_r) in enumerate(RUN_PIPELINE))
+
+TOOLS.register("run_pipeline_steps", pipeline_text, "The steps of one autopilot run, in order.")
+
+if "_extras_before_p5r" not in globals():
+    _extras_before_p5r = _run_extras
+def _run_extras_with_pipeline():
+    d = _extras_before_p5r()
+    d["steps"] = {s["step"]: (s["s"] if s["status"] == "ok" else s["status"]) for s in _pipe_run()["steps"]}
+    return d
+_run_extras = _run_extras_with_pipeline
+
+HEAL_PROTECTED |= {"run_pipeline", "_step_heal", "_step_review", "_step_needs", "_step_publish", "_step_coherence_end",
+                   "_run_extras_with_pipeline"}
+
+# ===== Cell 42: Phase 5 - fire drill and owner dashboard =====
+# Step 6: (a) once a month the self-repair loop is proven end to end on a throwaway copy of the repo: two small bugs
+#         are planted, the healer must fix both with the real LLM, keep the fix that holds and revert the fix whose
+#         function breaks again. Nothing in the drill can touch the live repo, its logs or GitHub (no tokens).
+#         (b) DASHBOARD.md in the private log repo, rewritten at the end of every run: what needs the owner, the
+#         week's numbers and the last runs, on one page.
+DRILL_FILE = STATE_DIR / "fire_drill.json"
+DRILL_MAX_RUNS = 8
+DRILL_RUN_TIMEOUT = 300
+DRILL_MIN_TIME_LEFT = 1500
+DASHBOARD_FILE = PRIVATE_LOG_DIR / "DASHBOARD.md"
+
+# Found by the first drill: an error inside a generator expression or lambda was filed under "<genexpr>" (a name
+# the healer can never find), and two different bugs then shared one issue. The function to fix is the enclosing
+# named one.
+def _engine_function_for(tb_obj):
+    """Innermost NAMED frame of the engine itself (not libraries, guard rails, lambdas or comprehensions)."""
+    best = None
+    for fr in _tb.extract_tb(tb_obj):
+        if fr.filename.endswith("swings_core.py") and fr.name not in HEAL_PROTECTED and not fr.name.startswith("<"):
+            best = fr
+    return (best.name, best.lineno) if best else (None, None)
+
+DRILL_CELL = r'''
+
+# ===== Fire-drill cell (exists only in the throwaway drill copy) =====
+DRILL_MODE_FILE = STATE_DIR / "drill_mode.json"
+
+def drill_open_count(tasks):
+    """How many of the given tasks are still to do."""
+    return sum(1 for t in tasks if t["status"] == "todo")
+
+def drill_skill_names(skills):
+    """The names of the given skills, sorted."""
+    return sorted(s["name"] for s in skills)
+
+def _drill_skills():
+    if _jload(DRILL_MODE_FILE, {}).get("mode") == "poison":
+        return None                                    # breaks drill_skill_names() again after its fix
+    return [{"name": "b"}, {"skill_name": "a"}]
+
+DRILL_PIPELINE = [
+    ("drill.a", lambda: drill_open_count([{"kind": "write_tool", "status": "todo"}, {"kind": "write_tool"}]), None, "drill"),
+    ("drill.b", lambda: drill_skill_names(_drill_skills()), None, "drill"),
+    ("heal", _step_heal, None, "heal"),
+]
+'''
+
+DRILL_DRIVER = r'''
+import os, sys, importlib
+sys.path.insert(0, os.path.join(os.environ["SWINGS_SKILLS_DIR"], "engine"))
+import swings_core as sc
+fake = os.environ.get("SWINGS_DRILL_FAKE_LLM")
+if fake:                                               # tests only: a scripted LLM instead of Gemini
+    sys.path.insert(0, os.path.dirname(fake))
+    sc._llm_unbudgeted = importlib.import_module(os.path.basename(fake)[:-3]).fake
+sc.CYCLE_DEADLINE = sc.time.time() + 1800
+sc.start_run_log("drill")
+try:
+    sc.run_pipeline(sc.DRILL_PIPELINE)
+finally:
+    s = sc.finish_run_log("ok")
+print("DRILL_RUN errors=%s" % (s or {}).get("errors"))
+'''
+
+DRILL_SKIP = {".git", ".skill_repos", ".private_logs", ".projects_repo", "outputs", "tests", "__pycache__", "node_modules"}
+
+def _drill_copy(dst):
+    for d, dirs, files in os.walk(SKILLS_DIR):
+        rel = os.path.relpath(d, SKILLS_DIR)
+        dirs[:] = [x for x in dirs if x not in DRILL_SKIP and not (rel == "." and x == "experiments")]
+        for f in files:
+            if f.endswith((".pyc", ".npz")):
+                continue
+            src, out = Path(d, f), Path(dst, rel, f)
+            out.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src, out)
+    for f in ("engine/heals.json", "engine/swings_core.last_good.py"):
+        Path(dst, f).unlink(missing_ok=True)                 # the drill starts with no fixes of its own
+    eng = Path(dst, "engine", "swings_core.py")
+    eng.write_text(eng.read_text(encoding="utf-8").rstrip("\n") + "\n" + DRILL_CELL, encoding="utf-8")
+    Path(dst, "drill_run.py").write_text(DRILL_DRIVER, encoding="utf-8")
+
+def _drill_env(work, fake_llm=None):
+    env = {k: v for k, v in os.environ.items() if k not in ("GITHUB_TOKEN", "SWINGS_GH_TOKEN", "GITHUB_REPOSITORY")}
+    env.update(SWINGS_SKILLS_DIR=str(work), SWINGS_REPO_CACHE=str(Path(work, ".skill_repos")), PYTHONDONTWRITEBYTECODE="1")
+    if fake_llm:
+        env["SWINGS_DRILL_FAKE_LLM"] = str(fake_llm)
+    return env
+
+def run_fire_drill(fake_llm=None, max_runs=DRILL_MAX_RUNS):
+    """Plant two bugs in a throwaway copy and run it until the healer has fixed both, kept one and reverted one."""
+    t0, runs, notes = time.time(), [], []
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        work = Path(tmp, "skills")
+        _drill_copy(work)
+        env = _drill_env(work, fake_llm)
+        heals_f, mode_f = work / "engine" / "heals.json", work / "state" / "drill_mode.json"
+        poisoned = False
+        for i in range(1, max_runs + 1):
+            heals = _jload(heals_f, [])
+            b = [h for h in heals if h["function"] == "drill_skill_names"]
+            poison = not poisoned and bool(b) and b[-1]["status"] == "trial"
+            _jsave(mode_f, {"mode": "poison" if poison else "plant"})
+            poisoned = poisoned or poison
+            r = subprocess.run([sys.executable, "drill_run.py"], cwd=work, env=env, capture_output=True, text=True,
+                               timeout=DRILL_RUN_TIMEOUT)
+            heals = _jload(heals_f, [])
+            runs.append({"run": i, "mode": "poison" if poison else "plant", "exit": r.returncode,
+                         "heals": {h["function"]: h["status"] for h in heals}})
+            if r.returncode != 0:
+                notes.append(f"run {i} exited {r.returncode}: " + (r.stdout + r.stderr).strip().splitlines()[-1][:160])
+            a = [h for h in heals if h["function"] == "drill_open_count"]
+            b = [h for h in heals if h["function"] == "drill_skill_names"]
+            if a and a[-1]["status"] == "kept" and any(h["status"] == "reverted" for h in b):
+                break
+        try:                                                 # the drill's Gemini calls count against today's quota
+            g_live, g_drill = _gemini_state(), _jload(work / "state" / GEMINI_QUOTA_FILE.name, {"days": {}})
+            day = _pacific_day()
+            for m, rec in g_drill.get("days", {}).get(day, {}).items():
+                live = _gemini_rec(g_live, m, day)
+                for k in ("calls", "ok", "quota_429"):
+                    live[k] = max(live.get(k, 0), rec.get(k, 0))
+                live["used_up"] = live.get("used_up") or rec.get("used_up", False)
+            _jsave(GEMINI_QUOTA_FILE, g_live)
+        except Exception as e:
+            notes.append(f"quota merge: {type(e).__name__}")
+        heals = _jload(heals_f, [])
+        issues = _jload(work / ".private_logs" / "issues.json", {})
+    a = [h for h in heals if h["function"] == "drill_open_count"]
+    b = [h for h in heals if h["function"] == "drill_skill_names"]
+    res = {"ts": _now_min(), "runs": len(runs), "minutes": round((time.time() - t0) / 60, 1),
+           "detected": sum(1 for i in issues.values() if i.get("function") in ("drill_open_count", "drill_skill_names")),
+           "healed": len({h["function"] for h in heals}), "kept": bool(a and a[-1]["status"] == "kept"),
+           "reverted": any(h["status"] == "reverted" for h in b), "trace": runs, "notes": notes,
+           "heal_log": {i.get("function"): [f"{x.get('result')}: {str(x.get('detail', ''))[:240]}" for x in i.get("heal_log", [])][-2:]
+                        for i in issues.values() if i.get("function") in ("drill_open_count", "drill_skill_names")}}
+    res["ok"] = res["detected"] >= 2 and res["healed"] >= 2 and res["kept"] and res["reverted"]
+    return res
+
+def drill_due():
+    return datetime.date.today().strftime("%Y-%m") not in _jload(DRILL_FILE, {})
+
+def fire_drill_step(fake_llm=None):
+    """Once a month (first run with enough time and LLM budget); the result goes to state/fire_drill.json."""
+    if IN_COLAB or not drill_due() or time_left() < DRILL_MIN_TIME_LEFT or not llm_allowed("heal"):
+        return None
+    if os.environ.get("SWINGS_TESTING") and not fake_llm:
+        return None                                     # inside the test suites only the drill test runs a drill
+    log("fire drill: planting two bugs in a throwaway copy; the healer must fix, keep and revert")
+    try:
+        res = run_fire_drill(fake_llm)
+    except Exception as e:
+        res = {"ts": _now_min(), "ok": False, "notes": [f"drill crashed: {type(e).__name__}: {str(e)[:160]}"]}
+    d = _jload(DRILL_FILE, {})
+    d[datetime.date.today().strftime("%Y-%m")] = res
+    _jsave(DRILL_FILE, d)
+    log(f"fire drill: {'PASSED' if res['ok'] else 'FAILED'} in {res.get('runs')} runs "
+        f"(healed {res.get('healed')}, kept {res.get('kept')}, reverted {res.get('reverted')})")
+    if not res["ok"]:
+        syslog("warn", "drill", "fire drill failed", **{k: v for k, v in res.items() if k != "trace"})
+    return res
+
+TOOLS.register("fire_drill_results", lambda: {m: {k: r.get(k) for k in ("ok", "runs", "healed", "kept", "reverted", "notes")}
+                                              for m, r in _jload(DRILL_FILE, {}).items()},
+               "Monthly self-repair drills: did the healer fix, keep and revert as it should.")
+
+RUN_PIPELINE.insert(next(i for i, s in enumerate(RUN_PIPELINE) if s[0] == "sustainability"),
+                    ("fire_drill", lambda: fire_drill_step(), _not_colab, "drill"))
+
+# =========================================== the owner dashboard ===========================================
+def _decisions(text):
+    part = text.split("## Decisions waiting for you", 1)[-1].split("\n## ", 1)[0]
+    return [l[2:].strip() for l in part.splitlines() if l.startswith("- ") and "None this week" not in l]
+
+def build_dashboard():
+    text, verdict = build_health_report(7)
+    runs = [json.loads(l) for l in (PRIVATE_LOG_DIR / "runs_index.jsonl").read_text(encoding="utf-8").splitlines()[-10:]] \
+        if (PRIVATE_LOG_DIR / "runs_index.jsonl").exists() else []
+    o, q, l = output_stats(7), quality_stats(), llm_use_stats(7)
+    drill = _jload(DRILL_FILE, {})
+    last_drill = drill[max(drill)] if drill else None
+    ci = o.get("ci") or {}
+    lines = [f"# Swings AI dashboard", "", f"Updated {datetime.datetime.now():%Y-%m-%d %H:%M} UTC. Health: **{verdict}**. "
+             f"Tests: {('#' + str(ci.get('run')) + ' ' + str(ci.get('conclusion'))) if ci else 'not read yet'}. "
+             f"Last run: {runs[-1].get('status') + ', ' + str(runs[-1].get('errors')) + ' errors' if runs else 'none'}.", "",
+             "## Needs you", ""]
+    dec = _decisions(text)
+    lines += [f"- {d}" for d in dec] or ["- Nothing. The system is running on its own."]
+    lines += ["", "## This week", "",
+              f"- Runs that did real work: {o['useful_runs']} of {o['runs']}",
+              f"- Skill projects finished: {o['projects_finished_7d']} ({o['projects_finished']} in all); "
+              f"experiments using skill tools: {o['experiments_7d_with_skills']} of {o['experiments_7d']}",
+              f"- Tools graded on real inputs: {q['graded']} of {q['skills']} skills"
+              + (f", average {q['avg_grade']:.2f}" if q["avg_grade"] is not None else ""),
+              f"- Gemini answers: {l['gemini_ok']}" + (f" ({l['lite_share']:.0%} flash-lite)" if l["lite_share"] is not None else "")
+              + f"; fallback {'on' if l['fallback']['configured'] else 'off'}",
+              "- Self-repair drill: " + ("not run yet" if not last_drill else
+                                         f"{'passed' if last_drill.get('ok') else 'FAILED'} on {str(last_drill.get('ts'))[:10]}"),
+              "", "## Last runs", "", "| Run | Status | Errors | Minutes | Useful | Failed steps |", "|---|---|---|---|---|---|"]
+    useful = {r["run"]: r["useful"] for r in _jload(P5_STATE, {}).get("runs", [])}
+    for r in reversed(runs):
+        bad = [k for k, v in (r.get("steps") or {}).items() if isinstance(v, str) and v.startswith("error")]
+        lines.append(f"| {r.get('run')} | {r.get('status')} | {r.get('errors')} | {r.get('minutes')} | "
+                     f"{'yes' if useful.get(r.get('run')) else 'no' if r.get('run') in useful else '-'} | {', '.join(bad) or '-'} |")
+    lines += ["", "The full weekly report is health_report.md; the run order is in engine Cell 41 (RUN_PIPELINE).", ""]
+    DASHBOARD_FILE.write_text(_redact("\n".join(lines)), encoding="utf-8")
+    return {"verdict": verdict, "decisions": len(dec), "runs": len(runs)}
+
+TOOLS.register("dashboard", lambda: DASHBOARD_FILE.read_text(encoding="utf-8") if DASHBOARD_FILE.exists() else "no dashboard yet",
+               "The owner's one-page dashboard (private log repo).")
+
+if "_log_sync_before_dash" not in globals():
+    _log_sync_before_dash = _log_repo_sync
+def _log_repo_sync(push=False):
+    """The dashboard is rewritten just before the private logs are pushed, so it includes this run."""
+    if push and _RUN.get("id") and not IN_COLAB:
+        try:
+            build_dashboard()
+        except Exception as e:
+            syslog("warn", "dashboard", f"dashboard not written: {type(e).__name__}: {e}")
+    return _log_sync_before_dash(push)
+
+if "_extras_before_p5d" not in globals():
+    _extras_before_p5d = _run_extras
+def _run_extras_with_drill():
+    d = _extras_before_p5d()
+    m = _jload(DRILL_FILE, {}).get(datetime.date.today().strftime("%Y-%m"))
+    if m and m.get("ts", "")[:10] == str(datetime.date.today()):
+        d["fire_drill"] = {k: m.get(k) for k in ("ok", "runs", "healed", "kept", "reverted")}
+    return d
+_run_extras = _run_extras_with_drill
+
+if "_health_report_before_p5d" not in globals():
+    _health_report_before_p5d = build_health_report
+def build_health_report(days=7):
+    text, verdict = _health_report_before_p5d(days)
+    drill = _jload(DRILL_FILE, {})
+    last = drill[max(drill)] if drill else None
+    lines = ["## Self-repair drill (Phase 5)", "",
+             "- " + ("No drill yet; it runs in the first run of each month that has 25 minutes left." if not last else
+                     f"{max(drill)}: {'passed' if last.get('ok') else 'FAILED'} in {last.get('runs')} runs, "
+                     f"{last.get('minutes')} min: healed {last.get('healed')}, kept {last.get('kept')}, reverted {last.get('reverted')}"),
+             ""]
+    decisions = []
+    if last and not last.get("ok") and _days_ago(last.get("ts", "")) <= days:
+        decisions.append(f"The monthly self-repair drill failed ({'; '.join(last.get('notes') or []) or 'see fire_drill.json'}): "
+                         "the healer may not be able to fix real errors; look at state/fire_drill.json.")
+    head, sep, tail = text.partition("## Decisions waiting for you\n\n")
+    if not sep:
+        return text + "\n" + "\n".join(lines), verdict
+    tail = tail.replace("- None this week.\n", "") if decisions else tail
+    return head + "\n".join(lines) + "\n" + sep + "".join(f"- {d}\n" for d in decisions) + tail, verdict
+
+HEAL_PROTECTED |= {"_engine_function_for", "run_fire_drill", "fire_drill_step", "_drill_copy", "_drill_env", "build_dashboard", "_decisions",
+                   "_log_repo_sync", "_run_extras_with_drill", "build_health_report", "drill_due"}
