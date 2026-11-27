@@ -263,3 +263,5 @@
 - 2026-11-27 13:50 — limits: health report 2026-W48 written (within free limits: yes), issue #1
 - 2026-11-27 13:57 — agent news_scout: loop detected (fetch_news), run stopped early
 - 2026-11-27 13:57 — agent news_scout v1: FAIL — stopped: repeated the same call to fetch_news
+- 2026-11-27 19:16 — guard: blocked need.reopened b5c81ace: same gap again with no new evidence
+- 2026-11-27 19:16 — guard: blocked need.reopened c6aea0cd: same gap again with no new evidence

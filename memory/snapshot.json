@@ -122,6 +122,26 @@
       "parked",
       "Recurring test failures across diagrams, ai_agents, and qa_testing modules indic",
       "not a tool"
+    ],
+    "714cbb6e": [
+      "parked",
+      "Publisher Daily Repository Limit Reached",
+      "repeats parked need b5c81ace; no new evidence"
+    ],
+    "2a9b20d4": [
+      "parked",
+      "Flaky Test Pattern Detector Capability Gap",
+      "repeats parked need c6aea0cd; no new evidence"
+    ],
+    "2ebc0572": [
+      "open",
+      "Agent Step Limits and Infinite Loops in News Scout and Evolver",
+      ""
+    ],
+    "881bdbc1": [
+      "open",
+      "Zero Success Rate and Runs for Architect Agent",
+      ""
     ]
   },
   "heals": {},

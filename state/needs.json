@@ -720,5 +720,95 @@
       }
     ],
     "updated": "2026-11-26T23:27"
+  },
+  {
+    "id": "714cbb6e",
+    "need": "Publisher Daily Repository Limit Reached",
+    "domain": "",
+    "type": "internal",
+    "capability": null,
+    "check": null,
+    "evidence": [
+      "publisher: Failed to publish experiment 'thermodynamic-radiator-dynamics-pid-cont' because the daily limit of 3 new repos has been ",
+      "publisher: Failed to publish experiment 'moat-openrouter-replacement' because the daily limit of new repositories has been reached.",
+      "publisher: Failed to publish experiment 'iphone-sms-expense-parser': daily limit of 3 new repos reached; will retry tomorrow.",
+      "O4 Eliminate deployment and publish pipeline failures"
+    ],
+    "action": "Increase or queue publisher daily repository creation limits to unblock O2 and O4",
+    "priority": 9.0,
+    "status": "parked",
+    "source": "self_review",
+    "ts": "2026-11-27T19:16",
+    "tries": 3,
+    "log": [
+      {
+        "ts": "2026-11-27T19:16",
+        "from": "open",
+        "to": "parked",
+        "why": "repeats parked need b5c81ace; no new evidence"
+      }
+    ]
+  },
+  {
+    "id": "2a9b20d4",
+    "need": "Flaky Test Pattern Detector Capability Gap",
+    "domain": "qa_testing",
+    "type": "external",
+    "capability": "qa-testing-flake-hunter",
+    "check": "from captools import load_tool\n\ndef test_flake_hunter_missing():\n    m = load_tool('*', 'flake_hunter')\n    try:\n        results = [True, True, False, True, False]\n        is_flaky = m.detect_flakiness(results)\n        assert isinstance(is_flaky, bool)\n        assert is_flaky is True\n    except (NameError, AttributeError, NotImplementedError):\n        assert True\n",
+    "evidence": [
+      "qa-testing-flake-hunter [qa_testing] missing - FAILED tests/test_cap_qa_testing_flake_hunter.py::test_flake_hunter_missing",
+      "O1 Close the Flaky Test Pattern Detector capability gap"
+    ],
+    "action": "Implement the flake_hunter capability and pass tests/test_cap_qa_testing_flake_hunter.py",
+    "priority": 4.5,
+    "status": "parked",
+    "source": "self_review",
+    "ts": "2026-11-27T19:16",
+    "tries": 3,
+    "log": [
+      {
+        "ts": "2026-11-27T19:16",
+        "from": "open",
+        "to": "parked",
+        "why": "repeats parked need c6aea0cd; no new evidence"
+      }
+    ]
+  },
+  {
+    "id": "2ebc0572",
+    "need": "Agent Step Limits and Infinite Loops in News Scout and Evolver",
+    "domain": "",
+    "type": "internal",
+    "capability": null,
+    "check": null,
+    "evidence": [
+      "news_scout: step limit reached",
+      "maintainer: step limit reached",
+      "evolver: step limit reached",
+      "publisher: stopped: repeated the same call to list_experiments",
+      "news_scout: stopped: repeated the same call to fetch_news"
+    ],
+    "action": "Refine agent prompts and tool call logic to prevent redundant calls and step limit exhausts",
+    "priority": 2.0,
+    "status": "open",
+    "source": "self_review",
+    "ts": "2026-11-27T19:16"
+  },
+  {
+    "id": "881bdbc1",
+    "need": "Zero Success Rate and Runs for Architect Agent",
+    "domain": "",
+    "type": "internal",
+    "capability": null,
+    "check": null,
+    "evidence": [
+      "architect: {\"success_rate\": 0.0, \"runs\": 0, \"step_limit\": 6}"
+    ],
+    "action": "Investigate why the architect agent has zero runs and integrate it into active workflows",
+    "priority": 1.0,
+    "status": "open",
+    "source": "self_review",
+    "ts": "2026-11-27T19:16"
   }
 ]
