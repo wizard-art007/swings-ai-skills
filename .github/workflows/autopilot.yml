@@ -10,6 +10,7 @@ on:
         default: false
 permissions:
   contents: write
+  actions: read          # the engine reads the latest test result (Phase 5)
 concurrency:
   group: swings-ai
   cancel-in-progress: false

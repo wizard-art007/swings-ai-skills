@@ -1,0 +1,26 @@
+name: Swings AI tests
+on:
+  push:
+    paths: ["engine/swings_core.py", "engine/run_autopilot.py", "engine/notebook_cell15.py", "tests/**", ".github/workflows/tests.yml"]
+  schedule:
+    - cron: "41 4 * * *"          # daily: also covers self-fixes the autopilot commits (its pushes trigger no workflow)
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: swings-tests
+  cancel-in-progress: true
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip, cache-dependency-path: engine/requirements.txt }
+      - run: pip install -r engine/requirements.txt
+      - name: Run all tests (8 suites + 6-run simulated regression)
+        run: python tests/run_tests.py --full --json test-results.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: test-results, path: test-results.json, retention-days: 14 }
