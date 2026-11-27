@@ -330,5 +330,40 @@
     "published": "2026-11-27T19:42",
     "pushed": "2026-11-27T19:42",
     "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/proj-archdoc-kit-generator"
+  },
+  "proj-agentic-workflow-visualizer": {
+    "title": "Agentic Workflow Visualizer",
+    "description": "Combine agent prompt routing with automatic diagram generation to produce visual workflows from natural language prompts.",
+    "status": "passed",
+    "kind": "project",
+    "skills": [
+      "deepset-ai-haystack",
+      "yizhiyanhua-ai-fireworks-tech-graph"
+    ],
+    "milestones": [
+      {
+        "name": "M1: Route and Spec",
+        "done": true
+      },
+      {
+        "name": "M2: Complete Workflow Diagram Generator",
+        "done": true
+      }
+    ],
+    "created": "2026-11-27T19:42",
+    "finished": "2026-11-27T20:10",
+    "objective": "O2",
+    "files": [
+      "README.md",
+      "tests/test_m2.py",
+      "tests/test_m1.py",
+      "src/vendor/__init__.py",
+      "src/app/__init__.py",
+      "src/app/visualizer.py",
+      "src/vendor/yizhiyanhua_ai_fireworks_tech_graph/__init__.py",
+      "src/vendor/yizhiyanhua_ai_fireworks_tech_graph/diagram_helper.py",
+      "src/vendor/deepset_ai_haystack/__init__.py",
+      "src/vendor/deepset_ai_haystack/agent_prompt_router.py"
+    ]
   }
 }
