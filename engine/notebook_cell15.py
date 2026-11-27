@@ -8,7 +8,13 @@ ENGINE_CELLS = ["1", "2", "3", "4", "5", "10", "11", "12", "13", "17", "18", "19
 
 def _notebook_cells():
     from google.colab import _message
-    nb = _message.blocking_request("get_ipynb", timeout_sec=30)["ipynb"]
+    for wait in (30, 90, 180):          # after a long test run the browser can be slow to answer (Phase 5)
+        reply = _message.blocking_request("get_ipynb", timeout_sec=wait)
+        if reply and reply.get("ipynb"):
+            break
+    else:
+        raise RuntimeError("Colab did not return the notebook (get_ipynb timed out 3 times); run this cell again")
+    nb = reply["ipynb"]
     return ["".join(c["source"]) if isinstance(c["source"], list) else c["source"]
             for c in nb["cells"] if c["cell_type"] == "code"]
 
