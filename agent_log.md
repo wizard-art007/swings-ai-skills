@@ -238,3 +238,5 @@
 - 2026-11-27 10:33 — agent publisher v3: OK — Published experiment 'vim-motions-trainer' to the private projects repo at https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/v
 - 2026-11-27 10:37 — agent evolver: ERROR LLMUnavailable: LLM overloaded (agent:evolver)
 - 2026-11-27 12:23 — project: proposal rejected (milestone 1: the test must be a pytest test that imports the app package)
+- 2026-11-27 12:35 — project: proposal attempt 1 rejected (milestone 1: the test must be a pytest test that imports the app package)
+- 2026-11-27 12:36 — project proj-flaky-test-pattern-detector: proposed -> active (3 milestones; tools from ['plantuml-plantuml', 'sebastianbergmann-php-code-coverage'])

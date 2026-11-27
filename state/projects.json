@@ -1,1 +1,73 @@
-[]
+[
+  {
+    "id": "f2072df9",
+    "slug": "proj-flaky-test-pattern-detector",
+    "title": "flaky_test_pattern_detector",
+    "goal": "Detect flaky test patterns from execution history, calculate coverage deltas, and generate visual sequence trace diagrams.",
+    "area": "qa_testing",
+    "tools": [
+      {
+        "skill": "sebastianbergmann-php-code-coverage",
+        "module": "test_coverage_analyzer"
+      },
+      {
+        "skill": "plantuml-plantuml",
+        "module": "sequence_generator"
+      }
+    ],
+    "milestones": [
+      {
+        "n": 1,
+        "name": "flaky_log_analyzer",
+        "goal": "Parse test execution logs to identify tests with inconsistent pass/fail outcomes and compute coverage deltas.",
+        "test": "import sys\nsys.path.insert(0, 'src')\nfrom app.analyzer import analyze_flaky_runs\n\ndef test_analyze_flaky_runs():\n    runs = [\n        {'test_name': 'test_login', 'status': 'failed', 'code': 'def test_login(): pass'},\n        {'test_name': 'test_login', 'status': 'passed', 'code': 'def test_login(): assert True'}\n    ]\n    res = analyze_flaky_runs(runs)\n    assert 'test_login' in res['flaky_tests']\n    assert res['flaky_tests']['test_login']['flakiness_rate'] == 0.5\n    assert 'coverage_delta' in res\n",
+        "status": "todo",
+        "tries": 0
+      },
+      {
+        "n": 2,
+        "name": "flaky_sequence_diagrammer",
+        "goal": "Generate PlantUML sequence diagrams illustrating interaction sequences during test attempts and retries.",
+        "test": "import sys\nsys.path.insert(0, 'src')\nfrom app.diagrammer import generate_sequence_diagram\n\ndef test_generate_sequence_diagram():\n    events = [\n        {'actor': 'Runner', 'target': 'API', 'message': 'GET /user (500)'},\n        {'actor': 'Runner', 'target': 'API', 'message': 'GET /user (200)'}\n    ]\n    puml = generate_sequence_diagram(events, title='Retry Flow')\n    assert '@startuml' in puml\n    assert 'Retry Flow' in puml\n",
+        "status": "todo",
+        "tries": 0
+      },
+      {
+        "n": 3,
+        "name": "flaky_report_generator",
+        "goal": "Produce an integrated diagnostic markdown report containing flakiness metrics and embedded sequence diagrams.",
+        "test": "import sys\nsys.path.insert(0, 'src')\nfrom app.report_builder import build_flaky_report\n\ndef test_build_flaky_report():\n    runs = [\n        {'test_name': 'test_checkout', 'status': 'failed', 'code': 'def test_checkout(): pass'},\n        {'test_name': 'test_checkout', 'status': 'passed', 'code': 'def test_checkout(): pass'}\n    ]\n    events = [\n        {'actor': 'Runner', 'target': 'DB', 'message': 'Query timeout'}\n    ]\n    report = build_flaky_report(runs, events)\n    assert '# Flaky Test Diagnostic Report' in report\n    assert 'test_checkout' in report\n    assert '@startuml' in report\n",
+        "status": "todo",
+        "tries": 0
+      }
+    ],
+    "status": "active",
+    "created": "2026-11-27T12:35",
+    "objective": "O2",
+    "vendored": [
+      {
+        "skill": "plantuml-plantuml",
+        "file": "class_diagram_generator.py",
+        "sha256": "9245c24bccd220a4"
+      },
+      {
+        "skill": "plantuml-plantuml",
+        "file": "sequence_generator.py",
+        "sha256": "0021aa8a195b04a7"
+      },
+      {
+        "skill": "sebastianbergmann-php-code-coverage",
+        "file": "test_coverage_analyzer.py",
+        "sha256": "6e52a46c4b8bedde"
+      }
+    ],
+    "log": [
+      {
+        "ts": "2026-11-27T12:36",
+        "from": "proposed",
+        "to": "active",
+        "why": "3 milestones; tools from ['plantuml-plantuml', 'sebastianbergmann-php-code-coverage']"
+      }
+    ]
+  }
+]
