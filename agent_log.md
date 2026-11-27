@@ -237,3 +237,4 @@
 - 2026-11-27 10:30 — projects: pushed 1 folder(s) to swings-ai-projects: vim-motions-trainer
 - 2026-11-27 10:33 — agent publisher v3: OK — Published experiment 'vim-motions-trainer' to the private projects repo at https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/v
 - 2026-11-27 10:37 — agent evolver: ERROR LLMUnavailable: LLM overloaded (agent:evolver)
+- 2026-11-27 12:23 — project: proposal rejected (milestone 1: the test must be a pytest test that imports the app package)
