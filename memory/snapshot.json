@@ -109,19 +109,19 @@
       "capability check passes"
     ],
     "c6aea0cd": [
-      "open",
+      "parked",
       "Missing Flake Hunter",
-      ""
+      "no repo passes the hard rules for ['flaky test detector', 'flaky test analyzer', 'flaky test', 'flaky test']"
     ],
     "345d80bd": [
-      "open",
+      "parked",
       "Multiple missing capabilities in diagrams and ai-agents requiring specialized ag",
-      ""
+      "not a tool"
     ],
     "51cb20cf": [
-      "open",
+      "parked",
       "Recurring test failures across diagrams, ai_agents, and qa_testing modules indic",
-      ""
+      "not a tool"
     ]
   },
   "heals": {},
