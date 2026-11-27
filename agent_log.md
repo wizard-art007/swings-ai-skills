@@ -291,3 +291,8 @@
 - 2026-11-27 20:10 — project proj-agentic-workflow-visualizer: milestone 2 'M2: Complete Workflow Diagram Generator' done; skills imported ['deepset-ai-haystack', 'yizhiyanhua-ai-fireworks-tech-graph']
 - 2026-11-27 20:10 — project proj-agentic-workflow-visualizer: active -> finished (all 2 milestones pass; skills used ['deepset-ai-haystack', 'yizhiyanhua-ai-fireworks-tech-graph'])
 - 2026-11-27 20:10 — projects: pushed 1 folder(s) to swings-ai-projects: proj-agentic-workflow-visualizer
+- 2026-11-27 21:16 — quality: deepset-ai-haystack graded, grade 1.0
+- 2026-11-27 21:16 — quality: drawdb-io-drawdb graded, grade 1.0
+- 2026-11-27 21:16 — quality: juliusbrussee-caveman no text tools
+- 2026-11-27 21:16 — fire drill: planting two bugs in a throwaway copy; the healer must fix, keep and revert
+- 2026-11-27 21:16 — fire drill: PASSED in 6 runs (healed 2, kept True, reverted True)

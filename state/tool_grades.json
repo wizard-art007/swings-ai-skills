@@ -120,5 +120,54 @@
       "scripts/generate_diagrams.py",
       "scripts/test_authored_design_patterns.py"
     ]
+  },
+  "deepset-ai-haystack": {
+    "ts": "2026-11-27T21:16",
+    "hash": "75100a561274",
+    "language": "Python",
+    "tools": {
+      "agent_prompt_router.route_prompt": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      }
+    },
+    "network_only": [],
+    "grade": 1.0,
+    "status": "graded",
+    "inputs": [
+      "e2e/samples/test_documents/Materialism.txt",
+      "test/AGENTS.md",
+      "test/core/pipeline/features/README.md"
+    ]
+  },
+  "drawdb-io-drawdb": {
+    "ts": "2026-11-27T21:16",
+    "hash": "a8e6e6801758",
+    "language": "JavaScript",
+    "tools": {
+      "erd_generator.generate_erd": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      }
+    },
+    "network_only": [],
+    "grade": 1.0,
+    "status": "graded",
+    "inputs": [
+      "CONTRIBUTING.md",
+      "README.md",
+      "public/robots.txt"
+    ]
+  },
+  "juliusbrussee-caveman": {
+    "ts": "2026-11-27T21:16",
+    "hash": "268451993767",
+    "language": "Go",
+    "tools": {},
+    "status": "no text tools"
   }
 }
