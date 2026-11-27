@@ -18,11 +18,11 @@
     }
   },
   "2026-11-27": {
-    "calls": 110,
+    "calls": 111,
     "errors": 10,
     "overloads": 10,
     "cache_hits": 0,
-    "seconds": 2887.3,
+    "seconds": 2888.5,
     "by_purpose": {
       "need_scout": 1,
       "agent:builder": 14,
@@ -33,7 +33,7 @@
       "plan": 1,
       "agent:evolver": 7,
       "project_plan": 7,
-      "milestone": 13,
+      "milestone": 14,
       "self_review": 1
     }
   }

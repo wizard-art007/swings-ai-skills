@@ -194,11 +194,12 @@
         "name": "M2: Complete Workflow Diagram Generator",
         "goal": "Generate Mermaid and PlantUML markup from the routed agent prompt.",
         "test": "import sys\nsys.path.insert(0, 'src')\nfrom app.visualizer import generate_workflow_diagram\n\ndef test_generate_workflow_diagram(tmp_path):\n    result = generate_workflow_diagram(\"Run QA tests and report status\", format_type=\"mermaid\")\n    assert isinstance(result, str)\n    assert \"graph\" in result or \"flowchart\" in result\n",
-        "status": "todo",
-        "tries": 0
+        "status": "done",
+        "tries": 0,
+        "done_at": "2026-11-27T20:10"
       }
     ],
-    "status": "active",
+    "status": "finished",
     "created": "2026-11-27T19:42",
     "objective": "O2",
     "vendored": [
@@ -219,6 +220,12 @@
         "from": "proposed",
         "to": "active",
         "why": "2 milestones; tools from ['deepset-ai-haystack', 'yizhiyanhua-ai-fireworks-tech-graph']"
+      },
+      {
+        "ts": "2026-11-27T20:10",
+        "from": "active",
+        "to": "finished",
+        "why": "all 2 milestones pass; skills used ['deepset-ai-haystack', 'yizhiyanhua-ai-fireworks-tech-graph']"
       }
     ],
     "skills_used": [
