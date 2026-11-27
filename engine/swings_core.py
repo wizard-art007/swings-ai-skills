@@ -501,9 +501,16 @@ print("\n".join(bad) if bad else "syntax OK")
 sys.exit(1 if bad else 0)
 '''
 CHECKER_PATH = Path(tempfile.gettempdir()) / "swings_tools" / "syntax_check.py"   # readable by 'nobody'
-CHECKER_PATH.parent.mkdir(parents=True, exist_ok=True)
-CHECKER_PATH.write_text(SYNTAX_CHECKER)
-os.chmod(CHECKER_PATH.parent, 0o755); os.chmod(CHECKER_PATH, 0o644)
+try:
+    CHECKER_PATH.parent.mkdir(parents=True, exist_ok=True)
+    if not CHECKER_PATH.exists() or CHECKER_PATH.read_text() != SYNTAX_CHECKER:
+        CHECKER_PATH.write_text(SYNTAX_CHECKER)
+        os.chmod(CHECKER_PATH.parent, 0o755); os.chmod(CHECKER_PATH, 0o644)
+except PermissionError:
+    # Found by the Phase 5 fire drill: the healer's sandboxed self-test imports the engine as 'nobody', which may not
+    # rewrite the runner's copy, so every self-fix failed on GitHub Actions. Such an import uses a private copy.
+    CHECKER_PATH = Path(tempfile.mkdtemp(prefix="swings_tools_")) / "syntax_check.py"
+    CHECKER_PATH.write_text(SYNTAX_CHECKER)
 
 def default_check(files):
     """Syntax/compile check that works for Python, Java, JavaScript, TypeScript and JSON."""

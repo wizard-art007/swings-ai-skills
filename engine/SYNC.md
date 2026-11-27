@@ -1,4 +1,4 @@
-# Notebook sync report (2026-11-27 20:51)
+# Notebook sync report (2026-11-27 21:05)
 
 ## Self-fixes
 
@@ -28,13 +28,12 @@
 
 ## GitHub engine vs this notebook
 
-- Cell 41: 0 line(s) on GitHub vs 363 in the notebook; you edited this cell (will be exported)
+- Cell 12: 3 line(s) on GitHub vs 10 in the notebook; you edited this cell (will be exported)
   ```diff
-  + 
-  + # ===== Cell 41: Phase 5 - one explicit run pipeline =====
-  + # Step 5: until now a run was nine autopilot_cycle wrappers stacked by Cells 13-40, each adding work before or after
+  - CHECKER_PATH.parent.mkdir(parents=True, exist_ok=True)
+  - CHECKER_PATH.write_text(SYNTAX_CHECKER)
+  - os.chmod(CHECKER_PATH.parent, 0o755); os.chmod(CHECKER_PATH, 0o644)
+  + try:
+  +     CHECKER_PATH.parent.mkdir(parents=True, exist_ok=True)
+  +     if not CHECKER_PATH.exists() or CHECKER_PATH.read_text() != SYNTAX_CHECKER:
   ```
-
-## After the export
-
-- IDENTICAL
