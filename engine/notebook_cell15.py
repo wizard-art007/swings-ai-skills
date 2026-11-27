@@ -6,7 +6,15 @@ import base64 as _b64
 
 ENGINE_CELLS = ["1", "2", "3", "4", "5", "10", "11", "12", "13", "17", "18", "19", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42"]   # cells the engine needs
 
+_NB_CACHE = {}
 def _notebook_cells():
+    """The notebook's code cells, read once per run of this cell: a long test run can drop Colab's connection
+    to the browser, and then the notebook cannot be read again until the cell ends (Phase 5)."""
+    if "cells" not in _NB_CACHE:
+        _NB_CACHE["cells"] = _notebook_cells_live()
+    return list(_NB_CACHE["cells"])
+
+def _notebook_cells_live():
     from google.colab import _message
     for wait in (30, 90, 180):          # after a long test run the browser can be slow to answer (Phase 5)
         reply = _message.blocking_request("get_ipynb", timeout_sec=wait)

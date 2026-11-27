@@ -7270,13 +7270,20 @@ def run_fire_drill(fake_llm=None, max_runs=DRILL_MAX_RUNS):
            "detected": sum(1 for i in issues.values() if i.get("function") in ("drill_open_count", "drill_skill_names")),
            "healed": len({h["function"] for h in heals}), "kept": bool(a and a[-1]["status"] == "kept"),
            "reverted": any(h["status"] == "reverted" for h in b), "trace": runs, "notes": notes,
-           "heal_log": {i.get("function"): [f"{x.get('result')}: {str(x.get('detail', ''))[:240]}" for x in i.get("heal_log", [])][-2:]
-                        for i in issues.values() if i.get("function") in ("drill_open_count", "drill_skill_names")}}
+           "heal_log": {f: [f"{x.get('result')}: {str(x.get('detail', ''))[:240]}" for i in issues.values()
+                            if i.get("function") == f for x in i.get("heal_log", [])][-3:]
+                        for f in ("drill_open_count", "drill_skill_names")}}
     res["ok"] = res["detected"] >= 2 and res["healed"] >= 2 and res["kept"] and res["reverted"]
     return res
 
+DRILL_ATTEMPTS_PER_MONTH = 3
+
 def drill_due():
-    return datetime.date.today().strftime("%Y-%m") not in _jload(DRILL_FILE, {})
+    """Once a month; a failed drill is tried again the next day (at most 3 attempts a month)."""
+    rec = _jload(DRILL_FILE, {}).get(datetime.date.today().strftime("%Y-%m"))
+    if not rec:
+        return True
+    return not rec.get("ok") and rec.get("attempts", 1) < DRILL_ATTEMPTS_PER_MONTH and _days_ago(rec.get("ts", "")) >= 1
 
 def fire_drill_step(fake_llm=None):
     """Once a month (first run with enough time and LLM budget); the result goes to state/fire_drill.json."""
@@ -7290,7 +7297,9 @@ def fire_drill_step(fake_llm=None):
     except Exception as e:
         res = {"ts": _now_min(), "ok": False, "notes": [f"drill crashed: {type(e).__name__}: {str(e)[:160]}"]}
     d = _jload(DRILL_FILE, {})
-    d[datetime.date.today().strftime("%Y-%m")] = res
+    month = datetime.date.today().strftime("%Y-%m")
+    res["attempts"] = d.get(month, {}).get("attempts", 0) + 1
+    d[month] = res
     _jsave(DRILL_FILE, d)
     log(f"fire drill: {'PASSED' if res['ok'] else 'FAILED'} in {res.get('runs')} runs "
         f"(healed {res.get('healed')}, kept {res.get('kept')}, reverted {res.get('reverted')})")
@@ -7318,7 +7327,7 @@ def build_dashboard():
     drill = _jload(DRILL_FILE, {})
     last_drill = drill[max(drill)] if drill else None
     ci = o.get("ci") or {}
-    lines = [f"# Swings AI dashboard", "", f"Updated {datetime.datetime.now():%Y-%m-%d %H:%M} UTC. Health: **{verdict}**. "
+    lines = [f"# Swings AI dashboard", "", f"Updated {datetime.datetime.now():%Y-%m-%d %H:%M} UTC. Within free limits: **{verdict}**. "
              f"Tests: {('#' + str(ci.get('run')) + ' ' + str(ci.get('conclusion'))) if ci else 'not read yet'}. "
              f"Last run: {runs[-1].get('status') + ', ' + str(runs[-1].get('errors')) + ' errors' if runs else 'none'}.", "",
              "## Needs you", ""]
@@ -7358,6 +7367,19 @@ def _log_repo_sync(push=False):
             syslog("warn", "dashboard", f"dashboard not written: {type(e).__name__}: {e}")
     return _log_sync_before_dash(push)
 
+# F9 advised running less often when the task queue was empty; since Phase 5 an empty queue no longer means an idle
+# run (projects, experiments and grading fill it), so that advice is dropped while most runs do real work.
+if "_schedule_advice_before_p5" not in globals():
+    _schedule_advice_before_p5 = schedule_advice
+def schedule_advice(rows=None):
+    rows = rows if rows is not None else _read_history(7)
+    out = _schedule_advice_before_p5(rows)
+    useful = {r["run"]: r["useful"] for r in _jload(P5_STATE, {}).get("runs", [])}
+    known = [useful[r["run"]] for r in rows[-8:] if r.get("run") in useful]
+    if known and sum(known) >= len(known) / 2:
+        out = [a for a in out if not a.startswith("The queue was empty")]
+    return out
+
 if "_extras_before_p5d" not in globals():
     _extras_before_p5d = _run_extras
 def _run_extras_with_drill():
@@ -7390,4 +7412,4 @@ def build_health_report(days=7):
     return head + "\n".join(lines) + "\n" + sep + "".join(f"- {d}\n" for d in decisions) + tail, verdict
 
 HEAL_PROTECTED |= {"_engine_function_for", "run_fire_drill", "fire_drill_step", "_drill_copy", "_drill_env", "build_dashboard", "_decisions",
-                   "_log_repo_sync", "_run_extras_with_drill", "build_health_report", "drill_due"}
+                   "_log_repo_sync", "_run_extras_with_drill", "build_health_report", "drill_due", "schedule_advice"}
