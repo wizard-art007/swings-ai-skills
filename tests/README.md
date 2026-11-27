@@ -1,6 +1,6 @@
 # Swings AI tests
 
-`python tests/run_tests.py` runs the 12 suites (about 40 s); `--full` adds the 6-run simulated regression (about 3 min).
+`python tests/run_tests.py` runs the 13 suites (about 40 s); `--full` adds the 6-run simulated regression (about 3 min).
 Each suite runs on a throwaway copy of this repo with no tokens and a scripted stand-in for Gemini, so tests never
 touch GitHub, Gemini or the live state.
 
@@ -16,6 +16,7 @@ touch GitHub, Gemini or the live state.
 | p5q_test | Phase 5 quality: tools graded on real repo inputs, repairs, usefulness and language in scouting |
 | p5b_test | Phase 5 LLM budget: model order by value and quota left, the OpenAI-compatible fallback |
 | p5r_test | Phase 5 run pipeline: same calls in the same order as the old wrapper stack; failing steps are isolated |
+| p5d_test | Phase 5 fire drill (fix, keep, revert on a throwaway copy) and the owner dashboard |
 | p5_test | Phase 5: experiments built on skill tools, the end-of-run work pass, useful runs, the CI result in the report |
 
 CI: `.github/workflows/tests.yml` (written by notebook Cell 15) runs `--full` on every engine or test change, daily,

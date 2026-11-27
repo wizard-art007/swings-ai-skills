@@ -1,4 +1,4 @@
-# Notebook sync report (2026-11-27 20:19)
+# Notebook sync report (2026-11-27 20:26)
 
 ## Self-fixes
 
@@ -28,13 +28,9 @@
 
 ## GitHub engine vs this notebook
 
-- Cell 40: 0 line(s) on GitHub vs 198 in the notebook; you edited this cell (will be exported)
+- Cell 41: 0 line(s) on GitHub vs 106 in the notebook; you edited this cell (will be exported)
   ```diff
   + 
-  + # ===== Cell 40: Phase 5 - stretch the LLM budget =====
-  + # Step 4: (a) each call picks its Gemini model by the work's value and by what is left of each model's daily quota:
+  + # ===== Cell 41: Phase 5 - one explicit run pipeline =====
+  + # Step 5: until now a run was nine autopilot_cycle wrappers stacked by Cells 13-40, each adding work before or after
   ```
-
-## After the export
-
-- IDENTICAL
