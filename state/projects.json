@@ -39,11 +39,12 @@
         "name": "flaky_report_generator",
         "goal": "Produce an integrated diagnostic markdown report containing flakiness metrics and embedded sequence diagrams.",
         "test": "import sys\nsys.path.insert(0, 'src')\nfrom app.report_builder import build_flaky_report\n\ndef test_build_flaky_report():\n    runs = [\n        {'test_name': 'test_checkout', 'status': 'failed', 'code': 'def test_checkout(): pass'},\n        {'test_name': 'test_checkout', 'status': 'passed', 'code': 'def test_checkout(): pass'}\n    ]\n    events = [\n        {'actor': 'Runner', 'target': 'DB', 'message': 'Query timeout'}\n    ]\n    report = build_flaky_report(runs, events)\n    assert '# Flaky Test Diagnostic Report' in report\n    assert 'test_checkout' in report\n    assert '@startuml' in report\n",
-        "status": "todo",
-        "tries": 1
+        "status": "done",
+        "tries": 1,
+        "done_at": "2026-11-27T13:14"
       }
     ],
-    "status": "active",
+    "status": "finished",
     "created": "2026-11-27T12:35",
     "objective": "O2",
     "vendored": [
@@ -69,6 +70,12 @@
         "from": "proposed",
         "to": "active",
         "why": "3 milestones; tools from ['plantuml-plantuml', 'sebastianbergmann-php-code-coverage']"
+      },
+      {
+        "ts": "2026-11-27T13:14",
+        "from": "active",
+        "to": "finished",
+        "why": "all 3 milestones pass; skills used ['plantuml-plantuml', 'sebastianbergmann-php-code-coverage']"
       }
     ],
     "skills_used": [
