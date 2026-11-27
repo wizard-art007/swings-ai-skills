@@ -21,8 +21,9 @@
         "name": "flaky_log_analyzer",
         "goal": "Parse test execution logs to identify tests with inconsistent pass/fail outcomes and compute coverage deltas.",
         "test": "import sys\nsys.path.insert(0, 'src')\nfrom app.analyzer import analyze_flaky_runs\n\ndef test_analyze_flaky_runs():\n    runs = [\n        {'test_name': 'test_login', 'status': 'failed', 'code': 'def test_login(): pass'},\n        {'test_name': 'test_login', 'status': 'passed', 'code': 'def test_login(): assert True'}\n    ]\n    res = analyze_flaky_runs(runs)\n    assert 'test_login' in res['flaky_tests']\n    assert res['flaky_tests']['test_login']['flakiness_rate'] == 0.5\n    assert 'coverage_delta' in res\n",
-        "status": "todo",
-        "tries": 0
+        "status": "done",
+        "tries": 0,
+        "done_at": "2026-11-27T12:36"
       },
       {
         "n": 2,
@@ -68,6 +69,9 @@
         "to": "active",
         "why": "3 milestones; tools from ['plantuml-plantuml', 'sebastianbergmann-php-code-coverage']"
       }
+    ],
+    "skills_used": [
+      "sebastianbergmann-php-code-coverage"
     ]
   }
 ]
