@@ -24,7 +24,11 @@
     "success": 1
   },
   "sebastianbergmann-php-code-coverage": {
-    "used": 2,
-    "success": 2
+    "used": 3,
+    "success": 3
+  },
+  "plantuml-plantuml": {
+    "used": 1,
+    "success": 1
   }
 }

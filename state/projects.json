@@ -30,8 +30,9 @@
         "name": "flaky_sequence_diagrammer",
         "goal": "Generate PlantUML sequence diagrams illustrating interaction sequences during test attempts and retries.",
         "test": "import sys\nsys.path.insert(0, 'src')\nfrom app.diagrammer import generate_sequence_diagram\n\ndef test_generate_sequence_diagram():\n    events = [\n        {'actor': 'Runner', 'target': 'API', 'message': 'GET /user (500)'},\n        {'actor': 'Runner', 'target': 'API', 'message': 'GET /user (200)'}\n    ]\n    puml = generate_sequence_diagram(events, title='Retry Flow')\n    assert '@startuml' in puml\n    assert 'Retry Flow' in puml\n",
-        "status": "todo",
-        "tries": 0
+        "status": "done",
+        "tries": 0,
+        "done_at": "2026-11-27T12:44"
       },
       {
         "n": 3,
@@ -71,6 +72,7 @@
       }
     ],
     "skills_used": [
+      "plantuml-plantuml",
       "sebastianbergmann-php-code-coverage"
     ]
   }
