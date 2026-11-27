@@ -572,5 +572,137 @@
     "source": "system",
     "status": "done",
     "ts": "2026-11-26T19:57:30"
+  },
+  {
+    "id": "ae18898c36",
+    "type": "idea.found",
+    "payload": {
+      "title": "LLM in Assembly",
+      "description": "Qwen3-0.6B inference in pure Assembly / bare-metal bootable OS experiment.",
+      "source_url": "https://github.com/alesha-pro/llm.asm"
+    },
+    "source": "agent",
+    "status": "done",
+    "ts": "2026-11-26T23:27:24"
+  },
+  {
+    "id": "26f5ba8dc3",
+    "type": "idea.found",
+    "payload": {
+      "title": "YouTube Ad Punisher",
+      "description": "Auto-reloads YouTube pages when an ad plays via a lightweight userscript/extension concept.",
+      "source_url": "https://github.com/antonpictures/youtube-punisher"
+    },
+    "source": "agent",
+    "status": "done",
+    "ts": "2026-11-26T23:27:25"
+  },
+  {
+    "id": "407e0b86d0",
+    "type": "experiment.ready",
+    "payload": {
+      "slug": "llm-in-assembly"
+    },
+    "source": "agent",
+    "status": "done",
+    "ts": "2026-11-26T23:27:34"
+  },
+  {
+    "id": "ec0ce4d8e4",
+    "type": "experiment.ready",
+    "payload": {
+      "slug": "youtube-ad-punisher"
+    },
+    "source": "agent",
+    "status": "done",
+    "ts": "2026-11-26T23:28:15"
+  },
+  {
+    "id": "1c0838f66a",
+    "type": "idea.found",
+    "payload": {
+      "title": "Olumino Markdown Spaced Repetition",
+      "description": "A lightweight Markdown notes and spaced repetition app concept that can be modeled in a small offline Python CLI tool parsing markdown files with frontmatter for flashcard scheduling.",
+      "source_url": "https://olumino.app"
+    },
+    "source": "agent",
+    "status": "done",
+    "ts": "2026-11-27T04:26:28"
+  },
+  {
+    "id": "eed2374682",
+    "type": "idea.found",
+    "payload": {
+      "title": "Anchor Security Linter Heuristic",
+      "description": "A heuristic security linter for checking missing owner/signer checks in smart contract instruction accounts, implementable as a simple Python AST or regex-based pattern matcher for Solana/Anchor IDLs or source code.",
+      "source_url": "https://dev.to/abdeldjalilchougui/anchor-sec-lint-a-heuristic-security-linter-for-anchor-programs-3afp"
+    },
+    "source": "agent",
+    "status": "done",
+    "ts": "2026-11-27T04:26:29"
+  },
+  {
+    "id": "3b6bfa6e36",
+    "type": "experiment.ready",
+    "payload": {
+      "slug": "olumino-markdown-spaced-repetition"
+    },
+    "source": "agent",
+    "status": "done",
+    "ts": "2026-11-27T04:26:38"
+  },
+  {
+    "id": "061d71b2b4",
+    "type": "experiment.ready",
+    "payload": {
+      "slug": "anchor-security-linter-heuristic"
+    },
+    "source": "agent",
+    "status": "done",
+    "ts": "2026-11-27T04:27:49"
+  },
+  {
+    "id": "b64f001434",
+    "type": "idea.found",
+    "payload": {
+      "title": "NormalScript Interpreter",
+      "description": "A small Python interpreter or parser for a toy scripting language inspired by esoteric/unusual syntax.",
+      "source_url": "https://psychoscript.com/"
+    },
+    "source": "agent",
+    "status": "done",
+    "ts": "2026-11-27T07:41:04"
+  },
+  {
+    "id": "2798210ae1",
+    "type": "idea.found",
+    "payload": {
+      "title": "Vim Motions Trainer",
+      "description": "A lightweight offline Python CLI game/trainer for practicing fundamental Vim modal editing motions.",
+      "source_url": "http://themouseless.dev/vim/"
+    },
+    "source": "agent",
+    "status": "done",
+    "ts": "2026-11-27T07:41:05"
+  },
+  {
+    "id": "4e151d7bb9",
+    "type": "experiment.ready",
+    "payload": {
+      "slug": "normalscript-interpreter"
+    },
+    "source": "agent",
+    "status": "new",
+    "ts": "2026-11-27T07:43:39"
+  },
+  {
+    "id": "48d24eecf8",
+    "type": "experiment.ready",
+    "payload": {
+      "slug": "vim-motions-trainer"
+    },
+    "source": "agent",
+    "status": "new",
+    "ts": "2026-11-27T07:44:00"
   }
 ]

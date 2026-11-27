@@ -192,3 +192,41 @@
 - 2026-11-26 22:14 — need d3d569f1: verifying -> closed (capability check passes)
 - 2026-11-26 22:14 — need 57c35597: building -> verifying (tool task done)
 - 2026-11-26 22:14 — need 57c35597: verifying -> closed (capability check passes)
+- 2026-11-26 23:27 — need c6aea0cd: open -> searching (tool scripts/flake_hunter.py)
+- 2026-11-26 23:27 — need c6aea0cd: searching -> open (no repo passes the hard rules for ['flaky test detector', 'flake hunter', 'flaky', 'flaky test'])
+- 2026-11-26 23:27 — need 345d80bd: open -> parked (not a tool)
+- 2026-11-26 23:27 — need 51cb20cf: open -> parked (not a tool)
+- 2026-11-26 23:27 — agent news_scout v1: OK — Successfully scanned tech news and rising GitHub repos, identified 2 tech experiment ideas ('LLM in Assembly' and 'YouTube Ad Punisher'), emitted the 
+- 2026-11-26 23:27 — exp/llm-in-assembly: 'experiment llm-in-assembly' PASSED on attempt 1 (README.md, src/qwen_asm.py, tests/test_qwen_asm.py)
+- 2026-11-26 23:27 — agent builder v1: OK — Successfully built and tested the experiment for 'LLM in Assembly' and emitted the experiment.ready event.
+- 2026-11-26 23:27 — exp/youtube-ad-punisher: 'experiment youtube-ad-punisher' PASSED on attempt 2 (README.md, src/yt_punisher/__init__.py, src/yt_punisher/core.py, tests/test_punisher.py)
+- 2026-11-26 23:28 — agent builder v1: PAUSED — paused at the step limit (6); will continue next run
+- 2026-11-26 23:28 — need c6aea0cd: open -> searching (tool scripts/flake_hunter.py)
+- 2026-11-26 23:28 — need c6aea0cd: searching -> open (no repo passes the hard rules for ['flaky test hunter', 'test flake analyzer', 'flaky', 'flaky test', 'test flake'])
+- 2026-11-26 23:28 — projects: created private repo swings-ai-projects
+- 2026-11-26 23:28 — projects: pushed 10 folder(s) to swings-ai-projects: loudness-equalization-dsp-filter, algorithmic-integer-factorization-discre, minimal-pure-python-quantized-attention-, thermodynamic-radiator-dynamics-pid-cont, moat-openrouter-replacement, iphone-sms-expense-parser, langgraph-planner-executor-stopping-loop, net-race-condition-detector-simulator, llm-in-assembly, youtube-ad-punisher
+- 2026-11-27 01:40 — need c6aea0cd: open -> searching (tool scripts/flake_hunter.py)
+- 2026-11-27 01:42 — need c6aea0cd: searching -> parked (no repo passes the hard rules for ['flaky test detector', 'flaky test analyzer', 'flaky test', 'flaky test'])
+- 2026-11-27 01:42 — agent builder: resuming (resume 1 of 2)
+- 2026-11-27 01:42 — agent builder v1: OK — Built experiment and emitted experiment.ready event for youtube-ad-punisher.
+- 2026-11-27 01:43 — projects: pushed 1 folder(s) to swings-ai-projects: llm-in-assembly
+- 2026-11-27 01:43 — agent publisher v3: OK — Published experiment 'llm-in-assembly' to the private projects repo successfully.
+- 2026-11-27 01:47 — projects: pushed 1 folder(s) to swings-ai-projects: youtube-ad-punisher
+- 2026-11-27 01:47 — agent publisher v3: OK — Published experiment 'youtube-ad-punisher' to the private projects repo at https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/y
+- 2026-11-27 04:26 — agent news_scout v1: OK — Successfully processed tech news items, emitted two experiment ideas ('Olumino Markdown Spaced Repetition' and 'Anchor Security Linter Heuristic'), an
+- 2026-11-27 04:26 — exp/olumino-markdown-spaced-repetition: 'experiment olumino-markdown-spaced-repetition' PASSED on attempt 1 (README.md, src/olumino.py, tests/test_olumino.py)
+- 2026-11-27 04:26 — agent builder v1: OK — Successfully built the Olumino Markdown Spaced Repetition Python CLI experiment and emitted the experiment.ready event.
+- 2026-11-27 04:26 — exp/anchor-security-linter-heuristic: 'experiment anchor-security-linter-heuristic' PASSED on attempt 2 (src/anchor_sec_lint.py, tests/test_anchor_sec_lint.py, README.md)
+- 2026-11-27 04:27 — agent builder v1: OK — Successfully built the Anchor Security Linter Heuristic experiment and emitted the experiment.ready event.
+- 2026-11-27 04:27 — projects: pushed 2 folder(s) to swings-ai-projects: olumino-markdown-spaced-repetition, anchor-security-linter-heuristic
+- 2026-11-27 07:41 — agent news_scout v1: OK — Successfully fetched news, emitted 2 tech experiment ideas ('NormalScript Interpreter' and 'Vim Motions Trainer'), and saved a trend note.
+- 2026-11-27 07:41 — projects: pushed 1 folder(s) to swings-ai-projects: olumino-markdown-spaced-repetition
+- 2026-11-27 07:41 — agent publisher: loop detected (list_experiments), run stopped early
+- 2026-11-27 07:41 — agent publisher v3: FAIL — stopped: repeated the same call to list_experiments
+- 2026-11-27 07:41 — projects: nothing to push 1 folder(s) to swings-ai-projects: anchor-security-linter-heuristic
+- 2026-11-27 07:41 — agent publisher v3: OK — Published experiment 'anchor-security-linter-heuristic' to the private projects repo.
+- 2026-11-27 07:41 — exp/normalscript-interpreter: 'experiment normalscript-interpreter' PASSED on attempt 3 (README.md, src/normalscript.py, tests/test_normalscript.py)
+- 2026-11-27 07:43 — agent builder v1: OK — Built NormalScript Interpreter and emitted experiment.ready event.
+- 2026-11-27 07:43 — exp/vim-motions-trainer: 'experiment vim-motions-trainer' PASSED on attempt 3 (README.md, src/vim_trainer.py, tests/test_vim_trainer.py)
+- 2026-11-27 07:44 — agent builder v1: OK — Successfully built the Vim Motions Trainer experiment and emitted experiment.ready event.
+- 2026-11-27 07:44 — projects: pushed 2 folder(s) to swings-ai-projects: normalscript-interpreter, vim-motions-trainer

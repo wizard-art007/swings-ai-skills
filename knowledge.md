@@ -3,3 +3,6 @@
 - 2026-11-26: Growing community interest in reverse-engineering and emulation compatibility layers for modern console architectures (Xbox Series / Windows PC translation layers).
 - 2026-11-26: Trend: Growing interest in open-source AI API routing alternatives (like Moat) and privacy-focused local developer tooling for personal finance and notifications.
 - 2026-11-26: Observed increasing interest in planner/executor agent loops with explicit stopping conditions and robust handling of concurrency race conditions in production systems.
+- 2026-11-26: Trend: Bare-metal and minimalist AI inference (e.g. LLMs in assembly) and browser automation utilities for ad-handling are gaining traction.
+- 2026-11-27: Rising tech trends emphasize lightweight developer utilities like Markdown-based spaced repetition tools and heuristic security linters for smart contracts that can be prototyped cleanly in offline Python.
+- 2026-11-27: Trend: Toy/esoteric scripting languages (e.g. NormalScript) and specialized offline developer productivity tools/trainers (e.g. Vim manuals) generate high engagement on HN and make great small Python experiments.

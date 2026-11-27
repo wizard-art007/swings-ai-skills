@@ -11,7 +11,10 @@
       "tests/test_loudness_eq.py"
     ],
     "repo_url": "https://github.com/wizard-art007/swings-exp-loudness-equalization-dsp-filter",
-    "published": "2026-11-26T01:26"
+    "published": "2026-11-26T01:26",
+    "projects_path": "experiments/loudness-equalization-dsp-filter",
+    "pushed": "2026-11-26T23:28",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/loudness-equalization-dsp-filter"
   },
   "algorithmic-integer-factorization-discre": {
     "title": "Algorithmic Integer Factorization & Discrete Log Experiment",
@@ -25,7 +28,10 @@
       "tests/test_heuristics.py"
     ],
     "repo_url": "https://github.com/wizard-art007/swings-exp-algorithmic-integer-factorization-discre",
-    "published": "2026-11-26T01:26"
+    "published": "2026-11-26T01:26",
+    "projects_path": "experiments/algorithmic-integer-factorization-discre",
+    "pushed": "2026-11-26T23:28",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/algorithmic-integer-factorization-discre"
   },
   "minimal-pure-python-quantized-attention-": {
     "title": "Minimal Pure-Python Quantized Attention & Generation Kernel",
@@ -39,7 +45,10 @@
       "src/quantized_attention.py"
     ],
     "repo_url": "https://github.com/wizard-art007/swings-exp-minimal-pure-python-quantized-attention-",
-    "published": "2026-11-26T07:43"
+    "published": "2026-11-26T07:43",
+    "projects_path": "experiments/minimal-pure-python-quantized-attention-",
+    "pushed": "2026-11-26T23:28",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/minimal-pure-python-quantized-attention-"
   },
   "thermodynamic-radiator-dynamics-pid-cont": {
     "title": "Thermodynamic Radiator Dynamics & PID Controller Simulator",
@@ -51,7 +60,11 @@
       "README.md",
       "tests/test_thermo_sim.py",
       "src/thermo_sim.py"
-    ]
+    ],
+    "projects_path": "experiments/thermodynamic-radiator-dynamics-pid-cont",
+    "published": "2026-11-26T23:28",
+    "pushed": "2026-11-26T23:28",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/thermodynamic-radiator-dynamics-pid-cont"
   },
   "moat-openrouter-replacement": {
     "title": "Moat: OpenRouter Replacement",
@@ -65,7 +78,11 @@
       "src/moat/__init__.py",
       "src/moat/server.py",
       "src/moat/router.py"
-    ]
+    ],
+    "projects_path": "experiments/moat-openrouter-replacement",
+    "published": "2026-11-26T23:28",
+    "pushed": "2026-11-26T23:28",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/moat-openrouter-replacement"
   },
   "iphone-sms-expense-parser": {
     "title": "iPhone SMS Expense Parser",
@@ -77,7 +94,11 @@
       "README.md",
       "tests/test_expense_parser.py",
       "src/expense_parser.py"
-    ]
+    ],
+    "projects_path": "experiments/iphone-sms-expense-parser",
+    "published": "2026-11-26T23:28",
+    "pushed": "2026-11-26T23:28",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/iphone-sms-expense-parser"
   },
   "snaptrap-fake-server": {
     "title": "SNAPTRAP Fake Server",
@@ -97,7 +118,11 @@
       "README.md",
       "tests/test_agent_loop.py",
       "src/agent_loop.py"
-    ]
+    ],
+    "projects_path": "experiments/langgraph-planner-executor-stopping-loop",
+    "published": "2026-11-26T23:28",
+    "pushed": "2026-11-26T23:28",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/langgraph-planner-executor-stopping-loop"
   },
   "net-race-condition-detector-simulator": {
     "title": ".NET Race Condition Detector Simulator",
@@ -109,6 +134,107 @@
       "README.md",
       "tests/test_race_simulator.py",
       "src/race_simulator.py"
-    ]
+    ],
+    "projects_path": "experiments/net-race-condition-detector-simulator",
+    "published": "2026-11-26T23:28",
+    "pushed": "2026-11-26T23:28",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/net-race-condition-detector-simulator"
+  },
+  "llm-in-assembly": {
+    "title": "LLM in Assembly",
+    "description": "Qwen3-0.6B inference in pure Assembly / bare-metal bootable OS experiment.",
+    "source_url": "https://github.com/alesha-pro/llm.asm",
+    "status": "passed",
+    "created": "2026-11-26T23:27",
+    "files": [
+      "README.md",
+      "tests/test_qwen_asm.py",
+      "src/qwen_asm.py"
+    ],
+    "projects_path": "experiments/llm-in-assembly",
+    "published": "2026-11-26T23:28",
+    "pushed": "2026-11-27T01:43",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/llm-in-assembly"
+  },
+  "youtube-ad-punisher": {
+    "title": "YouTube Ad Punisher",
+    "description": "Auto-reloads YouTube pages when an ad plays via a lightweight userscript/extension concept.",
+    "source_url": "https://github.com/antonpictures/youtube-punisher",
+    "status": "passed",
+    "created": "2026-11-26T23:27",
+    "files": [
+      "README.md",
+      "tests/test_punisher.py",
+      "src/yt_punisher/__init__.py",
+      "src/yt_punisher/core.py"
+    ],
+    "projects_path": "experiments/youtube-ad-punisher",
+    "published": "2026-11-26T23:28",
+    "pushed": "2026-11-27T01:47",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/youtube-ad-punisher"
+  },
+  "olumino-markdown-spaced-repetition": {
+    "title": "Olumino Markdown Spaced Repetition",
+    "description": "A lightweight Markdown notes and spaced repetition app concept modeled in a small offline Python CLI tool parsing markdown files with frontmatter for flashcard scheduling.",
+    "source_url": "https://olumino.app",
+    "status": "passed",
+    "created": "2026-11-27T04:26",
+    "files": [
+      "README.md",
+      "src/olumino.py",
+      "tests/test_olumino.py"
+    ],
+    "projects_path": "experiments/olumino-markdown-spaced-repetition",
+    "published": "2026-11-27T04:27",
+    "pushed": "2026-11-27T07:41",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/olumino-markdown-spaced-repetition"
+  },
+  "anchor-security-linter-heuristic": {
+    "title": "Anchor Security Linter Heuristic",
+    "description": "A heuristic security linter for checking missing owner/signer checks in smart contract instruction accounts, implementable as a simple Python AST or regex-based pattern matcher for Solana/Anchor IDLs or source code.",
+    "source_url": "https://dev.to/abdeldjalilchougui/anchor-sec-lint-a-heuristic-security-linter-for-anchor-programs-3afp",
+    "status": "passed",
+    "created": "2026-11-27T04:26",
+    "files": [
+      "README.md",
+      "src/anchor_sec_lint.py",
+      "tests/test_anchor_sec_lint.py"
+    ],
+    "projects_path": "experiments/anchor-security-linter-heuristic",
+    "published": "2026-11-27T04:27",
+    "pushed": "2026-11-27T07:41",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/anchor-security-linter-heuristic"
+  },
+  "normalscript-interpreter": {
+    "title": "NormalScript Interpreter",
+    "description": "A small Python interpreter or parser for a toy scripting language inspired by esoteric/unusual syntax.",
+    "source_url": "https://psychoscript.com/",
+    "status": "passed",
+    "created": "2026-11-27T07:41",
+    "files": [
+      "README.md",
+      "tests/test_normalscript.py",
+      "src/normalscript.py"
+    ],
+    "projects_path": "experiments/normalscript-interpreter",
+    "published": "2026-11-27T07:44",
+    "pushed": "2026-11-27T07:44",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/normalscript-interpreter"
+  },
+  "vim-motions-trainer": {
+    "title": "Vim Motions Trainer",
+    "description": "A lightweight offline Python CLI game/trainer for practicing fundamental Vim modal editing motions.",
+    "source_url": "http://themouseless.dev/vim/",
+    "status": "passed",
+    "created": "2026-11-27T07:43",
+    "files": [
+      "README.md",
+      "tests/test_vim_trainer.py",
+      "src/vim_trainer.py"
+    ],
+    "projects_path": "experiments/vim-motions-trainer",
+    "published": "2026-11-27T07:44",
+    "pushed": "2026-11-27T07:44",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/vim-motions-trainer"
   }
 }

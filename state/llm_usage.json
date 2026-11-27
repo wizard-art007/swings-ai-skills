@@ -1,18 +1,35 @@
 {
   "2026-11-26": {
-    "calls": 53,
+    "calls": 79,
     "errors": 3,
     "overloads": 3,
     "cache_hits": 0,
-    "seconds": 733.5,
+    "seconds": 788.6,
     "by_purpose": {
       "write_tool": 19,
       "self_review": 5,
       "agent:evolver": 7,
-      "need_scout": 12,
-      "lesson": 4,
+      "need_scout": 16,
+      "lesson": 5,
       "improve_doc": 4,
-      "agent:news_scout": 2
+      "agent:news_scout": 8,
+      "agent:builder": 12,
+      "experiment": 3
+    }
+  },
+  "2026-11-27": {
+    "calls": 54,
+    "errors": 2,
+    "overloads": 2,
+    "cache_hits": 0,
+    "seconds": 612.2,
+    "by_purpose": {
+      "need_scout": 1,
+      "agent:builder": 14,
+      "agent:publisher": 14,
+      "agent:news_scout": 12,
+      "experiment": 9,
+      "lesson": 4
     }
   }
 }
