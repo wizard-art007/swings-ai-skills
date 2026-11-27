@@ -63,9 +63,27 @@ def env_for(work, tmp):
     env.update(SWINGS_SKILLS_DIR=work, SWINGS_REPO_CACHE=os.path.join(work, ".skill_repos"),
                SWINGS_TIME_BUDGET_MIN="30", VERIFY_MODE_FILE=os.path.join(tmp, "mode.json"),
                SWINGS_TESTING="1", PYTHONDONTWRITEBYTECODE="1",
-               PYTHONPATH=os.pathsep.join([os.path.join(HERE, "support"), env.get("PYTHONPATH", "")]))
+               PYTHONPATH=os.pathsep.join([os.path.join(HERE, "support", "nocolab"), os.path.join(HERE, "support"),
+                                           env.get("PYTHONPATH", "")]))
     json.dump({"outage": False}, open(env["VERIFY_MODE_FILE"], "w"))
     return env
+
+
+def isolation_check(engine):
+    """Refuse to run any suite unless the engine, as the suites will load it, works on the throwaway copy only.
+    (In Colab the engine would otherwise switch to the real Drive folder: found on 27 Nov, Phase 5 step 1.)"""
+    tmp = tempfile.mkdtemp(prefix="swings-isolation-")
+    try:
+        work = fresh_copy(engine, tmp)
+        code = ("import sys, json; sys.path.insert(0, %r); import swings_core as s; "
+                "print(json.dumps({'dir': str(s.SKILLS_DIR), 'colab': s.IN_COLAB}))" % os.path.join(work, "engine"))
+        r = subprocess.run([sys.executable, "-c", code], cwd=tmp, env=env_for(work, tmp), capture_output=True, text=True, timeout=300)
+        line = next((l for l in reversed(r.stdout.splitlines()) if l.startswith("{")), "{}")
+        got = json.loads(line)
+        ok = got.get("dir") == os.path.realpath(work) and got.get("colab") is False
+        return ok, (got if line != "{}" else (r.stdout + r.stderr)[-800:])
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
 
 
 def run_suite(name, engine, timeout=900):
@@ -135,6 +153,11 @@ def main(argv=None):
     ap.add_argument("--json", help="write the results here")
     a = ap.parse_args(argv)
     engine = os.path.abspath(a.engine) if a.engine else None
+    ok_iso, seen = isolation_check(engine)
+    if not ok_iso:
+        print(f"FAIL isolation: the engine would not run on a throwaway copy ({seen}); no suite was run")
+        print("RESULT FAILED: isolation check")
+        return 2
     results = [run_suite(s, engine) for s in (a.suite or SUITES)]
     for r in results:
         print(f"{'PASS' if r['ok'] else 'FAIL'} {r['suite']}: {r['passed']} passed, {len(r['failed'])} failed, {r['seconds']}s")
