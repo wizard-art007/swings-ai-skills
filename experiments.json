@@ -408,6 +408,10 @@
       "src/vendor/mermaid_js_mermaid/mermaid_helper.py",
       "src/vendor/sebastianbergmann_php_code_coverage/__init__.py",
       "src/vendor/sebastianbergmann_php_code_coverage/test_coverage_analyzer.py"
-    ]
+    ],
+    "projects_path": "experiments/proj-qa-test-coverage-architecture-visua",
+    "published": "2026-11-28T04:16",
+    "pushed": "2026-11-28T04:16",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/proj-qa-test-coverage-architecture-visua"
   }
 }
