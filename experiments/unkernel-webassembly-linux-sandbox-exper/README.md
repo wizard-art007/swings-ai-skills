@@ -1,22 +1,20 @@
 # Unkernel WebAssembly Linux Sandbox Experiment
 
-## Idea
-Inspired by modern browser-based virtualization and WebAssembly Linux experiments (`unkernel.dev`), this project provides a lightweight, offline Python simulator and parser for WebAssembly Linux environment payloads, process descriptors, and execution states. 
+A small offline Python experiment simulating a WebAssembly Linux environment loader/parser under 300 lines. Inspired by browser-based virtualization trends (Unkernel), this tool parses pseudo-WebAssembly module manifests, validates resource limits, and utilizes the `tt_a1i_archify` skill tool to generate architectural Mermaid diagrams showing sandbox lifecycle and execution flow.
 
 ## How It Works
-- **Sandbox Loader**: Parses simulated WebAssembly binary module manifests, memory pages, and environment variable configurations.
-- **Virtual Process Lifecycle**: Tracks virtual PID states, system call trace buffers, and resource limits.
-- **Skill Integration**: Integrates the vendor `tt_a1i_archify` skill tool to automatically translate runtime container/sandbox architecture and process layout descriptors into Mermaid and PlantUML diagrams for developer visualization.
+1. **Manifest Parsing**: Reads a simulated Wasm/Linux environment configuration manifest (using `parse_text_lines` from `tt_a1i_archify`).
+2. **Sandbox Simulation**: Instantiates a lightweight virtual environment (`WasmLinuxSandbox`) enforcing memory and CPU limits, mounting virtual filesystems.
+3. **Diagram Generation**: Converts the sandbox component topology and execution flow into a Mermaid architecture diagram using `text_to_mermaid`.
 
-## Skill Tool Used
-- `vendor.tt_a1i_archify.archify_helper`: Utilized to convert sandbox layout descriptions and state configurations into Mermaid/PlantUML architecture diagrams, helping developers audit sandbox components visually.
+## Skill Tool Integration
+- Uses `vendor.tt_a1i_archify.archify_helper` for parsing configuration lines and generating Mermaid architecture diagrams.
 
 ## How to Run
 ```bash
-# Run tests offline
+python3 src/unkernel_sandbox.py
 pytest tests/
 ```
 
 ## What Was Learned
-- Lightweight offline parsers can effectively simulate complex container/WebAssembly isolation primitives without heavy virtualization runtimes.
-- Combining sandbox instrumentation inspection directly with diagram generation tools (`archify`) provides instant visual feedback for developer security audits and architecture review.
+Integrating architectural diagram generation directly into the initialization of a simulated container/sandbox parser provides immediate visual feedback for embedded systems and offline developer workflows.

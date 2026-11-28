@@ -355,3 +355,5 @@
 - 2026-11-28 07:35 — project proj-qa-test-coverage-visualizer: proposed -> active (2 milestones; tools from ['mermaid-js-mermaid', 'sebastianbergmann-php-code-coverage'])
 - 2026-11-28 07:35 — project/proj-qa-test-coverage-visualizer: 'proj-qa-test-coverage-visualizer milestone 1: M1: Coverage Parser & Metric Delta Calculator' PASSED on attempt 1 (src/app/__init__.py, src/app/visualizer.py, tests/test_extra_visualizer.py)
 - 2026-11-28 07:35 — agent news_scout v1: OK — Fetched tech news, saved trend notes on WebAssembly/browser virtualization and developer tools, and emitted an idea event for Unkernel.
+- 2026-11-28 07:35 — exp/unkernel-webassembly-linux-sandbox-exper: 'experiment unkernel-webassembly-linux-sandbox-exper' PASSED on attempt 1 (README.md, src/unkernel_sandbox.py, tests/test_unkernel_sandbox.py)
+- 2026-11-28 07:35 — experiment unkernel-webassembly-linux-sandbox-exper: passed but uses no skill tool; one retry, told so

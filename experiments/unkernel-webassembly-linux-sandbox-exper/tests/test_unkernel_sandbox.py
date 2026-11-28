@@ -1,46 +1,40 @@
 import sys
 import os
 
-# Ensure src is in sys.path
-SRC_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../src'))
-if SRC_PATH not in sys.path:
-    sys.path.insert(0, SRC_PATH)
+# Ensure src/ is in python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
 
-from unkernel_sandbox import WasmLinuxSandbox, parse_manifest_file_content
+from unkernel_sandbox import WasmLinuxSandbox, parse_manifest_file_content, generate_sandbox_architecture_diagram
 
 
 def test_sandbox_lifecycle():
-    sandbox = WasmLinuxSandbox("test-node", memory_pages=512)
-    assert sandbox.status == "INITIALIZED"
+    sandbox = WasmLinuxSandbox(name="test-box", memory_mb=32)
+    assert sandbox.state == "CREATED"
     
-    sandbox.add_process(1, "/bin/init")
-    sandbox.add_process(42, "/usr/bin/app")
+    boot_msg = sandbox.boot()
+    assert "booted successfully" in boot_msg
+    assert sandbox.state == "RUNNING"
     
-    assert sandbox.boot() is True
-    assert sandbox.status == "RUNNING"
-    assert len(sandbox.processes) == 2
+    res = sandbox.execute_wasm("wasm_bytecode_sample")
+    assert res["status"] == "success"
+    assert res["executed_bytes"] > 0
 
 
-def test_manifest_parsing_and_diagram():
-    manifest_data = """
-    # Unkernel configuration manifest
-    NAME: edge-wasm-runtime
-    MEMORY: 1024
-    PROC: 1 : /sbin/loader
-    PROC: 100 : /app/worker.wasm
+def test_manifest_parser():
+    content = """
+    # Comment line
+    NAME=custom-node
+    MEMORY=256
+    MOUNT=/var/log
     """
-    
-    sandbox = parse_manifest_file_content(manifest_data)
-    assert sandbox.name == "edge-wasm-runtime"
-    assert sandbox.memory_pages == 1024
-    assert len(sandbox.processes) == 2
-    
-    # Test skill tool integration (archify mermaid generator)
-    mermaid_out = sandbox.generate_architecture_diagram(engine="mermaid")
-    assert isinstance(mermaid_out, str)
-    assert len(mermaid_out) > 0
+    config = parse_manifest_file_content(content)
+    assert config["name"] == "custom-node"
+    assert config["memory"] == 256
+    assert "/var/log" in config["volumes"]
 
-    # Test skill tool integration (archify plantuml generator)
-    plantuml_out = sandbox.generate_architecture_diagram(engine="plantuml")
-    assert isinstance(plantuml_out, str)
-    assert len(plantuml_out) > 0
+
+def test_archify_mermaid_generation():
+    diagram = generate_sandbox_architecture_diagram()
+    assert isinstance(diagram, str)
+    assert len(diagram) > 0
+    assert "sequenceDiagram" in diagram or "graph" in diagram or "diagram" in diagram.lower()

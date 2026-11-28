@@ -1,89 +1,77 @@
 """
-Unkernel WebAssembly Linux Sandbox Simulator & Architecture Visualizer.
-Simulates a WebAssembly Linux environment loader and utilizes the archify skill
-to generate architectural diagrams of the sandbox layout.
+Unkernel WebAssembly Linux Sandbox Experiment
+Simulates a WebAssembly Linux environment loader/parser and utilizes tt_a1i_archify for architecture diagram generation.
 """
 
-import sys
-import os
-
-# Ensure vendor is available
-VENDOR_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'vendor'))
-if VENDOR_PATH not in sys.path:
-    sys.path.insert(0, VENDOR_PATH)
-
-from tt_a1i_archify.archify_helper import parse_text_lines, text_to_mermaid, text_to_plantuml
+from vendor.tt_a1i_archify.archify_helper import parse_text_lines, text_to_mermaid
 
 
 class WasmLinuxSandbox:
-    """Simulates a WebAssembly Linux sandbox instance."""
-
-    def __init__(self, name: str, memory_pages: int = 256):
+    def __init__(self, name: str, memory_mb: int = 64, cpu_shares: int = 1024):
         self.name = name
-        self.memory_pages = memory_pages
-        self.processes = []
-        self.env_vars = {}
-        self.status = "INITIALIZED"
+        self.memory_mb = memory_mb
+        self.cpu_shares = cpu_shares
+        self.mounted_volumes = []
+        self.state = "CREATED"
 
-    def add_process(self, pid: int, command: str):
-        self.processes.append({"pid": pid, "command": command, "state": "READY"})
+    def mount(self, path: str):
+        self.mounted_volumes.append(path)
 
-    def set_env(self, key: str, value: str):
-        self.env_vars[key] = value
+    def boot(self) -> str:
+        if self.state == "RUNNING":
+            return f"Sandbox {self.name} already running."
+        self.state = "RUNNING"
+        return f"Sandbox {self.name} booted successfully with {self.memory_mb}MB RAM."
 
-    def boot(self):
-        if not self.processes:
-            self.status = "FAILED_NO_PROCESSES"
-            return False
-        self.status = "RUNNING"
-        return True
-
-    def get_manifest_description(self) -> str:
-        """Generates a text description of the sandbox state for archify."""
-        lines = [
-            f"Sandbox: {self.name}",
-            f"Status: {self.status}",
-            f"MemoryPages: {self.memory_pages}",
-            f"EnvVarsCount: {len(self.env_vars)}",
-        ]
-        for p in self.processes:
-            lines.append(f"Process PID {p['pid']}: {p['command']} [{p['state']}]")
-        return "\n".join(lines)
-
-    def generate_architecture_diagram(self, engine: str = "mermaid") -> str:
-        """Uses tt_a1i_archify skill to generate architecture diagrams."""
-        desc = self.get_manifest_description()
-        if engine.lower() == "plantuml":
-            return text_to_plantuml(desc, kind="component")
-        return text_to_mermaid(desc, kind="flowchart")
+    def execute_wasm(self, bytecode_stub: str) -> dict:
+        if self.state != "RUNNING":
+            raise RuntimeError("Sandbox is not running.")
+        return {
+            "status": "success",
+            "executed_bytes": len(bytecode_stub),
+            "output": f"Simulated execution of {bytecode_stub[:16]}..."
+        }
 
 
-def parse_manifest_file_content(content: str) -> WasmLinuxSandbox:
-    """Parses simple config text using parse_text_lines from archify skill."""
+def parse_manifest_file_content(content: str) -> dict:
+    """Parses manifest file content using tt_a1i_archify helper lines."""
     lines = parse_text_lines(content)
-    sandbox_name = "default-sandbox"
-    pages = 128
-    sandbox = None
-
+    config = {"name": "default-wasm-env", "memory": 64, "volumes": []}
+    
     for line in lines:
-        if line.startswith("NAME:"):
-            sandbox_name = line.split(":", 1)[1].strip()
-            sandbox = WasmLinuxSandbox(sandbox_name, pages)
-        elif line.startswith("MEMORY:") and sandbox:
-            try:
-                sandbox.memory_pages = int(line.split(":", 1)[1].strip())
-            except ValueError:
-                pass
-        elif line.startswith("PROC:") and sandbox:
-            parts = line.split(":", 2)
-            if len(parts) == 3:
-                try:
-                    pid = int(parts[1].strip())
-                    cmd = parts[2].strip()
-                    sandbox.add_process(pid, cmd)
-                except ValueError:
-                    pass
+        if line.startswith("NAME="):
+            config["name"] = line.split("=", 1)[1].strip()
+        elif line.startswith("MEMORY="):
+            config["memory"] = int(line.split("=", 1)[1].strip())
+        elif line.startswith("MOUNT="):
+            config["volumes"].append(line.split("=", 1)[1].strip())
+            
+    return config
 
-    if not sandbox:
-        sandbox = WasmLinuxSandbox(sandbox_name, pages)
-    return sandbox
+
+def generate_sandbox_architecture_diagram() -> str:
+    """Uses tt_a1i_archify to generate a Mermaid architecture diagram for the sandbox."""
+    description = (
+        "Unkernel Sandbox Architecture\n"
+        "1. Host Environment loads Manifest\n"
+        "2. WasmLinuxSandbox initializes memory and mounts\n"
+        "3. Virtual CPU executes bytecode securely"
+    )
+    return text_to_mermaid(description, kind="sequence")
+
+
+if __name__ == "__main__":
+    sample_manifest = """
+    # Unkernel Linux Environment Manifest
+    NAME=edge-worker-01
+    MEMORY=128
+    MOUNT=/app/data
+    """
+    cfg = parse_manifest_file_content(sample_manifest)
+    sandbox = WasmLinuxSandbox(name=cfg["name"], memory_mb=cfg["memory"])
+    for vol in cfg["volumes"]:
+        sandbox.mount(vol)
+        
+    print(sandbox.boot())
+    print(sandbox.execute_wasm(b"\x00\x61\x73\x6d\x01\x00\x00\x00"))
+    print("Generated Architecture Diagram:\n", generate_sandbox_architecture_diagram())
