@@ -22,8 +22,8 @@
     "helped": 2
   },
   "a454dd3dc3": {
-    "uses": 1,
-    "helped": 1
+    "uses": 2,
+    "helped": 2
   },
   "2a1f097240": {
     "uses": 3,
@@ -64,5 +64,9 @@
   "0d22f0ff01": {
     "uses": 1,
     "helped": 0
+  },
+  "35e1f60e90": {
+    "uses": 1,
+    "helped": 1
   }
 }

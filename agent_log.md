@@ -337,3 +337,4 @@
 - 2026-11-28 04:16 — project: proposal attempt 1 rejected (milestone 1: the test must be a pytest test that imports the app package)
 - 2026-11-28 04:16 — project: proposal attempt 2 rejected (reply was not valid JSON)
 - 2026-11-28 04:16 — project: proposal rejected (reply was not valid JSON)
+- 2026-11-28 04:16 — dayuanjiang-next-ai-draw-io: SKILL.md improved
