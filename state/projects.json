@@ -395,8 +395,9 @@
         "name": "m1_flake_pattern_detector",
         "goal": "Implement basic test flake detection parsing input logs for intermittent failure patterns.",
         "test": "import sys\nsys.path.insert(0, 'src')\nfrom app.flake_detector import detect_flaky_patterns\n\ndef test_detect_flaky():\n    logs = ['test_auth PASSED', 'test_auth FAILED timeout', 'test_auth PASSED']\n    result = detect_flaky_patterns(logs)\n    assert 'test_auth' in result\n    assert result['test_auth']['flaky'] is True\n",
-        "status": "todo",
-        "tries": 0
+        "status": "done",
+        "tries": 0,
+        "done_at": "2026-11-28T07:35"
       },
       {
         "n": 2,
@@ -434,6 +435,7 @@
         "to": "active",
         "why": "2 milestones; tools from ['plantuml-plantuml', 'sebastianbergmann-php-code-coverage']"
       }
-    ]
+    ],
+    "skills_used": []
   }
 ]

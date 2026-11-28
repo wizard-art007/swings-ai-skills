@@ -1,6 +1,6 @@
 {
-  "ts": "2026-11-28T04:16:59",
-  "run": "20261128-041632-actions",
+  "ts": "2026-11-28T07:35:42",
+  "run": "20261128-073501-actions",
   "gemini": {
     "pacific_day": "2026-11-27",
     "models": {
@@ -45,18 +45,18 @@
         "used_up": true
       },
       "gemini-3.5-flash-lite": {
-        "calls": 52,
-        "ok": 49,
+        "calls": 72,
+        "ok": 68,
         "quota_429": 0,
-        "minute_429": 3,
+        "minute_429": 4,
         "overload": 0,
         "other": 0,
         "skipped": 0,
         "used_up": false
       },
       "gemini-3.1-flash-lite": {
-        "calls": 3,
-        "ok": 3,
+        "calls": 4,
+        "ok": 4,
         "quota_429": 0,
         "minute_429": 0,
         "overload": 0,
@@ -88,7 +88,7 @@
       }
     },
     "cap_in_use": 300,
-    "calls_today": 28,
+    "calls_today": 48,
     "quota_known_for_all": false,
     "learned_total": null,
     "overloads_today": 0,
@@ -97,12 +97,12 @@
   "github": {
     "personal": {
       "core": {
-        "calls": 11,
+        "calls": 14,
         "writes": 0,
         "limit": 5000,
-        "remaining": 4990,
-        "min_remaining": 4990,
-        "reset_in_min": 59.6
+        "remaining": 4987,
+        "min_remaining": 4987,
+        "reset_in_min": 59.3
       },
       "search": {
         "calls": 0,
@@ -114,27 +114,27 @@
       }
     },
     "actions": {
+      "search": {
+        "calls": 1,
+        "writes": 0,
+        "limit": 30,
+        "remaining": 29,
+        "min_remaining": 29,
+        "reset_in_min": 0.5
+      },
       "core": {
         "calls": 2,
         "writes": 0,
         "limit": 5000,
         "remaining": 4997,
         "min_remaining": 4997,
-        "reset_in_min": 59.2
-      },
-      "search": {
-        "calls": 0,
-        "writes": 0,
-        "limit": 30,
-        "remaining": 30,
-        "min_remaining": 30,
-        "reset_in_min": 1.0
+        "reset_in_min": 58.9
       }
     }
   },
   "writes_last_hour": 0,
   "runtime": {
-    "minutes": 0.4,
+    "minutes": 0.7,
     "budget": 30.0,
     "near_budget": false
   },
@@ -144,7 +144,7 @@
     "graduated_today": 1
   },
   "sizes": {
-    "skills_git_mb": 1.1,
+    "skills_git_mb": 1.23,
     "big_files": [],
     "daily": {
       "checked": "2026-11-28",
@@ -154,7 +154,7 @@
       "logs_mb": 0.1
     }
   },
-  "queue_todo": 0,
+  "queue_todo": 1,
   "slowdowns": [],
   "hits": [],
   "meter_errors": 0

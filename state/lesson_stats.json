@@ -35,7 +35,8 @@
   },
   "5a5dd31b91": {
     "uses": 4,
-    "helped": 3
+    "helped": 3,
+    "promoted": "rule"
   },
   "2e5e8396c5": {
     "uses": 1,
@@ -78,8 +79,8 @@
     "helped": 3
   },
   "199d114694": {
-    "uses": 2,
-    "helped": 2
+    "uses": 3,
+    "helped": 3
   },
   "36f0ae9c14": {
     "uses": 1,

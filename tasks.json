@@ -789,10 +789,25 @@
     "kind": "milestone",
     "skill": "sebastianbergmann-php-code-coverage",
     "goal": "proj-ci-test-flake-architecture-visualiz milestone 1: m1_flake_pattern_detector",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-28T07:35",
     "project": "bee2d3c6",
     "milestone": 1,
+    "objective": "O3",
+    "value": 1829.445,
+    "finished": "2026-11-28T07:35",
+    "minutes": 0.03,
+    "estimate": 0.5,
+    "counted": true
+  },
+  {
+    "kind": "milestone",
+    "skill": "sebastianbergmann-php-code-coverage",
+    "goal": "proj-ci-test-flake-architecture-visualiz milestone 2: m2_flake_sequence_visualizer",
+    "status": "todo",
+    "queued": "2026-11-28T07:35",
+    "project": "bee2d3c6",
+    "milestone": 2,
     "objective": "O3"
   }
 ]

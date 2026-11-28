@@ -161,7 +161,8 @@
   "heals": {},
   "rules": {
     "write_tool:Validate Mermaid syntax and class definition formats against unit test assertion": "active",
-    "write_tool:Verify existing test assertions for Mermaid syntax formatting before modifying t": "active"
+    "write_tool:Verify existing test assertions for Mermaid syntax formatting before modifying t": "active",
+    "milestone:Validate syntax locally using a linter or test run before submitting generated c": "active"
   },
   "objectives": {
     "O1": "active",
