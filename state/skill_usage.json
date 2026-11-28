@@ -24,8 +24,8 @@
     "success": 1
   },
   "sebastianbergmann-php-code-coverage": {
-    "used": 6,
-    "success": 6
+    "used": 7,
+    "success": 7
   },
   "plantuml-plantuml": {
     "used": 2,
@@ -36,8 +36,8 @@
     "success": 2
   },
   "mermaid-js-mermaid": {
-    "used": 1,
-    "success": 1
+    "used": 2,
+    "success": 2
   },
   "tt-a1i-archify": {
     "used": 1,

@@ -325,8 +325,9 @@
         "name": "M1: Coverage Parser & Metric Delta Calculator",
         "goal": "Analyze and calculate coverage metrics between two code snippets.",
         "test": "import sys\nsys.path.insert(0, 'src')\nfrom app.visualizer import analyze_coverage\n\ndef test_analyze_coverage():\n    res = analyze_coverage('def foo(): pass', 'def foo(): pass\\ndef bar(): pass')\n    assert isinstance(res, dict)\n    assert 'delta' in res",
-        "status": "todo",
-        "tries": 0
+        "status": "done",
+        "tries": 0,
+        "done_at": "2026-11-28T07:35"
       },
       {
         "n": 2,
@@ -359,6 +360,10 @@
         "to": "active",
         "why": "2 milestones; tools from ['mermaid-js-mermaid', 'sebastianbergmann-php-code-coverage']"
       }
+    ],
+    "skills_used": [
+      "mermaid-js-mermaid",
+      "sebastianbergmann-php-code-coverage"
     ]
   }
 ]

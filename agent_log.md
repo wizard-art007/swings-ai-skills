@@ -359,3 +359,5 @@
 - 2026-11-28 07:35 — experiment unkernel-webassembly-linux-sandbox-exper: passed but uses no skill tool; one retry, told so
 - 2026-11-28 07:35 — exp/unkernel-webassembly-linux-sandbox-exper: 'experiment unkernel-webassembly-linux-sandbox-exper (skill retry)' PASSED on attempt 2 (README.md, src/unkernel_sandbox.py, tests/test_unkernel_sandbox.py)
 - 2026-11-28 07:35 — agent builder v1: OK — Successfully built the Unkernel WebAssembly Linux Sandbox Experiment and emitted experiment.ready event.
+- 2026-11-28 07:35 — projects: pushed 1 folder(s) to swings-ai-projects: unkernel-webassembly-linux-sandbox-exper
+- 2026-11-28 07:35 — project proj-qa-test-coverage-visualizer: milestone 1 'M1: Coverage Parser & Metric Delta Calculator' done; skills imported ['mermaid-js-mermaid', 'sebastianbergmann-php-code-coverage']

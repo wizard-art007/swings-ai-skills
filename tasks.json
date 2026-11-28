@@ -767,6 +767,17 @@
     "value": 1829.445,
     "finished": "2026-11-28T07:35",
     "minutes": 0.03,
-    "estimate": 0.8
+    "estimate": 0.8,
+    "counted": true
+  },
+  {
+    "kind": "milestone",
+    "skill": "sebastianbergmann-php-code-coverage",
+    "goal": "proj-qa-test-coverage-visualizer milestone 2: M2: Visual Coverage Report Generator",
+    "status": "todo",
+    "queued": "2026-11-28T07:35",
+    "project": "c1e23879",
+    "milestone": 2,
+    "objective": "O3"
   }
 ]
