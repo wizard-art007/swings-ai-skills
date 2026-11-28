@@ -449,5 +449,41 @@
     "published": "2026-11-28T07:35",
     "pushed": "2026-11-28T07:35",
     "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/unkernel-webassembly-linux-sandbox-exper"
+  },
+  "proj-qa-test-coverage-visualizer": {
+    "title": "QA Test Coverage Visualizer",
+    "description": "Combine test coverage analysis with dynamic Mermaid diagram generation to produce visual coverage architecture reports.",
+    "status": "passed",
+    "kind": "project",
+    "skills": [
+      "mermaid-js-mermaid",
+      "sebastianbergmann-php-code-coverage"
+    ],
+    "milestones": [
+      {
+        "name": "M1: Coverage Parser & Metric Delta Calculator",
+        "done": true
+      },
+      {
+        "name": "M2: Visual Coverage Report Generator",
+        "done": true
+      }
+    ],
+    "created": "2026-11-28T07:35",
+    "finished": "2026-11-28T07:35",
+    "objective": "O3",
+    "files": [
+      "README.md",
+      "tests/test_m2.py",
+      "tests/test_m1.py",
+      "tests/test_extra_visualizer.py",
+      "src/vendor/__init__.py",
+      "src/app/__init__.py",
+      "src/app/visualizer.py",
+      "src/vendor/mermaid_js_mermaid/__init__.py",
+      "src/vendor/mermaid_js_mermaid/mermaid_helper.py",
+      "src/vendor/sebastianbergmann_php_code_coverage/__init__.py",
+      "src/vendor/sebastianbergmann_php_code_coverage/test_coverage_analyzer.py"
+    ]
   }
 }
