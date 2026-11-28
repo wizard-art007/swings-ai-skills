@@ -30,7 +30,7 @@
       "target": 2.0,
       "why": "With 15 active skills and 0 graduated projects, building and graduating verified projects fulfills the core mission of practical output.",
       "baseline": 0,
-      "status": "active",
+      "status": "met",
       "progress": [
         {
           "ts": "2026-11-27T10:13",
@@ -38,9 +38,10 @@
         },
         {
           "ts": "2026-11-28T01:37",
-          "value": 1
+          "value": 2
         }
-      ]
+      ],
+      "met_at": "2026-11-28T01:38"
     },
     {
       "id": "O3",
