@@ -1,62 +1,42 @@
 {
-  "ts": "2026-11-28T07:35:42",
-  "run": "20261128-073501-actions",
+  "ts": "2026-11-28T10:13:24",
+  "run": "20261128-100826-actions",
   "gemini": {
-    "pacific_day": "2026-11-27",
+    "pacific_day": "2026-11-28",
     "models": {
       "gemini-3.8-flash": {
-        "calls": 1,
+        "calls": 3,
         "ok": 0,
-        "quota_429": 1,
+        "quota_429": 0,
         "minute_429": 0,
-        "overload": 0,
-        "other": 0,
-        "skipped": 20,
-        "used_up": true
+        "overload": 1,
+        "other": 2,
+        "skipped": 0,
+        "used_up": false
       },
       "gemini-3.7-flash": {
         "calls": 1,
         "ok": 0,
-        "quota_429": 1,
+        "quota_429": 0,
         "minute_429": 0,
-        "overload": 0,
+        "overload": 1,
         "other": 0,
-        "skipped": 20,
-        "used_up": true
+        "skipped": 0,
+        "used_up": false
       },
       "gemini-3.6-flash": {
         "calls": 1,
-        "ok": 0,
-        "quota_429": 1,
-        "minute_429": 0,
-        "overload": 0,
-        "other": 0,
-        "skipped": 20,
-        "used_up": true
-      },
-      "gemini-3.5-flash": {
-        "calls": 1,
-        "ok": 0,
-        "quota_429": 1,
-        "minute_429": 0,
-        "overload": 0,
-        "other": 0,
-        "skipped": 20,
-        "used_up": true
-      },
-      "gemini-3.5-flash-lite": {
-        "calls": 72,
-        "ok": 68,
+        "ok": 1,
         "quota_429": 0,
-        "minute_429": 4,
+        "minute_429": 0,
         "overload": 0,
         "other": 0,
         "skipped": 0,
         "used_up": false
       },
-      "gemini-3.1-flash-lite": {
-        "calls": 4,
-        "ok": 4,
+      "gemini-3.5-flash-lite": {
+        "calls": 1,
+        "ok": 1,
         "quota_429": 0,
         "minute_429": 0,
         "overload": 0,
@@ -88,10 +68,10 @@
       }
     },
     "cap_in_use": 300,
-    "calls_today": 48,
+    "calls_today": 52,
     "quota_known_for_all": false,
     "learned_total": null,
-    "overloads_today": 0,
+    "overloads_today": 1,
     "all_used_up": false
   },
   "github": {
@@ -102,7 +82,7 @@
         "limit": 5000,
         "remaining": 4987,
         "min_remaining": 4987,
-        "reset_in_min": 59.3
+        "reset_in_min": 55.0
       },
       "search": {
         "calls": 0,
@@ -114,27 +94,27 @@
       }
     },
     "actions": {
-      "search": {
-        "calls": 1,
-        "writes": 0,
-        "limit": 30,
-        "remaining": 29,
-        "min_remaining": 29,
-        "reset_in_min": 0.5
-      },
       "core": {
         "calls": 2,
         "writes": 0,
         "limit": 5000,
         "remaining": 4997,
         "min_remaining": 4997,
-        "reset_in_min": 58.9
+        "reset_in_min": 54.7
+      },
+      "search": {
+        "calls": 0,
+        "writes": 0,
+        "limit": 30,
+        "remaining": 30,
+        "min_remaining": 30,
+        "reset_in_min": 1.0
       }
     }
   },
   "writes_last_hour": 0,
   "runtime": {
-    "minutes": 0.7,
+    "minutes": 5.0,
     "budget": 30.0,
     "near_budget": false
   },
@@ -144,7 +124,7 @@
     "graduated_today": 1
   },
   "sizes": {
-    "skills_git_mb": 1.23,
+    "skills_git_mb": 1.08,
     "big_files": [],
     "daily": {
       "checked": "2026-11-28",
@@ -154,7 +134,7 @@
       "logs_mb": 0.1
     }
   },
-  "queue_todo": 1,
+  "queue_todo": 0,
   "slowdowns": [],
   "hits": [],
   "meter_errors": 0

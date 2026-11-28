@@ -404,11 +404,12 @@
         "name": "m2_flake_sequence_visualizer",
         "goal": "Combine flake analysis with PlantUML sequence generation to diagram the failing test interaction path.",
         "test": "import sys\nsys.path.insert(0, 'src')\nfrom app.flake_visualizer import generate_flake_sequence\n\ndef test_generate_flake_sequence():\n    analysis = {'test_auth': {'flaky': True, 'reason': 'timeout'}}\n    puml = generate_flake_sequence(analysis)\n    assert 'sequenceDiagram' in puml or 'actor' in puml\n",
-        "status": "todo",
-        "tries": 0
+        "status": "done",
+        "tries": 0,
+        "done_at": "2026-11-28T10:13"
       }
     ],
-    "status": "active",
+    "status": "finished",
     "created": "2026-11-28T07:35",
     "objective": "O3",
     "vendored": [
@@ -434,8 +435,16 @@
         "from": "proposed",
         "to": "active",
         "why": "2 milestones; tools from ['plantuml-plantuml', 'sebastianbergmann-php-code-coverage']"
+      },
+      {
+        "ts": "2026-11-28T10:13",
+        "from": "active",
+        "to": "finished",
+        "why": "all 2 milestones pass; skills used ['plantuml-plantuml']"
       }
     ],
-    "skills_used": []
+    "skills_used": [
+      "plantuml-plantuml"
+    ]
   }
 ]

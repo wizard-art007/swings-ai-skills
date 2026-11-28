@@ -382,3 +382,4 @@
 - 2026-11-28 10:13 — agent publisher: published ['unkernel-webassembly-linux-sandbox-exper']; refused {}; graduation limit (1/day) reached; proj-agentic-workflow-visualizer graduates next time (direct, no LLM call)
 - 2026-11-28 10:13 — project proj-ci-test-flake-architecture-visualiz: milestone 2 'm2_flake_sequence_visualizer' done; skills imported ['plantuml-plantuml']
 - 2026-11-28 10:13 — project proj-ci-test-flake-architecture-visualiz: active -> finished (all 2 milestones pass; skills used ['plantuml-plantuml'])
+- 2026-11-28 10:13 — projects: pushed 1 folder(s) to swings-ai-projects: proj-ci-test-flake-architecture-visualiz

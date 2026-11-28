@@ -1,6 +1,6 @@
 {
   "ci": {
-    "checked": "2026-11-28T07:35",
+    "checked": "2026-11-28T10:13",
     "conclusion": "success",
     "run": 19,
     "sha": "80ec114",
@@ -67,6 +67,15 @@
       "done": 4,
       "kinds": [
         "experiment",
+        "milestone"
+      ]
+    },
+    {
+      "run": "20261128-100826-actions",
+      "ts": "2026-11-28T10:13",
+      "useful": true,
+      "done": 1,
+      "kinds": [
         "milestone"
       ]
     }
