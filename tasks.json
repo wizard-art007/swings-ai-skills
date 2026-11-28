@@ -585,9 +585,13 @@
     "kind": "write_tool",
     "skill": "dayuanjiang-next-ai-draw-io",
     "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-28T01:37",
-    "objective": "O4"
+    "objective": "O4",
+    "value": 1954.358,
+    "finished": "2026-11-28T01:37",
+    "minutes": 0.06,
+    "estimate": 0.5
   },
   {
     "kind": "improve_doc",
@@ -595,15 +599,20 @@
     "goal": "",
     "status": "todo",
     "queued": "2026-11-28T01:37",
-    "objective": null
+    "objective": null,
+    "value": 751.676
   },
   {
     "kind": "write_tool",
     "skill": "sickn33-agentic-awesome-skills",
     "goal": "a small offline Python helper that captures this project's core technique (for example an agent loop, tool calling, planning, memory or a prompt pattern) and applies it to a toy task; the tests must use a fake LLM function and no network",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-28T01:37",
-    "objective": "O2"
+    "objective": "O2",
+    "value": 2001.199,
+    "finished": "2026-11-28T01:37",
+    "minutes": 0.06,
+    "estimate": 0.5
   },
   {
     "kind": "improve_doc",
@@ -611,7 +620,8 @@
     "goal": "",
     "status": "todo",
     "queued": "2026-11-28T01:37",
-    "objective": "O2"
+    "objective": "O2",
+    "value": 1000.6
   },
   {
     "kind": "write_tool",
@@ -619,7 +629,8 @@
     "goal": "a small offline Python helper that applies this project's testing approach (for example test-case generation, fluent assertions, retries and waits, page-object or fixture patterns) to a sample function or spec, with pytest tests",
     "status": "todo",
     "queued": "2026-11-28T01:37",
-    "objective": "O1"
+    "objective": "O1",
+    "value": 1954.358
   },
   {
     "kind": "improve_doc",
@@ -627,7 +638,8 @@
     "goal": "",
     "status": "todo",
     "queued": "2026-11-28T01:37",
-    "objective": "O1"
+    "objective": "O1",
+    "value": 977.179
   },
   {
     "kind": "write_tool",
@@ -635,7 +647,8 @@
     "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
     "status": "todo",
     "queued": "2026-11-28T01:37",
-    "objective": "O4"
+    "objective": "O4",
+    "value": 1727.954
   },
   {
     "kind": "improve_doc",
@@ -643,15 +656,20 @@
     "goal": "",
     "status": "todo",
     "queued": "2026-11-28T01:37",
-    "objective": null
+    "objective": null,
+    "value": 664.598
   },
   {
     "kind": "write_tool",
     "skill": "browser-use-browser-use",
     "goal": "a small offline Python helper that captures this project's core technique (for example an agent loop, tool calling, planning, memory or a prompt pattern) and applies it to a toy task; the tests must use a fake LLM function and no network",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-28T01:37",
-    "objective": "O2"
+    "objective": "O2",
+    "value": 1993.393,
+    "finished": "2026-11-28T01:37",
+    "minutes": 0.05,
+    "estimate": 0.5
   },
   {
     "kind": "improve_doc",
@@ -659,7 +677,8 @@
     "goal": "",
     "status": "todo",
     "queued": "2026-11-28T01:37",
-    "objective": "O2"
+    "objective": "O2",
+    "value": 996.696
   },
   {
     "kind": "write_tool",
@@ -667,7 +686,8 @@
     "goal": "a small offline Python helper that applies this project's testing approach (for example test-case generation, fluent assertions, retries and waits, page-object or fixture patterns) to a sample function or spec, with pytest tests",
     "status": "todo",
     "queued": "2026-11-28T01:37",
-    "objective": "O1"
+    "objective": "O1",
+    "value": 1943.949
   },
   {
     "kind": "improve_doc",
@@ -675,6 +695,7 @@
     "goal": "",
     "status": "todo",
     "queued": "2026-11-28T01:37",
-    "objective": "O1"
+    "objective": "O1",
+    "value": 971.974
   }
 ]

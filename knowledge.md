@@ -11,3 +11,4 @@
 - 2026-11-27: Noted rising focus on deterministic algorithms and secure WebRTC applications in recent tech news.
 - 2026-11-27: Project 'ArchDoc Kit Generator' finished: 2 milestones, 0 failed tries, built on agents365-ai-drawio-skill, plantuml-stdlib-c4-plantuml.
 - 2026-11-27: Project 'Agentic Workflow Visualizer' finished: 2 milestones, 0 failed tries, built on deepset-ai-haystack, yizhiyanhua-ai-fireworks-tech-graph.
+- 2026-11-28: Noted trend: Security concerns around third-party skills exfiltrating data, and ongoing scrutiny of AI-generated content models and formal verification correctness.
