@@ -621,7 +621,7 @@
     "status": "todo",
     "queued": "2026-11-28T01:37",
     "objective": "O2",
-    "value": 1000.6
+    "value": 769.692
   },
   {
     "kind": "write_tool",
@@ -639,10 +639,13 @@
     "kind": "improve_doc",
     "skill": "e2e-inc-e2e",
     "goal": "",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-28T01:37",
     "objective": "O1",
-    "value": 977.179
+    "value": 977.179,
+    "finished": "2026-11-28T01:38",
+    "minutes": 0.03,
+    "estimate": 0.5
   },
   {
     "kind": "write_tool",
@@ -684,7 +687,7 @@
     "status": "todo",
     "queued": "2026-11-28T01:37",
     "objective": "O2",
-    "value": 996.696
+    "value": 766.689
   },
   {
     "kind": "write_tool",
@@ -702,9 +705,12 @@
     "kind": "improve_doc",
     "skill": "web-infra-dev-midscene",
     "goal": "",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-28T01:37",
     "objective": "O1",
-    "value": 971.974
+    "value": 971.974,
+    "finished": "2026-11-28T01:38",
+    "minutes": 0.08,
+    "estimate": 0.5
   }
 ]
