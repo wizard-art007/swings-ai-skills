@@ -64,8 +64,8 @@
         "used_up": true
       },
       "gemini-3.5-flash-lite": {
-        "calls": 34,
-        "ok": 34,
+        "calls": 36,
+        "ok": 36,
         "quota_429": 0,
         "minute_429": 0,
         "overload": 0,
