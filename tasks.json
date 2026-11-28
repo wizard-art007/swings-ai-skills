@@ -759,10 +759,14 @@
     "kind": "milestone",
     "skill": "sebastianbergmann-php-code-coverage",
     "goal": "proj-qa-test-coverage-visualizer milestone 1: M1: Coverage Parser & Metric Delta Calculator",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-28T07:35",
     "project": "c1e23879",
     "milestone": 1,
-    "objective": "O3"
+    "objective": "O3",
+    "value": 1829.445,
+    "finished": "2026-11-28T07:35",
+    "minutes": 0.03,
+    "estimate": 0.8
   }
 ]

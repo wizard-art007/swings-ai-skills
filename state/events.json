@@ -861,5 +861,17 @@
     "source": "system",
     "status": "done",
     "ts": "2026-11-28T01:37:52"
+  },
+  {
+    "id": "9a69784931",
+    "type": "idea.found",
+    "payload": {
+      "title": "Unkernel WebAssembly Linux Sandbox Experiment",
+      "description": "A small offline Python experiment simulating a WebAssembly Linux environment loader/parser under 300 lines.",
+      "source_url": "https://unkernel.dev"
+    },
+    "source": "agent",
+    "status": "running",
+    "ts": "2026-11-28T07:35:13"
   }
 ]
