@@ -524,6 +524,10 @@
       "src/vendor/plantuml_plantuml/sequence_generator.py",
       "src/vendor/sebastianbergmann_php_code_coverage/__init__.py",
       "src/vendor/sebastianbergmann_php_code_coverage/test_coverage_analyzer.py"
-    ]
+    ],
+    "projects_path": "experiments/proj-ci-test-flake-architecture-visualiz",
+    "published": "2026-11-28T10:13",
+    "pushed": "2026-11-28T10:13",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/proj-ci-test-flake-architecture-visualiz"
   }
 }
