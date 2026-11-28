@@ -1,20 +1,26 @@
 {
   "skills": {
-    "plantuml-plantuml": 80.8,
-    "yizhiyanhua-ai-fireworks-tech-graph": 69.8,
-    "agents365-ai-drawio-skill": 80.0,
-    "plantuml-stdlib-c4-plantuml": 72.4,
-    "ahmadhassan-bted-openheart": 66.0,
-    "tt-a1i-archify": 81.6,
-    "affaan-m-ecc": 77.1,
-    "microsoft-playwright": 82.6,
-    "mermaid-js-mermaid": 78.6,
-    "leonxlnx-taste-skill": 76.9,
-    "seleniumbase-seleniumbase": 75.5,
-    "deepset-ai-haystack": 65.3,
-    "juliusbrussee-caveman": 71.9,
-    "drawdb-io-drawdb": 60.3,
-    "sebastianbergmann-php-code-coverage": 76.9
+    "plantuml-plantuml": 80.1,
+    "yizhiyanhua-ai-fireworks-tech-graph": 72.4,
+    "agents365-ai-drawio-skill": 83.1,
+    "plantuml-stdlib-c4-plantuml": 70.5,
+    "ahmadhassan-bted-openheart": 64.7,
+    "tt-a1i-archify": 79.0,
+    "affaan-m-ecc": 76.2,
+    "microsoft-playwright": 82.9,
+    "mermaid-js-mermaid": 75.4,
+    "leonxlnx-taste-skill": 77.8,
+    "seleniumbase-seleniumbase": 75.2,
+    "deepset-ai-haystack": 78.2,
+    "juliusbrussee-caveman": 76.4,
+    "drawdb-io-drawdb": 63.5,
+    "sebastianbergmann-php-code-coverage": 70.3,
+    "dayuanjiang-next-ai-draw-io": 75.1,
+    "sickn33-agentic-awesome-skills": 76.9,
+    "e2e-inc-e2e": 75.1,
+    "ahmedkhaleel2004-gitdiagram": 66.4,
+    "browser-use-browser-use": 76.6,
+    "web-infra-dev-midscene": 74.7
   },
   "archived": {
     "ashishps1-awesome-low-level-design": "score 50.8 < cut-off 66.0",
@@ -60,8 +66,16 @@
       "why": "F7: experiments go to one projects repo, no daily limit"
     }
   },
-  "weights": {},
-  "weights_why": "",
+  "weights": {
+    "popularity": 22.1,
+    "activity": 18.5,
+    "health": 13.4,
+    "license": 9.2,
+    "fit": 18.6,
+    "usefulness": 10.7,
+    "language": 7.5
+  },
+  "weights_why": "learned from 15 skills: {'popularity': -1.31, 'activity': -0.2, 'health': -0.59, 'license': -0.13, 'fit': -0.0, 'language': 0.0}",
   "needs": {
     "f1c410f5": [
       "parked",

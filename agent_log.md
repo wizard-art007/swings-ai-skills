@@ -299,3 +299,12 @@
 - 2026-11-27 22:13 — quality: leonxlnx-taste-skill graded, grade 1.0
 - 2026-11-27 22:13 — quality: mermaid-js-mermaid graded, grade 1.0
 - 2026-11-27 22:13 — quality: microsoft-playwright no text tools
+- 2026-11-28 01:35 — refresh: scouting GitHub (mission domains, learned scoring)
+- 2026-11-28 01:35 — scout: weights learned {'popularity': 22.1, 'activity': 18.5, 'health': 13.4, 'license': 9.2, 'fit': 18.6, 'usefulness': 10.7, 'language': 7.5}
+- 2026-11-28 01:35 — scout: searching GitHub across diagrams, ai_agents, qa_testing
+- 2026-11-28 01:37 — scout: new skill dayuanjiang-next-ai-draw-io (diagrams, score 75.1)
+- 2026-11-28 01:37 — scout: new skill sickn33-agentic-awesome-skills (ai_agents, score 76.9)
+- 2026-11-28 01:37 — scout: new skill e2e-inc-e2e (qa_testing, score 75.1)
+- 2026-11-28 01:37 — scout: new skill ahmedkhaleel2004-gitdiagram (diagrams, score 66.4)
+- 2026-11-28 01:37 — scout: new skill browser-use-browser-use (ai_agents, score 76.6)
+- 2026-11-28 01:37 — scout: new skill web-infra-dev-midscene (qa_testing, score 74.7)
