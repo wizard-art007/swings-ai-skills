@@ -627,10 +627,13 @@
     "kind": "write_tool",
     "skill": "e2e-inc-e2e",
     "goal": "a small offline Python helper that applies this project's testing approach (for example test-case generation, fluent assertions, retries and waits, page-object or fixture patterns) to a sample function or spec, with pytest tests",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-28T01:37",
     "objective": "O1",
-    "value": 1954.358
+    "value": 1954.358,
+    "finished": "2026-11-28T01:37",
+    "minutes": 0.08,
+    "estimate": 0.5
   },
   {
     "kind": "improve_doc",
@@ -645,10 +648,13 @@
     "kind": "write_tool",
     "skill": "ahmedkhaleel2004-gitdiagram",
     "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-28T01:37",
     "objective": "O4",
-    "value": 1727.954
+    "value": 1727.954,
+    "finished": "2026-11-28T01:38",
+    "minutes": 0.15,
+    "estimate": 0.5
   },
   {
     "kind": "improve_doc",
@@ -684,10 +690,13 @@
     "kind": "write_tool",
     "skill": "web-infra-dev-midscene",
     "goal": "a small offline Python helper that applies this project's testing approach (for example test-case generation, fluent assertions, retries and waits, page-object or fixture patterns) to a sample function or spec, with pytest tests",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-28T01:37",
     "objective": "O1",
-    "value": 1943.949
+    "value": 1943.949,
+    "finished": "2026-11-28T01:38",
+    "minutes": 0.11,
+    "estimate": 0.5
   },
   {
     "kind": "improve_doc",

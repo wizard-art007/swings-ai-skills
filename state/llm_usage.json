@@ -38,16 +38,16 @@
     }
   },
   "2026-11-28": {
-    "calls": 15,
+    "calls": 16,
     "errors": 0,
     "overloads": 0,
     "cache_hits": 0,
-    "seconds": 32.3,
+    "seconds": 34.7,
     "by_purpose": {
       "project_plan": 2,
       "write_tool": 8,
       "agent:news_scout": 4,
-      "lesson": 1
+      "lesson": 2
     }
   }
 }

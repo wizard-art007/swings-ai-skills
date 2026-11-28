@@ -328,8 +328,11 @@
     ],
     "projects_path": "experiments/proj-archdoc-kit-generator",
     "published": "2026-11-27T19:42",
-    "pushed": "2026-11-27T19:42",
-    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/proj-archdoc-kit-generator"
+    "pushed": "2026-11-28T01:38",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/proj-archdoc-kit-generator",
+    "repo_url": "https://github.com/wizard-art007/swings-exp-proj-archdoc-kit-generator",
+    "repo_created": "2026-11-28T01:38",
+    "graduated": "2026-11-28T01:38"
   },
   "proj-agentic-workflow-visualizer": {
     "title": "Agentic Workflow Visualizer",
