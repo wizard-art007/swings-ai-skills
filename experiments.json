@@ -443,6 +443,11 @@
       "src/vendor/plantuml_plantuml/__init__.py",
       "src/vendor/plantuml_plantuml/class_diagram_generator.py",
       "src/vendor/plantuml_plantuml/sequence_generator.py"
-    ]
+    ],
+    "objective": null,
+    "projects_path": "experiments/unkernel-webassembly-linux-sandbox-exper",
+    "published": "2026-11-28T07:35",
+    "pushed": "2026-11-28T07:35",
+    "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/unkernel-webassembly-linux-sandbox-exper"
   }
 }

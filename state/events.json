@@ -871,7 +871,17 @@
       "source_url": "https://unkernel.dev"
     },
     "source": "agent",
-    "status": "running",
+    "status": "done",
     "ts": "2026-11-28T07:35:13"
+  },
+  {
+    "id": "30b0459315",
+    "type": "experiment.ready",
+    "payload": {
+      "slug": "unkernel-webassembly-linux-sandbox-exper"
+    },
+    "source": "agent",
+    "status": "new",
+    "ts": "2026-11-28T07:35:29"
   }
 ]
