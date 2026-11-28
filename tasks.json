@@ -784,5 +784,15 @@
     "minutes": 0.03,
     "estimate": 0.6,
     "counted": true
+  },
+  {
+    "kind": "milestone",
+    "skill": "sebastianbergmann-php-code-coverage",
+    "goal": "proj-ci-test-flake-architecture-visualiz milestone 1: m1_flake_pattern_detector",
+    "status": "todo",
+    "queued": "2026-11-28T07:35",
+    "project": "bee2d3c6",
+    "milestone": 1,
+    "objective": "O3"
   }
 ]
