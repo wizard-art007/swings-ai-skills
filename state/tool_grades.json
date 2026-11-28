@@ -249,5 +249,69 @@
     "language": "TypeScript",
     "tools": {},
     "status": "no text tools"
+  },
+  "e2e-inc-e2e": {
+    "ts": "2026-11-28T04:16",
+    "hash": "ae5c1708b0ba",
+    "language": "TypeScript",
+    "tools": {},
+    "status": "no text tools"
+  },
+  "plantuml-plantuml": {
+    "ts": "2026-11-28T04:16",
+    "hash": "881f71fbef8c",
+    "language": "Java",
+    "tools": {
+      "class_diagram_generator.parse_source": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      }
+    },
+    "network_only": [],
+    "grade": 1.0,
+    "status": "graded",
+    "inputs": [
+      "src/test/resources/python-ast/classes.py",
+      "src/test/resources/python-ast/decorators.py",
+      "src/test/resources/python-ast/expressions.py"
+    ]
+  },
+  "plantuml-stdlib-c4-plantuml": {
+    "ts": "2026-11-28T04:16",
+    "hash": "3ba02867d3cf",
+    "language": "PlantUML",
+    "tools": {
+      "c4_generator.generate_c4_puml": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      },
+      "c4_plantuml_generator.text_to_spec": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      },
+      "c4_plantuml_generator.encode_kroki_url": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      }
+    },
+    "network_only": [
+      "c4_generator.render_via_kroki",
+      "c4_plantuml_generator.render_kroki"
+    ],
+    "grade": 1.0,
+    "status": "graded",
+    "inputs": [
+      "README block 10 (plantuml)",
+      "README block 11 (plantuml)",
+      "README block 12 (plantuml)"
+    ]
   }
 }
