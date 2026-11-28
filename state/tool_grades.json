@@ -350,5 +350,109 @@
     "language": "Python",
     "tools": {},
     "status": "no text tools"
+  },
+  "tt-a1i-archify": {
+    "ts": "2026-11-28T10:08",
+    "hash": "d3a2c91d5f45",
+    "language": "JavaScript",
+    "tools": {
+      "archify_helper.parse_text_lines": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      },
+      "archify_helper.text_to_mermaid": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      },
+      "archify_helper.text_to_plantuml": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      },
+      "archify_helper.generate_diagram": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      },
+      "archify_helper.encode_kroki_url": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      }
+    },
+    "network_only": [
+      "archify_helper.render_kroki"
+    ],
+    "grade": 1.0,
+    "status": "graded",
+    "inputs": [
+      "README block 1 (text)",
+      "README block 11 (text)",
+      "README block 12 (text)"
+    ]
+  },
+  "web-infra-dev-midscene": {
+    "ts": "2026-11-28T10:08",
+    "hash": "6eb0e42dc468",
+    "language": "TypeScript",
+    "tools": {},
+    "status": "no text tools"
+  },
+  "yizhiyanhua-ai-fireworks-tech-graph": {
+    "ts": "2026-11-28T10:08",
+    "hash": "419c02468050",
+    "language": "Python",
+    "tools": {
+      "diagram_helper.parse_text_description": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      },
+      "diagram_helper.to_mermaid": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      },
+      "diagram_helper.to_plantuml": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      },
+      "diagram_helper.encode_kroki_payload": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      },
+      "diagram_helper.get_kroki_url": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      }
+    },
+    "network_only": [
+      "diagram_helper.render_kroki"
+    ],
+    "grade": 1.0,
+    "status": "graded",
+    "inputs": [
+      "README block 13 (text)",
+      "README block 17 (text)",
+      "README block 19 (text)",
+      "assets/samples/showcase-gif-manifest.json",
+      "fixtures/agent-memory-types-style4.json",
+      "fixtures/api-flow-style7.json"
+    ]
   }
 }

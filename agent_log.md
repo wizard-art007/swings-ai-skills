@@ -371,3 +371,9 @@
 - 2026-11-28 07:35 — project proj-ci-test-flake-architecture-visualiz: milestone 1 'm1_flake_pattern_detector' done; skills imported []
 - 2026-11-28 07:35 — phase5: 2 extra work round(s) at the end of the run; 1 project(s) proposed
 - 2026-11-28 07:35 — experience: rule promoted for milestone: Validate syntax locally using a linter or test run before submitting generated c
+- 2026-11-28 10:08 — quality: tt-a1i-archify graded, grade 1.0
+- 2026-11-28 10:08 — quality: web-infra-dev-midscene no text tools
+- 2026-11-28 10:08 — quality: yizhiyanhua-ai-fireworks-tech-graph graded, grade 1.0
+- 2026-11-28 10:08 — plan: objective O3 met (experiments_using_skills = 6, target 6.0)
+- 2026-11-28 10:10 — llm: Gemini unavailable (504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'Deadline expired befo); the fallback provider answers this call
+- 2026-11-28 10:12 — llm: Gemini unavailable (504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'Deadline expired befo); the fallback provider answers this call

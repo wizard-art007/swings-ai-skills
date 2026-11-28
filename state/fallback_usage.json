@@ -1,0 +1,10 @@
+{
+  "2026-11-28": {
+    "calls": 2,
+    "ok": 1,
+    "errors": 1,
+    "by_purpose": {
+      "milestone": 2
+    }
+  }
+}

@@ -51,7 +51,7 @@
       "target": 6.0,
       "why": "Currently 0 experiments use active skills; applying learned skills to experiments validates tool integration and agent capability.",
       "baseline": 0,
-      "status": "active",
+      "status": "met",
       "progress": [
         {
           "ts": "2026-11-27T10:13",
@@ -59,9 +59,10 @@
         },
         {
           "ts": "2026-11-28T01:37",
-          "value": 5
+          "value": 6
         }
-      ]
+      ],
+      "met_at": "2026-11-28T10:08"
     },
     {
       "id": "O4",

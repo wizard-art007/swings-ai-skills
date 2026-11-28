@@ -83,6 +83,38 @@
         "skipped": 0,
         "used_up": false
       }
+    },
+    "2026-11-28": {
+      "gemini-3.8-flash": {
+        "calls": 3,
+        "ok": 0,
+        "quota_429": 0,
+        "minute_429": 0,
+        "overload": 1,
+        "other": 2,
+        "skipped": 0,
+        "used_up": false
+      },
+      "gemini-3.7-flash": {
+        "calls": 1,
+        "ok": 0,
+        "quota_429": 0,
+        "minute_429": 0,
+        "overload": 1,
+        "other": 0,
+        "skipped": 0,
+        "used_up": false
+      },
+      "gemini-3.6-flash": {
+        "calls": 1,
+        "ok": 1,
+        "quota_429": 0,
+        "minute_429": 0,
+        "overload": 0,
+        "other": 0,
+        "skipped": 0,
+        "used_up": false
+      }
     }
   }
 }
