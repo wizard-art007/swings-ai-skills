@@ -313,5 +313,42 @@
       "README block 11 (plantuml)",
       "README block 12 (plantuml)"
     ]
+  },
+  "sebastianbergmann-php-code-coverage": {
+    "ts": "2026-11-28T07:35",
+    "hash": "ee14778754b3",
+    "language": "PHP",
+    "tools": {},
+    "status": "no text tools"
+  },
+  "seleniumbase-seleniumbase": {
+    "ts": "2026-11-28T07:35",
+    "hash": "87a38468d994",
+    "language": "Python",
+    "tools": {
+      "skill_diagram.text_to_diagram": {
+        "tried": 3,
+        "ok": 3,
+        "fails": [],
+        "grade": 1.0
+      }
+    },
+    "network_only": [
+      "skill_diagram.render_via_kroki"
+    ],
+    "grade": 1.0,
+    "status": "graded",
+    "inputs": [
+      "examples/ReadMe.md",
+      "examples/behave_bdd/ReadMe.md",
+      "examples/boilerplates/ReadMe.md"
+    ]
+  },
+  "sickn33-agentic-awesome-skills": {
+    "ts": "2026-11-28T07:35",
+    "hash": "4487a4f671b4",
+    "language": "Python",
+    "tools": {},
+    "status": "no text tools"
   }
 }
