@@ -264,11 +264,12 @@
         "name": "Generate visual coverage architecture report",
         "goal": "Combine coverage delta metrics with Mermaid diagram generation to output an integrated QA architecture visualizer.",
         "test": "import sys\nsys.path.insert(0, 'src')\nfrom app.report import generate_coverage_diagram\n\ndef test_generate_coverage_diagram():\n    diagram = generate_coverage_diagram('module A changed', 'Component A -> Component B')\n    assert isinstance(diagram, str)\n    assert len(diagram) > 0",
-        "status": "todo",
-        "tries": 0
+        "status": "done",
+        "tries": 0,
+        "done_at": "2026-11-28T04:16"
       }
     ],
-    "status": "active",
+    "status": "finished",
     "created": "2026-11-28T04:16",
     "objective": "O3",
     "vendored": [
@@ -289,9 +290,16 @@
         "from": "proposed",
         "to": "active",
         "why": "2 milestones; tools from ['mermaid-js-mermaid', 'sebastianbergmann-php-code-coverage']"
+      },
+      {
+        "ts": "2026-11-28T04:16",
+        "from": "active",
+        "to": "finished",
+        "why": "all 2 milestones pass; skills used ['mermaid-js-mermaid', 'sebastianbergmann-php-code-coverage']"
       }
     ],
     "skills_used": [
+      "mermaid-js-mermaid",
       "sebastianbergmann-php-code-coverage"
     ]
   }
