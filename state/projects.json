@@ -255,8 +255,9 @@
         "name": "Analyze coverage delta and map components",
         "goal": "Build core logic that evaluates test coverage changes and maps them to descriptive text for architectural components.",
         "test": "import sys\nsys.path.insert(0, 'src')\nfrom app.analyzer import evaluate_coverage_changes\n\ndef test_evaluate_coverage_changes():\n    res = evaluate_coverage_changes('def new_func(): pass', 'def old_func(): pass')\n    assert 'delta' in res or isinstance(res, dict)",
-        "status": "todo",
-        "tries": 0
+        "status": "done",
+        "tries": 0,
+        "done_at": "2026-11-28T04:16"
       },
       {
         "n": 2,
@@ -289,6 +290,9 @@
         "to": "active",
         "why": "2 milestones; tools from ['mermaid-js-mermaid', 'sebastianbergmann-php-code-coverage']"
       }
+    ],
+    "skills_used": [
+      "sebastianbergmann-php-code-coverage"
     ]
   }
 ]

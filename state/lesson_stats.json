@@ -26,16 +26,16 @@
     "helped": 2
   },
   "2a1f097240": {
-    "uses": 3,
-    "helped": 1
+    "uses": 4,
+    "helped": 2
   },
   "068deb46c7": {
     "uses": 2,
     "helped": 0
   },
   "5a5dd31b91": {
-    "uses": 1,
-    "helped": 0
+    "uses": 2,
+    "helped": 1
   },
   "2e5e8396c5": {
     "uses": 1,
@@ -66,6 +66,10 @@
     "helped": 0
   },
   "35e1f60e90": {
+    "uses": 1,
+    "helped": 1
+  },
+  "21df842c2a": {
     "uses": 1,
     "helped": 1
   }
