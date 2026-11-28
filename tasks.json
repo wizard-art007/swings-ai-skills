@@ -724,5 +724,15 @@
     "finished": "2026-11-28T01:38",
     "minutes": 0.08,
     "estimate": 0.5
+  },
+  {
+    "kind": "milestone",
+    "skill": "sebastianbergmann-php-code-coverage",
+    "goal": "proj-qa-test-coverage-architecture-visua milestone 1: Analyze coverage delta and map components",
+    "status": "todo",
+    "queued": "2026-11-28T04:16",
+    "project": "c1d7beb6",
+    "milestone": 1,
+    "objective": "O3"
   }
 ]
