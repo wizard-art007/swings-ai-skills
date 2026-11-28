@@ -580,5 +580,101 @@
     "minutes": 0.03,
     "estimate": 0.6,
     "counted": true
+  },
+  {
+    "kind": "write_tool",
+    "skill": "dayuanjiang-next-ai-draw-io",
+    "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
+    "status": "todo",
+    "queued": "2026-11-28T01:37",
+    "objective": "O4"
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "dayuanjiang-next-ai-draw-io",
+    "goal": "",
+    "status": "todo",
+    "queued": "2026-11-28T01:37",
+    "objective": null
+  },
+  {
+    "kind": "write_tool",
+    "skill": "sickn33-agentic-awesome-skills",
+    "goal": "a small offline Python helper that captures this project's core technique (for example an agent loop, tool calling, planning, memory or a prompt pattern) and applies it to a toy task; the tests must use a fake LLM function and no network",
+    "status": "todo",
+    "queued": "2026-11-28T01:37",
+    "objective": "O2"
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "sickn33-agentic-awesome-skills",
+    "goal": "",
+    "status": "todo",
+    "queued": "2026-11-28T01:37",
+    "objective": "O2"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "e2e-inc-e2e",
+    "goal": "a small offline Python helper that applies this project's testing approach (for example test-case generation, fluent assertions, retries and waits, page-object or fixture patterns) to a sample function or spec, with pytest tests",
+    "status": "todo",
+    "queued": "2026-11-28T01:37",
+    "objective": "O1"
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "e2e-inc-e2e",
+    "goal": "",
+    "status": "todo",
+    "queued": "2026-11-28T01:37",
+    "objective": "O1"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "ahmedkhaleel2004-gitdiagram",
+    "goal": "a helper that turns a short text description into this skill's diagram source (e.g. PlantUML/Mermaid) and can render it via Kroki",
+    "status": "todo",
+    "queued": "2026-11-28T01:37",
+    "objective": "O4"
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "ahmedkhaleel2004-gitdiagram",
+    "goal": "",
+    "status": "todo",
+    "queued": "2026-11-28T01:37",
+    "objective": null
+  },
+  {
+    "kind": "write_tool",
+    "skill": "browser-use-browser-use",
+    "goal": "a small offline Python helper that captures this project's core technique (for example an agent loop, tool calling, planning, memory or a prompt pattern) and applies it to a toy task; the tests must use a fake LLM function and no network",
+    "status": "todo",
+    "queued": "2026-11-28T01:37",
+    "objective": "O2"
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "browser-use-browser-use",
+    "goal": "",
+    "status": "todo",
+    "queued": "2026-11-28T01:37",
+    "objective": "O2"
+  },
+  {
+    "kind": "write_tool",
+    "skill": "web-infra-dev-midscene",
+    "goal": "a small offline Python helper that applies this project's testing approach (for example test-case generation, fluent assertions, retries and waits, page-object or fixture patterns) to a sample function or spec, with pytest tests",
+    "status": "todo",
+    "queued": "2026-11-28T01:37",
+    "objective": "O1"
+  },
+  {
+    "kind": "improve_doc",
+    "skill": "web-infra-dev-midscene",
+    "goal": "",
+    "status": "todo",
+    "queued": "2026-11-28T01:37",
+    "objective": "O1"
   }
 ]

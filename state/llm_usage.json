@@ -36,5 +36,16 @@
       "milestone": 14,
       "self_review": 1
     }
+  },
+  "2026-11-28": {
+    "calls": 3,
+    "errors": 0,
+    "overloads": 0,
+    "cache_hits": 0,
+    "seconds": 6.4,
+    "by_purpose": {
+      "project_plan": 2,
+      "write_tool": 1
+    }
   }
 }
