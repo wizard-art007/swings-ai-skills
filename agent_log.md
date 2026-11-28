@@ -364,3 +364,6 @@
 - 2026-11-28 07:35 — project/proj-qa-test-coverage-visualizer: 'proj-qa-test-coverage-visualizer milestone 2: M2: Visual Coverage Report Generator' PASSED on attempt 1 (src/app/visualizer.py)
 - 2026-11-28 07:35 — project proj-qa-test-coverage-visualizer: milestone 2 'M2: Visual Coverage Report Generator' done; skills imported ['mermaid-js-mermaid', 'sebastianbergmann-php-code-coverage']
 - 2026-11-28 07:35 — project proj-qa-test-coverage-visualizer: active -> finished (all 2 milestones pass; skills used ['mermaid-js-mermaid', 'sebastianbergmann-php-code-coverage'])
+- 2026-11-28 07:35 — projects: pushed 1 folder(s) to swings-ai-projects: proj-qa-test-coverage-visualizer
+- 2026-11-28 07:35 — project: proposal attempt 1 rejected (milestone 1: the test must be a pytest test that imports the app package)
+- 2026-11-28 07:35 — project proj-ci-test-flake-architecture-visualiz: proposed -> active (2 milestones; tools from ['plantuml-plantuml', 'sebastianbergmann-php-code-coverage'])

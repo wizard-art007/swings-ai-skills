@@ -334,11 +334,12 @@
         "name": "M2: Visual Coverage Report Generator",
         "goal": "Combine coverage metrics with Mermaid generation to build a diagram representation of covered components.",
         "test": "import sys\nsys.path.insert(0, 'src')\nfrom app.visualizer import generate_coverage_report\n\ndef test_generate_coverage_report():\n    report = generate_coverage_report('old code', 'new code with tests')\n    assert 'graph' in report or 'flowchart' in report\n",
-        "status": "todo",
-        "tries": 0
+        "status": "done",
+        "tries": 0,
+        "done_at": "2026-11-28T07:35"
       }
     ],
-    "status": "active",
+    "status": "finished",
     "created": "2026-11-28T07:35",
     "objective": "O3",
     "vendored": [
@@ -359,11 +360,80 @@
         "from": "proposed",
         "to": "active",
         "why": "2 milestones; tools from ['mermaid-js-mermaid', 'sebastianbergmann-php-code-coverage']"
+      },
+      {
+        "ts": "2026-11-28T07:35",
+        "from": "active",
+        "to": "finished",
+        "why": "all 2 milestones pass; skills used ['mermaid-js-mermaid', 'sebastianbergmann-php-code-coverage']"
       }
     ],
     "skills_used": [
       "mermaid-js-mermaid",
       "sebastianbergmann-php-code-coverage"
+    ]
+  },
+  {
+    "id": "bee2d3c6",
+    "slug": "proj-ci-test-flake-architecture-visualiz",
+    "title": "CI Test Flake & Architecture Visualizer",
+    "goal": "Detect flaky test patterns from execution logs and generate an architecture sequence flow diagram of the failing test execution path.",
+    "area": "qa_testing",
+    "tools": [
+      {
+        "skill": "sebastianbergmann-php-code-coverage",
+        "module": "test_coverage_analyzer"
+      },
+      {
+        "skill": "plantuml-plantuml",
+        "module": "sequence_generator"
+      }
+    ],
+    "milestones": [
+      {
+        "n": 1,
+        "name": "m1_flake_pattern_detector",
+        "goal": "Implement basic test flake detection parsing input logs for intermittent failure patterns.",
+        "test": "import sys\nsys.path.insert(0, 'src')\nfrom app.flake_detector import detect_flaky_patterns\n\ndef test_detect_flaky():\n    logs = ['test_auth PASSED', 'test_auth FAILED timeout', 'test_auth PASSED']\n    result = detect_flaky_patterns(logs)\n    assert 'test_auth' in result\n    assert result['test_auth']['flaky'] is True\n",
+        "status": "todo",
+        "tries": 0
+      },
+      {
+        "n": 2,
+        "name": "m2_flake_sequence_visualizer",
+        "goal": "Combine flake analysis with PlantUML sequence generation to diagram the failing test interaction path.",
+        "test": "import sys\nsys.path.insert(0, 'src')\nfrom app.flake_visualizer import generate_flake_sequence\n\ndef test_generate_flake_sequence():\n    analysis = {'test_auth': {'flaky': True, 'reason': 'timeout'}}\n    puml = generate_flake_sequence(analysis)\n    assert 'sequenceDiagram' in puml or 'actor' in puml\n",
+        "status": "todo",
+        "tries": 0
+      }
+    ],
+    "status": "active",
+    "created": "2026-11-28T07:35",
+    "objective": "O3",
+    "vendored": [
+      {
+        "skill": "plantuml-plantuml",
+        "file": "class_diagram_generator.py",
+        "sha256": "9245c24bccd220a4"
+      },
+      {
+        "skill": "plantuml-plantuml",
+        "file": "sequence_generator.py",
+        "sha256": "0021aa8a195b04a7"
+      },
+      {
+        "skill": "sebastianbergmann-php-code-coverage",
+        "file": "test_coverage_analyzer.py",
+        "sha256": "6e52a46c4b8bedde"
+      }
+    ],
+    "log": [
+      {
+        "ts": "2026-11-28T07:35",
+        "from": "proposed",
+        "to": "active",
+        "why": "2 milestones; tools from ['plantuml-plantuml', 'sebastianbergmann-php-code-coverage']"
+      }
     ]
   }
 ]
