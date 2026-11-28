@@ -24,8 +24,8 @@
     "success": 1
   },
   "sebastianbergmann-php-code-coverage": {
-    "used": 5,
-    "success": 5
+    "used": 6,
+    "success": 6
   },
   "plantuml-plantuml": {
     "used": 2,
@@ -34,5 +34,9 @@
   "plantuml-stdlib-c4-plantuml": {
     "used": 2,
     "success": 2
+  },
+  "mermaid-js-mermaid": {
+    "used": 1,
+    "success": 1
   }
 }

@@ -744,10 +744,14 @@
     "kind": "milestone",
     "skill": "sebastianbergmann-php-code-coverage",
     "goal": "proj-qa-test-coverage-architecture-visua milestone 2: Generate visual coverage architecture report",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-28T04:16",
     "project": "c1d7beb6",
     "milestone": 2,
-    "objective": "O3"
+    "objective": "O3",
+    "value": 1829.445,
+    "finished": "2026-11-28T04:16",
+    "minutes": 0.02,
+    "estimate": 1.1
   }
 ]

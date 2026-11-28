@@ -372,5 +372,42 @@
     "published": "2026-11-27T20:10",
     "pushed": "2026-11-27T20:10",
     "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/proj-agentic-workflow-visualizer"
+  },
+  "proj-qa-test-coverage-architecture-visua": {
+    "title": "QA Test Coverage & Architecture Visualizer",
+    "description": "Combine test coverage analysis with architecture diagram generation to produce a visualized coverage report for software systems.",
+    "status": "passed",
+    "kind": "project",
+    "skills": [
+      "mermaid-js-mermaid",
+      "sebastianbergmann-php-code-coverage"
+    ],
+    "milestones": [
+      {
+        "name": "Analyze coverage delta and map components",
+        "done": true
+      },
+      {
+        "name": "Generate visual coverage architecture report",
+        "done": true
+      }
+    ],
+    "created": "2026-11-28T04:16",
+    "finished": "2026-11-28T04:16",
+    "objective": "O3",
+    "files": [
+      "README.md",
+      "tests/test_m2.py",
+      "tests/test_m1.py",
+      "tests/test_extra_analyzer.py",
+      "src/vendor/__init__.py",
+      "src/app/__init__.py",
+      "src/app/report.py",
+      "src/app/analyzer.py",
+      "src/vendor/mermaid_js_mermaid/__init__.py",
+      "src/vendor/mermaid_js_mermaid/mermaid_helper.py",
+      "src/vendor/sebastianbergmann_php_code_coverage/__init__.py",
+      "src/vendor/sebastianbergmann_php_code_coverage/test_coverage_analyzer.py"
+    ]
   }
 }
