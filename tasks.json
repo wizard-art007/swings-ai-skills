@@ -618,10 +618,13 @@
     "kind": "improve_doc",
     "skill": "sickn33-agentic-awesome-skills",
     "goal": "",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-28T01:37",
     "objective": "O2",
-    "value": 769.692
+    "value": 769.692,
+    "finished": "2026-11-28T01:38",
+    "minutes": 0.06,
+    "estimate": 0.5
   },
   {
     "kind": "write_tool",
@@ -684,10 +687,13 @@
     "kind": "improve_doc",
     "skill": "browser-use-browser-use",
     "goal": "",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-28T01:37",
     "objective": "O2",
-    "value": 766.689
+    "value": 766.689,
+    "finished": "2026-11-28T01:38",
+    "minutes": 0.04,
+    "estimate": 0.5
   },
   {
     "kind": "write_tool",
