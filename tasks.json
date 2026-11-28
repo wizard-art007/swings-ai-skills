@@ -597,10 +597,13 @@
     "kind": "improve_doc",
     "skill": "dayuanjiang-next-ai-draw-io",
     "goal": "",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-28T01:37",
     "objective": null,
-    "value": 751.676
+    "value": 751.676,
+    "finished": "2026-11-28T04:16",
+    "minutes": 0.05,
+    "estimate": 0.5
   },
   {
     "kind": "write_tool",
@@ -666,10 +669,13 @@
     "kind": "improve_doc",
     "skill": "ahmedkhaleel2004-gitdiagram",
     "goal": "",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-28T01:37",
     "objective": null,
-    "value": 664.598
+    "value": 664.598,
+    "finished": "2026-11-28T04:16",
+    "minutes": 0.04,
+    "estimate": 0.5
   },
   {
     "kind": "write_tool",

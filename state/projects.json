@@ -232,5 +232,63 @@
       "deepset-ai-haystack",
       "yizhiyanhua-ai-fireworks-tech-graph"
     ]
+  },
+  {
+    "id": "c1d7beb6",
+    "slug": "proj-qa-test-coverage-architecture-visua",
+    "title": "QA Test Coverage & Architecture Visualizer",
+    "goal": "Combine test coverage analysis with architecture diagram generation to produce a visualized coverage report for software systems.",
+    "area": "qa_testing",
+    "tools": [
+      {
+        "skill": "sebastianbergmann-php-code-coverage",
+        "module": "test_coverage_analyzer"
+      },
+      {
+        "skill": "mermaid-js-mermaid",
+        "module": "mermaid_helper"
+      }
+    ],
+    "milestones": [
+      {
+        "n": 1,
+        "name": "Analyze coverage delta and map components",
+        "goal": "Build core logic that evaluates test coverage changes and maps them to descriptive text for architectural components.",
+        "test": "import sys\nsys.path.insert(0, 'src')\nfrom app.analyzer import evaluate_coverage_changes\n\ndef test_evaluate_coverage_changes():\n    res = evaluate_coverage_changes('def new_func(): pass', 'def old_func(): pass')\n    assert 'delta' in res or isinstance(res, dict)",
+        "status": "todo",
+        "tries": 0
+      },
+      {
+        "n": 2,
+        "name": "Generate visual coverage architecture report",
+        "goal": "Combine coverage delta metrics with Mermaid diagram generation to output an integrated QA architecture visualizer.",
+        "test": "import sys\nsys.path.insert(0, 'src')\nfrom app.report import generate_coverage_diagram\n\ndef test_generate_coverage_diagram():\n    diagram = generate_coverage_diagram('module A changed', 'Component A -> Component B')\n    assert isinstance(diagram, str)\n    assert len(diagram) > 0",
+        "status": "todo",
+        "tries": 0
+      }
+    ],
+    "status": "active",
+    "created": "2026-11-28T04:16",
+    "objective": "O3",
+    "vendored": [
+      {
+        "skill": "mermaid-js-mermaid",
+        "file": "mermaid_helper.py",
+        "sha256": "be60475e21f1142d"
+      },
+      {
+        "skill": "sebastianbergmann-php-code-coverage",
+        "file": "test_coverage_analyzer.py",
+        "sha256": "6e52a46c4b8bedde"
+      }
+    ],
+    "log": [
+      {
+        "ts": "2026-11-28T04:16",
+        "from": "proposed",
+        "to": "active",
+        "why": "2 milestones; tools from ['mermaid-js-mermaid', 'sebastianbergmann-php-code-coverage']"
+      }
+    ]
   }
 ]
