@@ -881,7 +881,7 @@
       "slug": "unkernel-webassembly-linux-sandbox-exper"
     },
     "source": "agent",
-    "status": "new",
+    "status": "running",
     "ts": "2026-11-28T07:35:29"
   }
 ]

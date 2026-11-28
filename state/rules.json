@@ -22,7 +22,7 @@
       "text": "Validate syntax locally using a linter or test run before submitting generated code to catch string and f-string errors immediately.",
       "from": "5a5dd31b91",
       "status": "active",
-      "uses": 0,
+      "uses": 1,
       "ok": 0,
       "created": "2026-11-28T07:35"
     }

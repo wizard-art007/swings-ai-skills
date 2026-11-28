@@ -804,10 +804,14 @@
     "kind": "milestone",
     "skill": "sebastianbergmann-php-code-coverage",
     "goal": "proj-ci-test-flake-architecture-visualiz milestone 2: m2_flake_sequence_visualizer",
-    "status": "todo",
+    "status": "done",
     "queued": "2026-11-28T07:35",
     "project": "bee2d3c6",
     "milestone": 2,
-    "objective": "O3"
+    "objective": "O3",
+    "value": 1407.265,
+    "finished": "2026-11-28T10:13",
+    "minutes": 4.75,
+    "estimate": 0.5
   }
 ]
