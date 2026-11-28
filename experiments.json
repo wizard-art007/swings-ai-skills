@@ -489,5 +489,41 @@
     "published": "2026-11-28T07:35",
     "pushed": "2026-11-28T07:35",
     "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/proj-qa-test-coverage-visualizer"
+  },
+  "proj-ci-test-flake-architecture-visualiz": {
+    "title": "CI Test Flake & Architecture Visualizer",
+    "description": "Detect flaky test patterns from execution logs and generate an architecture sequence flow diagram of the failing test execution path.",
+    "status": "passed",
+    "kind": "project",
+    "skills": [
+      "plantuml-plantuml"
+    ],
+    "milestones": [
+      {
+        "name": "m1_flake_pattern_detector",
+        "done": true
+      },
+      {
+        "name": "m2_flake_sequence_visualizer",
+        "done": true
+      }
+    ],
+    "created": "2026-11-28T07:35",
+    "finished": "2026-11-28T10:13",
+    "objective": "O3",
+    "files": [
+      "README.md",
+      "tests/test_m1.py",
+      "tests/test_m2.py",
+      "src/app/__init__.py",
+      "src/app/flake_visualizer.py",
+      "src/app/flake_detector.py",
+      "src/vendor/__init__.py",
+      "src/vendor/plantuml_plantuml/__init__.py",
+      "src/vendor/plantuml_plantuml/class_diagram_generator.py",
+      "src/vendor/plantuml_plantuml/sequence_generator.py",
+      "src/vendor/sebastianbergmann_php_code_coverage/__init__.py",
+      "src/vendor/sebastianbergmann_php_code_coverage/test_coverage_analyzer.py"
+    ]
   }
 }

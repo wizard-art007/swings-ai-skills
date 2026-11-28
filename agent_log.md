@@ -378,3 +378,7 @@
 - 2026-11-28 10:10 — llm: Gemini unavailable (504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'Deadline expired befo); the fallback provider answers this call
 - 2026-11-28 10:12 — llm: Gemini unavailable (504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'Deadline expired befo); the fallback provider answers this call
 - 2026-11-28 10:13 — project/proj-ci-test-flake-architecture-visualiz: 'proj-ci-test-flake-architecture-visualiz milestone 2: m2_flake_sequence_visualizer' PASSED on attempt 2 (src/app/flake_visualizer.py)
+- 2026-11-28 10:13 — projects: pushed 1 folder(s) to swings-ai-projects: unkernel-webassembly-linux-sandbox-exper
+- 2026-11-28 10:13 — agent publisher: published ['unkernel-webassembly-linux-sandbox-exper']; refused {}; graduation limit (1/day) reached; proj-agentic-workflow-visualizer graduates next time (direct, no LLM call)
+- 2026-11-28 10:13 — project proj-ci-test-flake-architecture-visualiz: milestone 2 'm2_flake_sequence_visualizer' done; skills imported ['plantuml-plantuml']
+- 2026-11-28 10:13 — project proj-ci-test-flake-architecture-visualiz: active -> finished (all 2 milestones pass; skills used ['plantuml-plantuml'])
