@@ -357,3 +357,4 @@
 - 2026-11-28 07:35 — agent news_scout v1: OK — Fetched tech news, saved trend notes on WebAssembly/browser virtualization and developer tools, and emitted an idea event for Unkernel.
 - 2026-11-28 07:35 — exp/unkernel-webassembly-linux-sandbox-exper: 'experiment unkernel-webassembly-linux-sandbox-exper' PASSED on attempt 1 (README.md, src/unkernel_sandbox.py, tests/test_unkernel_sandbox.py)
 - 2026-11-28 07:35 — experiment unkernel-webassembly-linux-sandbox-exper: passed but uses no skill tool; one retry, told so
+- 2026-11-28 07:35 — exp/unkernel-webassembly-linux-sandbox-exper: 'experiment unkernel-webassembly-linux-sandbox-exper (skill retry)' PASSED on attempt 2 (README.md, src/unkernel_sandbox.py, tests/test_unkernel_sandbox.py)

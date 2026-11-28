@@ -413,5 +413,36 @@
     "published": "2026-11-28T04:16",
     "pushed": "2026-11-28T04:16",
     "projects_url": "https://github.com/wizard-art007/swings-ai-projects/tree/main/experiments/proj-qa-test-coverage-architecture-visua"
+  },
+  "unkernel-webassembly-linux-sandbox-exper": {
+    "title": "Unkernel WebAssembly Linux Sandbox Experiment",
+    "description": "A small offline Python experiment simulating a WebAssembly Linux environment loader/parser under 300 lines.",
+    "source_url": "https://unkernel.dev",
+    "status": "passed",
+    "created": "2026-11-28T07:35",
+    "kind": "experiment",
+    "skills": [
+      "tt-a1i-archify"
+    ],
+    "tools_offered": [
+      "tt-a1i-archify/archify_helper",
+      "plantuml-plantuml/class_diagram_generator",
+      "seleniumbase-seleniumbase/skill_diagram"
+    ],
+    "files": [
+      "README.md",
+      "tests/test_unkernel_sandbox.py",
+      "src/unkernel_sandbox.py",
+      "src/vendor/__init__.py",
+      "src/app/__init__.py",
+      "src/vendor/tt_a1i_archify/__init__.py",
+      "src/vendor/tt_a1i_archify/archify_helper.py",
+      "src/vendor/seleniumbase_seleniumbase/__init__.py",
+      "src/vendor/seleniumbase_seleniumbase/skill_diagram.py",
+      "src/vendor/seleniumbase_seleniumbase/offline_calculator.py",
+      "src/vendor/plantuml_plantuml/__init__.py",
+      "src/vendor/plantuml_plantuml/class_diagram_generator.py",
+      "src/vendor/plantuml_plantuml/sequence_generator.py"
+    ]
   }
 }
